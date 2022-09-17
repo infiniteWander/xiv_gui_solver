@@ -1,0 +1,13 @@
+[recipe]
+durability = 70
+progress = 5060
+quality = 12628
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
+
+[stats]
+craftsmanship = 3745
+control = 3636
+max_cp = 670
