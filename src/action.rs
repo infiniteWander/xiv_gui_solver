@@ -25,6 +25,7 @@ impl ActionBuilder {
         short_name[0..1].make_ascii_lowercase();
         if name == "Basic Synthesis" { short_name = "basicSynth2".to_string(); }
         if name == "Groundwork" { short_name = "groundwork2".to_string(); }
+        if name == "Careful Synthesis" { short_name = "carefulSynthesis2".to_string(); }
 
         Self {
             action: Action {
