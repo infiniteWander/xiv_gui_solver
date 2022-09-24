@@ -1,5 +1,5 @@
 # xiv_craft_solver
-A rust program for solving FFXIV craft recipe. **Only normal lv90 recipes with stars works.**
+A rust program for solving FFXIV craft recipe. **Only normal lv90 recipes with stars and 70/80 dur works.**
 
 ## Usage
 1. Download the latest release.
