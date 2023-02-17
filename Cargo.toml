@@ -10,3 +10,7 @@ strum_macros = "0.24"
 strum = { version = "0.24", features = ["derive"] }
 lazy_static = "1.4.0"
 toml = "0.5.9"
+clap = {version = "4.1.6", features = ["derive"]}
+
+[profile.release]
+panic = 'abort'

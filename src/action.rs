@@ -23,9 +23,9 @@ impl ActionBuilder {
         short_name = short_name.replace("II", "2");
         short_name.retain(|c| !c.is_whitespace() && c != '\'');
         short_name[0..1].make_ascii_lowercase();
-        if name == "Basic Synthesis" { short_name = "basicSynth2".to_string(); }
-        if name == "Groundwork" { short_name = "groundwork2".to_string(); }
-        if name == "Careful Synthesis" { short_name = "carefulSynthesis2".to_string(); }
+        if name == "Basic Synthesis" { short_name = "basicSynth".to_string(); }
+        if name == "Groundwork" { short_name = "groundwork".to_string(); }
+        if name == "Careful Synthesis" { short_name = "carefulSynthesis".to_string(); }
 
         Self {
             action: Action {

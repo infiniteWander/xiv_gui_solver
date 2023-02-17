@@ -1,13 +1,22 @@
-[recipe]
+[default_recipe]
 durability = 70
 progress = 5060
-quality = 12628
+quality = 10920
 progress_divider = 130
 quality_divider = 115
 progress_modifier = 80
 quality_modifier = 70
 
-[stats]
-craftsmanship = 3745
-control = 3636
-max_cp = 670
+[recipe_35]
+durability = 35
+progress = 3696
+quality = 8200
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
+
+[default_character]
+craftsmanship = 4041
+control = 3959
+max_cp = 602

@@ -13,30 +13,42 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     let mut forbidden_actions = Vec::<Option<&'a Action>>::new();
     if craft.step_count == 0 { return action_vec![ACTIONS.muscle_memory]; }
     if craft.step_count == 1 { return action_vec![ACTIONS.manipulation]; }
-    if craft.step_count == 2 { return action_vec![ACTIONS.veneration]; }
-    if craft.step_count == 3 { available_actions.append(&mut action_vec![ACTIONS.waste_not_ii/*,ACTIONS.waste_not*/]) }
+    if craft.step_count == 2 { return action_vec![ACTIONS.waste_not, ACTIONS.waste_not_ii, ACTIONS.veneration]; }
+    if craft.step_count == 3 { available_actions.append(&mut action_vec![ACTIONS.waste_not_ii,ACTIONS.waste_not]) }
+
+    // Forbidding actions depending on buffs
     if craft.buffs.waste_not > 0 || craft.buffs.muscle_memory > 0 { available_actions.append(&mut action_vec![ACTIONS.groundwork]) }
     if craft.buffs.muscle_memory > 0 { forbidden_actions.append(&mut action_vec![ACTIONS.basic_synthesis,ACTIONS.careful_synthesis,ACTIONS.prudent_synthesis,ACTIONS.delicate_synthesis]) }
     if craft.buffs.waste_not > 0 { forbidden_actions.append(&mut action_vec![ACTIONS.prudent_synthesis]) }
     available_actions.append(&mut action_vec![ACTIONS.basic_synthesis,ACTIONS.careful_synthesis,ACTIONS.prudent_synthesis,ACTIONS.delicate_synthesis]);
+    
+    // Pruning the actions with the forbidden ones
     let mut result_actions = Vec::<Option<&'a Action>>::new();
     for action in available_actions {
         if !forbidden_actions.contains(&action) && action.unwrap().can_use(craft) && result_actions.iter().any(|x| x.unwrap() == action.unwrap()).not() {
             result_actions.push(action);
         }
     }
+    // println!("Av: {:?}",result_actions);
     result_actions
 }
 
 pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
     let mut queue = Vec::new();
+    // let mut nb=0;
     queue.push(craft);
     let mut routes = Vec::new();
     while !queue.is_empty() {
         let craft = queue.pop().unwrap();
         for action in next_action_picker_1(&craft) {
             let mut craft = craft.clone();
-            craft.run_action(action.unwrap());
+            // println!("Iter {} : {:?}",nb,action);
+            // nb+=1;
+            match action{
+                Some(a) => craft.run_action(a),
+                None => break,
+            };
+            // craft.run_action(action.unwrap());
             let remaining_prog = (craft.recipe.progress as f32 - craft.progression as f32) / craft.get_base_progression() as f32;
             if remaining_prog <= 2.0 {
                 if remaining_prog <= 0.0 {
@@ -61,6 +73,8 @@ pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
 
 
 pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
+    println!("State of craft {:}",craft);
+
     let mut available_actions = vec![&ACTIONS.basic_touch, &ACTIONS.prudent_touch, &ACTIONS.preparatory_touch];
     let mut forbidden_actions = Vec::new();
     if craft.success != Success::Pending { return vec![None]; }

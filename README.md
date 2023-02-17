@@ -28,6 +28,21 @@ quality_modifier = 70 # as Extra Quality Difficulty
 craftsmanship = 3745
 control = 3636
 max_cp = 670
+
+
+[recipe]
+durability = 35
+progress = 3696
+quality = 8200
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
+
+[stats]
+craftsmanship = 4041
+control = 3959
+max_cp = 602
 ```
 
 #### Output

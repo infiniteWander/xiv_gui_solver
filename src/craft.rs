@@ -1,4 +1,4 @@
-use std::fmt::{Debug, Formatter};
+use std::fmt::{Debug, Formatter,Display};
 use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
 
@@ -70,6 +70,22 @@ impl<'a> Craft<'a> {
 
 impl<'a> Debug for Craft<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut binding = f.debug_struct("");
+        binding
+            .field("step_count", &self.step_count)
+            .field("progression", &format!("{:?}/{:?}", &self.progression, &self.recipe.progress))
+            .field("quality", &format!("{:?}/{:?}", &self.quality, &self.recipe.quality))
+            .field("durability", &format!("{:?}/{:?}", &self.durability, &self.recipe.durability))
+            // .field("cp", &format!("{:?}/{:?}", &self.cp, &self.stats.max_cp))
+        ;
+        binding.field("actions",&self.actions);
+        binding.finish()
+    }
+}
+
+
+impl<'a> Display for Craft<'a> {
+    fn fmt(&self, f: &mut Formatter)-> std::fmt::Result {
         f.debug_struct("Craft")
             .field("step_count", &self.step_count)
             .field("progression", &format!("{:?}/{:?}", &self.progression, &self.recipe.progress))
