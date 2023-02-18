@@ -2,6 +2,8 @@ use std::fmt::{Debug, Formatter,Display};
 use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
 
+
+
 #[derive(Clone)]
 pub struct Craft<'a> {
     pub recipe: &'a Recipe,
@@ -14,10 +16,11 @@ pub struct Craft<'a> {
     pub cp: i32,
     pub success: Success,
     pub actions: Vec<&'a Action>,
+    pub depth: u32,
 }
 
 impl<'a> Craft<'a> {
-    pub fn new(recipe: &'a Recipe, stats: &'a Stats) -> Craft<'a> {
+    pub fn new(recipe: &'a Recipe, stats: &'a Stats, depth: &'a u32) -> Craft<'a> {
         Self {
             recipe,
             stats,
@@ -29,6 +32,7 @@ impl<'a> Craft<'a> {
             cp: stats.max_cp as i32,
             success: Success::Pending,
             actions: Vec::new(),
+            depth: *depth,
         }
     }
 

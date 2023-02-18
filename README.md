@@ -15,22 +15,16 @@ Note: The recipe data can be retrieved from [FFXIV Crafting Optimizer](https://y
 with checking of **Custom Recipe** after selecting the recipe.
 ![img.png](img.png)
 ```toml
-[recipe]
+[default_recipe]
 durability = 70
 progress = 5060
-quality = 12628
-progress_divider = 130 # as Progress Difficulty
-quality_divider = 115 # as Quality Difficulty
-progress_modifier = 80 # as Extra Progress Difficulty
-quality_modifier = 70 # as Extra Quality Difficulty
+quality = 10920
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
 
-[stats] # including food and potion
-craftsmanship = 3745
-control = 3636
-max_cp = 670
-
-
-[recipe]
+[recipe_35]
 durability = 35
 progress = 3696
 quality = 8200
@@ -39,7 +33,7 @@ quality_divider = 115
 progress_modifier = 80
 quality_modifier = 70
 
-[stats]
+[default_character]
 craftsmanship = 4041
 control = 3959
 max_cp = 602

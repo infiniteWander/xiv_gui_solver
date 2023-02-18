@@ -1,16 +1,43 @@
 [default_recipe]
 durability = 70
-progress = 5060
+progress = 3900
 quality = 10920
 progress_divider = 130
 quality_divider = 115
 progress_modifier = 80
 quality_modifier = 70
 
-[recipe_35]
+[two_star_70]
+durability = 70
+progress = 3900
+quality = 10920
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
+
+[three_star_70]
+durability = 70
+progress = 5060
+quality = 12628
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
+
+[three_star_35]
 durability = 35
 progress = 3696
 quality = 8200
+progress_divider = 130
+quality_divider = 115
+progress_modifier = 80
+quality_modifier = 70
+
+[two_star_35]
+durability = 35
+progress = 2925
+quality = 7800
 progress_divider = 130
 quality_divider = 115
 progress_modifier = 80
@@ -20,3 +47,9 @@ quality_modifier = 70
 craftsmanship = 4041
 control = 3959
 max_cp = 602
+
+[cero]
+craftsmanship = 1818
+control = 1983
+max_cp = 467
+_max_cp = 600

@@ -11,18 +11,25 @@ mod solver;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-   /// Name of the receipe
-   #[arg(short, long, default_value_t = String::from("default_recipe"))]
-   recipe_name: String,
+    /// Name of the receipe
+    #[arg(short, long, default_value_t = String::from("default_recipe"))]
+    recipe_name: String,
 
-   /// Name of the character
-   #[arg(short, long, default_value_t = String::from("default_character"))]
-   character_name: String,
+    /// Name of the character
+    #[arg(short, long, default_value_t = String::from("default_character"))]
+    character_name: String,
 
-   /// The ml file name
+    /// The ml file name
     #[arg(short, long, default_value_t = String::from("craft.toml"))]
     file_name: String,
    
+    /// The verbose flag
+    #[arg(short, long, action = clap::ArgAction::Count)]
+    verbose: u8,
+
+    /// The depth of the first pass
+    #[arg(short, long, default_value_t = 8)]
+    depth: u32,
 }
 
 #[derive(Debug)]
@@ -94,16 +101,27 @@ fn main() {
                 &args.character_name,&args.file_name))
             .as_integer().expect("Can't convert max_cp as an integer") as u32,
     };
-    let craft = Craft::new(&recipe, &stats);
-    println!("Solving...\n");
-    println!("[P1] Starting phase 1...");
-    let phase1_routes = generate_routes_phase1(craft);
-    println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
-    for r in &phase1_routes{
-        println!("[P1] {:?}",r);
-    };
+    let craft = Craft::new(&recipe, &stats, &args.depth);
 
-    // panic!("");
+    if args.verbose>0{
+        println!("Solving...\n");
+        println!("[P1] Starting phase 1...");
+    }
+    let phase1_routes = generate_routes_phase1(craft);
+    
+    if args.verbose>1{
+        println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
+        for r in &phase1_routes{
+            println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",
+                r.actions, 
+                r.progression * 100 / r.recipe.progress, 
+                r.quality * 100 / r.recipe.quality,
+                r.cp,
+                r.durability,
+                );
+            // println!("[P1] {}",r);
+        };
+    }
     
     let mut phase2_routes = Vec::new();
     for route in phase1_routes {
@@ -111,16 +129,26 @@ fn main() {
             phase2_routes.push(route);
         }
     }
-    // println!("{:?}", phase2_routes);
-    // let top_route = match phase2_routes.iter().max_by_key(|route| route.quality) {
-    //     Some(top) => top,
-    //     None => return,
-    // };
-    println!("{:?}", phase2_routes);
-    let top_route = match phase2_routes.iter().min_by_key(|route| route.step_count) {
+
+    if args.verbose>1{
+        println!("[P2] Found {} solutions, sorting",phase2_routes.len());
+        for r in &phase2_routes{
+            println!("[P2] {:?} p:{}% q:{}% d:{}",
+                r.actions, 
+                r.progression * 100 / r.recipe.progress, 
+                r.quality * 100 / r.recipe.quality,
+                r.durability);
+        };
+    }
+
+    let top_route = match phase2_routes.iter().max_by_key(|route| route.quality) {
         Some(top) => top,
         None => return,
     };
+    // let top_route = match phase2_routes.iter().min_by_key(|route| route.step_count) {
+    //     Some(top) => top,
+    //     None => return,
+    // };
 
     let mut content = (&top_route.actions)
         .iter()
@@ -135,9 +163,15 @@ fn main() {
         content.push("\"observe\"".to_string());
         content.push("\"focusedSynthesis\"".to_string());
     }
+
+    if args.verbose>2{
+        println!("[F] Top route {:?}",top_route);
+    }
+
     println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
     println!("\t[{}]", content.join(", "));
-    // wait for enter
+    
+    // Wait for enter
     println!();
     println!("Press enter to exit...");
     let mut input = String::new();

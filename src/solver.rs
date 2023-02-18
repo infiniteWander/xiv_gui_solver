@@ -11,17 +11,29 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     if craft.success != Success::Pending { return vec![None]; }
     let mut available_actions = Vec::<Option<&'a Action>>::new();
     let mut forbidden_actions = Vec::<Option<&'a Action>>::new();
+
+    // Optimize the first three steps for massive time save
     if craft.step_count == 0 { return action_vec![ACTIONS.muscle_memory]; }
     if craft.step_count == 1 { return action_vec![ACTIONS.manipulation]; }
+
+    // Prune some actions if not requested by --long
     if craft.step_count == 2 { return action_vec![ACTIONS.waste_not, ACTIONS.waste_not_ii, ACTIONS.veneration]; }
     if craft.step_count == 3 { available_actions.append(&mut action_vec![ACTIONS.waste_not_ii,ACTIONS.waste_not]) }
 
-    // Forbidding actions depending on buffs
+    // Groundwork mostly for wn / mm
     if craft.buffs.waste_not > 0 || craft.buffs.muscle_memory > 0 { available_actions.append(&mut action_vec![ACTIONS.groundwork]) }
+    
+    // Forbidding actions depending on buffs
     if craft.buffs.muscle_memory > 0 { forbidden_actions.append(&mut action_vec![ACTIONS.basic_synthesis,ACTIONS.careful_synthesis,ACTIONS.prudent_synthesis,ACTIONS.delicate_synthesis]) }
     if craft.buffs.waste_not > 0 { forbidden_actions.append(&mut action_vec![ACTIONS.prudent_synthesis]) }
     available_actions.append(&mut action_vec![ACTIONS.basic_synthesis,ACTIONS.careful_synthesis,ACTIONS.prudent_synthesis,ACTIONS.delicate_synthesis]);
     
+    // ACTIONS.groundwork for the --pls
+    // available_actions.append(&mut action_vec![ACTIONS.groundwork]);
+    
+    // For long first run
+    if craft.step_count > 8 {available_actions.append(&mut action_vec![ACTIONS.waste_not_ii, ACTIONS.waste_not])};
+
     // Pruning the actions with the forbidden ones
     let mut result_actions = Vec::<Option<&'a Action>>::new();
     for action in available_actions {
@@ -29,43 +41,47 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
             result_actions.push(action);
         }
     }
+
     // println!("Av: {:?}",result_actions);
     result_actions
 }
 
 pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
     let mut queue = Vec::new();
-    // let mut nb=0;
+    // if craft.verbose>2 {print!("#")};
     queue.push(craft);
     let mut routes = Vec::new();
     while !queue.is_empty() {
         let craft = queue.pop().unwrap();
         for action in next_action_picker_1(&craft) {
             let mut craft = craft.clone();
-            // println!("Iter {} : {:?}",nb,action);
-            // nb+=1;
             match action{
                 Some(a) => craft.run_action(a),
                 None => break,
             };
-            // craft.run_action(action.unwrap());
+
             let remaining_prog = (craft.recipe.progress as f32 - craft.progression as f32) / craft.get_base_progression() as f32;
             if remaining_prog <= 2.0 {
                 if remaining_prog <= 0.0 {
                     continue;
                 } else if 0.0 < remaining_prog && remaining_prog <= 1.2 {
-                    // pass
+                    // pass         // Will finish with basicSynth2 (free)
                 } else if 1.2 < remaining_prog && remaining_prog <= 1.2 {
-                    craft.cp -= 7;
+                    craft.cp -= 7; // Will finish with carefulSynthesis (7cp)
                 } else if 1.2 < remaining_prog && remaining_prog <= 2.0 {
-                    craft.cp -= 12;
+                    craft.cp -= 12; // Will finish with observe+focusedSynthesis (12cp)
                 }
-                craft.durability -= 10;
+                craft.durability -= 10; // Save the final step, since we always aim to end with -5dur, it doesn't matter
                 routes.push(craft);
                 continue;
             }
 
-            if craft.step_count < 8 { queue.push(craft); }
+            // Keep adding initial routes with several pass, we must be able to finish in one step
+            // 8 Seemed to be a good initial guess with enouth to use a good amount of WN / WNII to get close
+            // A higher value will yield more initial guesses with minimal benefits
+            // A lover value will yield less initial guesses and might spent too much CP to get to the required progression
+            // TODO: Pass a flag to get more attempts 
+            if craft.step_count < craft.depth { queue.push(craft); }
         }
     }
     routes
@@ -73,7 +89,7 @@ pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
 
 
 pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
-    println!("State of craft {:}",craft);
+    // println!("State of craft {:}",craft);
 
     let mut available_actions = vec![&ACTIONS.basic_touch, &ACTIONS.prudent_touch, &ACTIONS.preparatory_touch];
     let mut forbidden_actions = Vec::new();
@@ -134,8 +150,12 @@ pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
 
 pub fn generate_routes_phase2(craft: Craft) -> Option<Craft> {
     let mut queue = VecDeque::new();
+    
+    // println!("{}", ACTIONS.careful_synthesis.can_use(&craft));
+    let mut top_route: Option<Craft> = Some(craft.clone()); // Default route, no hq on that one
+    
     queue.push_back(craft);
-    let mut top_route: Option<Craft> = None;
+
     while !queue.is_empty() {
         let _craft = queue.pop_front().unwrap();
         for action in next_action_phase_2(&_craft) {
