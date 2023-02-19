@@ -81,7 +81,7 @@ pub fn generate_routes_phase1<'a>(craft: Craft<'a>) -> Vec<Craft<'a>> {
             // A higher value will yield more initial guesses with minimal benefits
             // A lover value will yield less initial guesses and might spent too much CP to get to the required progression
             // TODO: Pass a flag to get more attempts 
-            if craft.step_count < craft.depth { queue.push(craft); }
+            if craft.step_count < craft.args.depth { queue.push(craft); }
         }
     }
     routes

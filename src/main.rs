@@ -14,13 +14,8 @@ pub mod libs;
 struct CustomError(String);
 
 fn main() {
-    // Get args
-    let args = Args::parse();
-
-    // Load the craft with given arguments
-    let craft = libs::load_config(&args);
     
-    libs::solve_craft(craft,&args);
+    libs::solve_craft();
     
     ()
 }
