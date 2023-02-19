@@ -8,7 +8,7 @@ macro_rules! action_vec {
     ($($tt:expr),*) => { vec![ $(Some(&$tt),)*]};
 }
 
-pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
+pub fn next_action_picker_1<'a>(craft: Craft<'a>) -> Vec<Option<&'a Action>> {
     if craft.success != Success::Pending { return vec![None]; }
     let mut available_actions = Vec::<Option<&'a Action>>::new();
     let mut forbidden_actions = Vec::<Option<&'a Action>>::new();
@@ -38,7 +38,7 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     // Pruning the actions with the forbidden ones
     let mut result_actions = Vec::<Option<&'a Action>>::new();
     for action in available_actions {
-        if !forbidden_actions.contains(&action) && action.unwrap().can_use(craft) && result_actions.iter().any(|x| x.unwrap() == action.unwrap()).not() {
+        if !forbidden_actions.contains(&action) && action.unwrap().can_use(&craft) && result_actions.iter().any(|x| x.unwrap() == action.unwrap()).not() {
             result_actions.push(action);
         }
     }
@@ -47,14 +47,13 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     result_actions
 }
 
-pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
+pub fn generate_routes_phase1<'a>(craft: Craft<'a>) -> Vec<Craft<'a>> {
     let mut queue = Vec::new();
-    // if craft.verbose>2 {print!("#")};
-    queue.push(craft);
+    queue.push(craft.clone());
     let mut routes = Vec::new();
     while !queue.is_empty() {
         let craft = queue.pop().unwrap();
-        for action in next_action_picker_1(&craft) {
+        for action in next_action_picker_1(craft.clone()) {
             let mut craft = craft.clone();
             match action{
                 Some(a) => craft.run_action(a),
@@ -89,7 +88,7 @@ pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
 }
 
 
-pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
+pub fn next_action_phase_2<'a>(craft: Craft<'a>) -> Vec<Option<&'a Action>> {
     // println!("State of craft {:}",craft);
 
     let mut available_actions = vec![&ACTIONS.basic_touch, &ACTIONS.prudent_touch, &ACTIONS.preparatory_touch];
@@ -160,7 +159,7 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Craft<'a>> {
 
     while !queue.is_empty() {
         let _craft = queue.pop_front().unwrap();
-        for action in next_action_phase_2(&_craft) {
+        for action in next_action_phase_2(_craft.clone()) {
             if _craft.success != Success::Pending || action.is_none() || !action.unwrap().can_use(&_craft) {
                 continue;
             }
