@@ -8,7 +8,7 @@ macro_rules! action_vec {
     ($($tt:expr),*) => { vec![ $(Some(&$tt),)*]};
 }
 
-pub fn next_action_picker_1<'a>(craft: Craft<'a>) -> Vec<Option<&'a Action>> {
+pub fn next_action_picker_1<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
     if craft.success != Success::Pending { return vec![None]; }
     let mut available_actions = Vec::<Option<&'a Action>>::new();
     let mut forbidden_actions = Vec::<Option<&'a Action>>::new();
@@ -43,18 +43,18 @@ pub fn next_action_picker_1<'a>(craft: Craft<'a>) -> Vec<Option<&'a Action>> {
         }
     }
 
-    // println!("Av: {:?}",result_actions);
     result_actions
 }
 
 pub fn generate_routes_phase1<'a>(craft: Craft<'a>) -> Vec<Craft<'a>> {
     let mut queue = Vec::new();
-    queue.push(craft.clone());
+    queue.push(craft);
     let mut routes = Vec::new();
     while !queue.is_empty() {
         let craft = queue.pop().unwrap();
-        for action in next_action_picker_1(craft.clone()) {
+        for action in next_action_picker_1(& craft) {
             let mut craft = craft.clone();
+
             match action{
                 Some(a) => craft.run_action(a),
                 None => break,
@@ -88,7 +88,7 @@ pub fn generate_routes_phase1<'a>(craft: Craft<'a>) -> Vec<Craft<'a>> {
 }
 
 
-pub fn next_action_phase_2<'a>(craft: Craft<'a>) -> Vec<Option<&'a Action>> {
+pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
     // println!("State of craft {:}",craft);
 
     let mut available_actions = vec![&ACTIONS.basic_touch, &ACTIONS.prudent_touch, &ACTIONS.preparatory_touch];
@@ -159,7 +159,7 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Craft<'a>> {
 
     while !queue.is_empty() {
         let _craft = queue.pop_front().unwrap();
-        for action in next_action_phase_2(_craft.clone()) {
+        for action in next_action_phase_2(&_craft) {
             if _craft.success != Success::Pending || action.is_none() || !action.unwrap().can_use(&_craft) {
                 continue;
             }

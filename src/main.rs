@@ -1,8 +1,10 @@
+use crate::libs::Parameters;
+use crate::libs::load_from_config;
+use clap::Parser;
+use crate::libs::Args;
 use crate::craft::Craft;
-use crate::libs::{Args,};
 use crate::specs::{Recipe, Stats};
 
-use clap::Parser;
 
 mod specs;
 pub mod action;
@@ -14,8 +16,15 @@ pub mod libs;
 struct CustomError(String);
 
 fn main() {
-    
-    libs::solve_craft();
+    let args = Args::parse();
+    let params = Parameters{
+        depth: args.depth,
+        threads: args.threads,
+        verbose: args.verbose,
+    };
+
+    let (recipe,stats) = load_from_config(&args.recipe_name, &args.file_name, &args.character_name);
+    libs::solve_craft(recipe,stats,params);
     
     ()
 }

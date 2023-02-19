@@ -46,33 +46,31 @@ pub struct Args {
 }
 
 /// Solve the craft with given arguments
-pub fn solve_craft<'a>() -> Option<Vec<String>>{
-    let args = Args::parse();
-    let params = Parameters{
-        depth: args.depth,
-        threads: args.threads,
-        verbose: args.verbose,
-    };
+pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<String>>{
+    // let params = Parameters{
+    //     depth: args.depth,
+    //     threads: args.threads,
+    //     verbose: args.verbose,
+    // };
 
-    // Load the craft with given arguments
-    let craft = load_config(&args.recipe_name, &args.file_name, &args.character_name,params);
-    
+    // // Load the craft with given arguments
+    // let craft = make_craft_from_config(&args.recipe_name, &args.file_name, &args.character_name,params);
+    let craft = Craft::new(recipe,stats,params);
     // Start timer
     let now = Instant::now();
-    let craft = craft.clone();
 
     // Start a threadpool
-    let pool = ThreadPool::new(args.threads);
+    let pool = ThreadPool::new(params.threads);
 
-    if args.verbose>0{
+    if params.verbose>0{
         println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
-    let phase1_routes = generate_routes_phase1(craft.clone());
+    let phase1_routes = generate_routes_phase1(craft);
     
-    if args.verbose>0{
+    if params.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
-        if args.verbose>1{
+        if params.verbose>1{
             for r in &phase1_routes{
                 println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",
                     r.actions, 
@@ -102,10 +100,10 @@ pub fn solve_craft<'a>() -> Option<Vec<String>>{
     let phase2_routes = arc_phase2_routes.lock().unwrap();
     
     // Print the results if verbose
-    if args.verbose>0{
+    if params.verbose>0{
         println!("[P2] Found {} solutions, sorting",phase2_routes.len());
 
-        if args.verbose>1{
+        if params.verbose>1{
             for r in phase2_routes.iter(){
                 println!("[P2] {:?} p:{}% q:{}% d:{}",
                     r.actions, 
@@ -138,7 +136,7 @@ pub fn solve_craft<'a>() -> Option<Vec<String>>{
         content.push("\"focusedSynthesis\"".to_string());
     }
 
-    if args.verbose>2{
+    if params.verbose>2{
         println!("[F] Top route {:?}",top_route);
     }
 
@@ -159,7 +157,7 @@ pub fn solve_craft<'a>() -> Option<Vec<String>>{
 }
 
 /// Load the config from args and make a craft from it
-pub fn load_config<'a>(recipe_name: &str, file_name: &str, character_name: &str, params: Parameters) -> Craft<'a> {
+pub fn load_from_config<'a>(recipe_name: &str, file_name: &str, character_name: &str) -> (Recipe,Stats) {
     //read craft.toml
     let config: toml::Value = toml::from_str(
         &std::fs::read_to_string(file_name)
@@ -221,10 +219,9 @@ pub fn load_config<'a>(recipe_name: &str, file_name: &str, character_name: &str,
                 character_name,file_name))
             .as_integer().expect("Can't convert max_cp as an integer") as u32,
     };
-    let craft = Craft::new(recipe, stats, params);
-    craft
+    (recipe,stats)
 }
 
-fn make_craft_from_values(){
+// fn make_craft_from_values(){
 
-}
+// }
