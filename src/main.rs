@@ -1,10 +1,12 @@
 use crate::craft::Craft;
 use crate::solver::{generate_routes_phase1, generate_routes_phase2};
 use crate::specs::{Recipe, Stats};
-use clap::Parser;
 
-use std::thread;
-use std::time::{Duration,Instant};
+use clap::Parser;
+use std::sync::{Arc,Mutex};
+use std::time::{Instant};
+use threadpool::ThreadPool;
+
 
 mod specs;
 pub mod action;
@@ -33,6 +35,10 @@ struct Args {
     /// The depth of the first pass
     #[arg(short, long, default_value_t = 8)]
     depth: u32,
+
+    /// Thread counts, default is 4 (can you even run ff with less ?)
+    #[arg(short, long, default_value_t = 4)]
+    threads: usize,
 }
 
 #[derive(Debug)]
@@ -44,6 +50,7 @@ fn main() {
 
     // Start timer
     let now = Instant::now();
+
 
 
     //read craft.toml
@@ -110,65 +117,69 @@ fn main() {
     };
     let craft = Craft::new(recipe, stats, args.depth);
 
+    // Start a threadpool
+    let pool = ThreadPool::new(args.threads);
+
     if args.verbose>0{
         println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
     let phase1_routes = generate_routes_phase1(craft);
     
-    if args.verbose>1{
+    if args.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
-        for r in &phase1_routes{
-            println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",
-                r.actions, 
-                r.progression * 100 / r.recipe.progress, 
-                r.quality * 100 / r.recipe.quality,
-                r.cp,
-                r.durability,
-                );
-            // println!("[P1] {}",r);
-        };
+        if args.verbose>1{
+            for r in &phase1_routes{
+                println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",
+                    r.actions, 
+                    r.progression * 100 / r.recipe.progress, 
+                    r.quality * 100 / r.recipe.quality,
+                    r.cp,
+                    r.durability,
+                    );
+                // println!("[P1] {}",r);
+            };
+        }
     }
     
-    // Core algorith, fill all found routes with the best route (doesn't branch, just replace)
-    let mut phase2_routes: Vec<Craft> = Vec::new();
-    // for route in phase1_routes {
-    //     if let Some(route) = generate_routes_phase2(route) {
-    //         phase2_routes.push(route);
-    //     }
-    // }
+    // Core algorithm, fill all found routes with the best route (doesn't branch, just replace)
+    let arc_phase2_routes = Arc::new(Mutex::new(Vec::<Craft>::new()));
 
-    let handle = thread::spawn(|| {
-        // for i in 1..10 {
-        //     println!("hi number {} from the spawned thread!", i);
-        //     thread::sleep(Duration::from_millis(1));
-        // }
-        for route in phase1_routes {
-        /*if let Some(route) = */generate_routes_phase2(route); //{
-        //    phase2_routes.push(route);
-        //}
-        }
-        }
-    );
+    for route in phase1_routes {
+        let _phase2_routes = arc_phase2_routes.clone();
+        pool.execute(move || {
+            if let Some(_route) = generate_routes_phase2(route){
+                let mut shared = _phase2_routes.lock().unwrap();
+                shared.push(_route);
+            };
+        });
+    }
 
-    handle.join().unwrap();
-
+    pool.join();
+    let phase2_routes = arc_phase2_routes.lock().unwrap();
+    
     // Print the results if verbose
-    if args.verbose>1{
+    if args.verbose>0{
         println!("[P2] Found {} solutions, sorting",phase2_routes.len());
-        for r in &phase2_routes{
-            println!("[P2] {:?} p:{}% q:{}% d:{}",
-                r.actions, 
-                r.progression * 100 / r.recipe.progress, 
-                r.quality * 100 / r.recipe.quality,
-                r.durability);
-        };
+
+        if args.verbose>1{
+            for r in phase2_routes.iter(){
+                println!("[P2] {:?} p:{}% q:{}% d:{}",
+                    r.actions, 
+                    r.progression * 100 / r.recipe.progress, 
+                    r.quality * 100 / r.recipe.quality,
+                    r.durability);
+            };
+        }
     }
 
 
     let top_route = match phase2_routes.iter().max_by_key(|route| route.quality) {
         Some(top) => top,
-        None => return,
+        None => {
+            println!("[P2] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
+            return
+        },
     };
 
 
@@ -201,8 +212,8 @@ fn main() {
     
     // Wait for enter
     println!();
-    println!("Program finished sucessfuly in {}s and found {} solutions, [prog:{}]",
-        now.elapsed().as_secs(),
+    println!("Program finished sucessfuly in {}ms and found {} solutions, [prog:{}]",
+        now.elapsed().as_millis(),
         phase2_routes.len(),
         top_route.recipe.progress);
     println!("Press enter to exit...");

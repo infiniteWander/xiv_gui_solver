@@ -149,11 +149,11 @@ pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     final_actions
 }
 
-pub fn generate_routes_phase2(craft: Craft) -> Option<Craft> {
+pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Craft<'a>> {
     let mut queue = VecDeque::new();
     
     // println!("{}", ACTIONS.careful_synthesis.can_use(&craft));
-    let mut top_route: Option<Craft> = Some(craft.clone()); // Default route, no hq on that one
+    let mut top_route: Option<Craft<'a>> = Some(craft.clone()); // Default route, no hq on that one
     
     queue.push_back(craft);
 

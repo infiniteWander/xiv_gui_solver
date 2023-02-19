@@ -6,8 +6,8 @@ use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
 
 #[derive(Clone)]
 pub struct Craft<'a> {
-    pub recipe: &'a Recipe,
-    pub stats: &'a Stats,
+    pub recipe:  Recipe,
+    pub stats:  Stats,
     pub buffs: BuffState,
     pub step_count: u32,
     pub durability: i32,
@@ -20,7 +20,7 @@ pub struct Craft<'a> {
 }
 
 impl<'a> Craft<'a> {
-    pub fn new(recipe: &'a Recipe, stats: &'a Stats, depth: &'a u32) -> Craft<'a> {
+    pub fn new(recipe:  Recipe, stats:  Stats, depth:  u32) -> Craft<'a> {
         Self {
             recipe,
             stats,
@@ -32,7 +32,7 @@ impl<'a> Craft<'a> {
             cp: stats.max_cp as i32,
             success: Success::Pending,
             actions: Vec::new(),
-            depth: *depth,
+            depth: depth,
         }
     }
 
