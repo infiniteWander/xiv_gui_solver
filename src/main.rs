@@ -3,6 +3,9 @@ use crate::solver::{generate_routes_phase1, generate_routes_phase2};
 use crate::specs::{Recipe, Stats};
 use clap::Parser;
 
+use std::thread;
+use std::time::{Duration,Instant};
+
 mod specs;
 pub mod action;
 pub mod craft;
@@ -38,6 +41,10 @@ struct CustomError(String);
 fn main() {
     // Get args
     let args = Args::parse();
+
+    // Start timer
+    let now = Instant::now();
+
 
     //read craft.toml
     let config: toml::Value = toml::from_str(
@@ -101,7 +108,7 @@ fn main() {
                 &args.character_name,&args.file_name))
             .as_integer().expect("Can't convert max_cp as an integer") as u32,
     };
-    let craft = Craft::new(&recipe, &stats, &args.depth);
+    let craft = Craft::new(recipe, stats, args.depth);
 
     if args.verbose>0{
         println!("Solving...\n");
@@ -123,13 +130,30 @@ fn main() {
         };
     }
     
-    let mut phase2_routes = Vec::new();
-    for route in phase1_routes {
-        if let Some(route) = generate_routes_phase2(route) {
-            phase2_routes.push(route);
-        }
-    }
+    // Core algorith, fill all found routes with the best route (doesn't branch, just replace)
+    let mut phase2_routes: Vec<Craft> = Vec::new();
+    // for route in phase1_routes {
+    //     if let Some(route) = generate_routes_phase2(route) {
+    //         phase2_routes.push(route);
+    //     }
+    // }
 
+    let handle = thread::spawn(|| {
+        // for i in 1..10 {
+        //     println!("hi number {} from the spawned thread!", i);
+        //     thread::sleep(Duration::from_millis(1));
+        // }
+        for route in phase1_routes {
+        /*if let Some(route) = */generate_routes_phase2(route); //{
+        //    phase2_routes.push(route);
+        //}
+        }
+        }
+    );
+
+    handle.join().unwrap();
+
+    // Print the results if verbose
     if args.verbose>1{
         println!("[P2] Found {} solutions, sorting",phase2_routes.len());
         for r in &phase2_routes{
@@ -141,10 +165,14 @@ fn main() {
         };
     }
 
+
     let top_route = match phase2_routes.iter().max_by_key(|route| route.quality) {
         Some(top) => top,
         None => return,
     };
+
+
+
     // let top_route = match phase2_routes.iter().min_by_key(|route| route.step_count) {
     //     Some(top) => top,
     //     None => return,
@@ -173,6 +201,10 @@ fn main() {
     
     // Wait for enter
     println!();
+    println!("Program finished sucessfuly in {}s and found {} solutions, [prog:{}]",
+        now.elapsed().as_secs(),
+        phase2_routes.len(),
+        top_route.recipe.progress);
     println!("Press enter to exit...");
     let mut input = String::new();
     std::io::stdin().read_line(&mut input).unwrap();

@@ -1,0 +1,115 @@
+ 	20
+ 	11074/12628
+	["muscleMemory", "manipulation", "veneration", "wasteNot2", "groundwork", "groundwork", "basicSynth", "innovation", "preparatoryTouch", "basicTouch", "standardTouch", "advancedTouch", "innovation", "prudentTouch", "prudentTouch", "basicTouch", "standardTouch", "innovation", "prudentTouch", "trainedFinesse", "greatStrides", "byregotsBlessing", "basicSynth2"]
+
+	8
+	Quality: 11074/12628
+	["muscleMemory", "manipulation", "veneration", "wasteNot2", "groundwork", "groundwork", "basicSynth", "innovation", "preparatoryTouch", "basicTouch", "standardTouch", "advancedTouch", "innovation", "prudentTouch", "prudentTouch", "basicTouch", "standardTouch", "innovation", "prudentTouch", "trainedFinesse", "greatStrides", "byregotsBlessing", "basicSynth2"]
+
+	7
+	11074/12628
+	["muscleMemory", "manipulation", "veneration", "wasteNot2", "groundwork", "groundwork", "basicSynth", "innovation", "preparatoryTouch", "basicTouch", "standardTouch", "advancedTouch", "innovation", "prudentTouch", "prudentTouch", "basicTouch", "standardTouch", "innovation", "prudentTouch", "trainedFinesse", "greatStrides", "byregotsBlessing", "basicSynth2"]
+
+
+	Bir6
+	[P2] Found 305 solutions, sorting
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis, Careful Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:90% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Careful Synthesis, Delicate Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:92% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Careful Synthesis, Delicate Synthesis, Delicate Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:92% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Careful Synthesis, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:92% q:68% d:15
+	[F] Top route  { step_count: 22, progression: "4800/5060", quality: "11074/12628", durability: "-5/70", actions: [Muscle Memory, Manipulation, Veneration, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Innovation, Preparatory Touch, Basic Touch, Standard Touch, Advanced Touch, Innovation, Prudent Touch, Prudent Touch, Basic Touch, Standard Touch, Innovation, Prudent Touch, Trained Finesse, Great Strides, Byregot's Blessing] }
+	Quality: 11074/12628
+		["muscleMemory", "manipulation", "veneration", "wasteNot2", "groundwork", "groundwork", "basicSynth", "innovation", "preparatoryTouch", "basicTouch", "standardTouch", "advancedTouch", "innovation", "prudentTouch", "prudentTouch", "basicTouch", "standardTouch", "innovation", "prudentTouch", "trainedFinesse", "greatStrides", "byregotsBlessing", "basicSynth2"]
+
+	Program finished sucessfuly in 56s and found 305 solutions, [prog:5060]
+	Press enter to exit...
+
+	Bir8
+	[P2] Found 305 solutions, sorting
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis, Careful Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:90% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Careful Synthesis, Delicate Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:92% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Careful Synthesis, Delicate Synthesis, Delicate Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:92% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Careful Synthesis, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis, Innovation, Prudent Touch, Prudent Touch, Manipulation, Prudent Touch, Innovation, Basic Touch, Standard Touch, Advanced Touch, Great Strides, Innovation, Byregot's Blessing] p:92% q:68% d:15
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Delicate Synthesis, Groundwork, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Careful Synthesis, Groundwork, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Basic Synthesis, Groundwork, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Delicate Synthesis, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Careful Synthesis, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Groundwork, Basic Synthesis] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Groundwork, Careful Synthesis] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Groundwork, Delicate Synthesis] p:90% q:2% d:45
+	[F] Top route  { step_count: 22, progression: "4800/5060", quality: "11074/12628", durability: "-5/70", actions: [Muscle Memory, Manipulation, Veneration, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Innovation, Preparatory Touch, Basic Touch, Standard Touch, Advanced Touch, Innovation, Prudent Touch, Prudent Touch, Basic Touch, Standard Touch, Innovation, Prudent Touch, Trained Finesse, Great Strides, Byregot's Blessing] }
+	Quality: 11074/12628
+		["muscleMemory", "manipulation", "veneration", "wasteNot2", "groundwork", "groundwork", "basicSynth", "innovation", "preparatoryTouch", "basicTouch", "standardTouch", "advancedTouch", "innovation", "prudentTouch", "prudentTouch", "basicTouch", "standardTouch", "innovation", "prudentTouch", "trainedFinesse", "greatStrides", "byregotsBlessing", "basicSynth2"]
+
+	Program finished sucessfuly in 26s and found 305 solutions, [prog:5060]
+	Press enter to exit...
+
+	Bir10
+	[P2] Found 305 solutions, sorting
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis, Careful Synthesis] p:90% q:6% d:20
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis, Prudent Synthesis] p:90% q:6% d:25
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Prudent Synthesis, Delicate Synthesis] p:92% q:6% d:25
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Delicate Synthesis, Careful Synthesis, Delicate Synthesis] p:92% q:6% d:20
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Prudent Synthesis, Delicate Synthesis, Delicate Synthesis] p:92% q:6% d:25
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Delicate Synthesis, Careful Synthesis, Delicate Synthesis, Delicate Synthesis] p:92% q:6% d:20
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Prudent Synthesis, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis] p:92% q:6% d:25
+	[P2] [Muscle Memory, Manipulation, Veneration, Groundwork, Careful Synthesis, Delicate Synthesis, Delicate Synthesis, Delicate Synthesis] p:92% q:6% d:20
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Groundwork, Basic Synthesis, Basic Synthesis, Groundwork, Groundwork] p:97% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Groundwork, Basic Synthesis, Groundwork, Basic Synthesis, Groundwork] p:97% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Basic Synthesis, Groundwork] p:97% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Delicate Synthesis, Groundwork, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Careful Synthesis, Groundwork, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Basic Synthesis, Groundwork, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Groundwork, Delicate Synthesis, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Groundwork, Careful Synthesis, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Groundwork, Basic Synthesis, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Groundwork, Groundwork, Basic Synthesis] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Groundwork, Groundwork, Careful Synthesis] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not, Groundwork, Groundwork, Groundwork, Delicate Synthesis] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Delicate Synthesis, Groundwork, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Careful Synthesis, Groundwork, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Basic Synthesis, Groundwork, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Delicate Synthesis, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Careful Synthesis, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Groundwork, Basic Synthesis] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Groundwork, Careful Synthesis] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not II, Waste Not II, Groundwork, Groundwork, Groundwork, Delicate Synthesis] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Careful Synthesis, Careful Synthesis, Groundwork, Basic Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Careful Synthesis, Careful Synthesis, Groundwork, Careful Synthesis] p:94% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Careful Synthesis, Basic Synthesis, Groundwork, Careful Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Careful Synthesis, Groundwork, Careful Synthesis, Basic Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Careful Synthesis, Groundwork, Careful Synthesis, Careful Synthesis] p:94% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Careful Synthesis, Groundwork, Basic Synthesis, Careful Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Basic Synthesis, Careful Synthesis, Groundwork, Careful Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Basic Synthesis, Groundwork, Careful Synthesis, Careful Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Groundwork, Careful Synthesis, Careful Synthesis, Basic Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Groundwork, Careful Synthesis, Careful Synthesis, Careful Synthesis] p:94% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Groundwork, Careful Synthesis, Basic Synthesis, Careful Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Groundwork, Groundwork, Basic Synthesis, Careful Synthesis, Careful Synthesis] p:91% q:0% d:40
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Delicate Synthesis, Groundwork, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Careful Synthesis, Groundwork, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Basic Synthesis, Groundwork, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Groundwork, Delicate Synthesis, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Groundwork, Careful Synthesis, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Groundwork, Basic Synthesis, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Groundwork, Groundwork, Basic Synthesis] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Groundwork, Groundwork, Careful Synthesis] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not, Groundwork, Groundwork, Groundwork, Delicate Synthesis] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Delicate Synthesis, Groundwork, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Careful Synthesis, Groundwork, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Basic Synthesis, Groundwork, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Groundwork, Delicate Synthesis, Groundwork] p:90% q:2% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Groundwork, Careful Synthesis, Groundwork] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Groundwork] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Groundwork, Groundwork, Basic Synthesis] p:91% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Groundwork, Groundwork, Careful Synthesis] p:94% q:0% d:45
+	[P2] [Muscle Memory, Manipulation, Waste Not, Waste Not II, Groundwork, Groundwork, Groundwork, Delicate Synthesis] p:90% q:2% d:45
+	[F] Top route  { step_count: 22, progression: "4800/5060", quality: "11074/12628", durability: "-5/70", actions: [Muscle Memory, Manipulation, Veneration, Waste Not II, Groundwork, Groundwork, Basic Synthesis, Innovation, Preparatory Touch, Basic Touch, Standard Touch, Advanced Touch, Innovation, Prudent Touch, Prudent Touch, Basic Touch, Standard Touch, Innovation, Prudent Touch, Trained Finesse, Great Strides, Byregot's Blessing] }
+	Quality: 11074/12628
+		["muscleMemory", "manipulation", "veneration", "wasteNot2", "groundwork", "groundwork", "basicSynth", "innovation", "preparatoryTouch", "basicTouch", "standardTouch", "advancedTouch", "innovation", "prudentTouch", "prudentTouch", "basicTouch", "standardTouch", "innovation", "prudentTouch", "trainedFinesse", "greatStrides", "byregotsBlessing", "basicSynth2"]
+
+	Program finished sucessfuly in 13s and found 305 solutions, [prog:5060]
+	Press enter to exit...

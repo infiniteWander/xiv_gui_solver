@@ -126,6 +126,7 @@ pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
         available_actions.push(&ACTIONS.advanced_touch);
         forbidden_actions.push(&ACTIONS.basic_touch);
     }
+    // Todo, allow earlier byregot if the craft can be finished all the same (useless with always optimize on)
     if craft.buffs.inner_quiet >= 10 {
         available_actions.push(&ACTIONS.trained_finesse);
         available_actions.push(&ACTIONS.great_strides);
@@ -167,7 +168,8 @@ pub fn generate_routes_phase2(craft: Craft) -> Option<Craft> {
             if action.unwrap() == &ACTIONS.byregot_blessing {
                 if let Some(top_route) = &mut top_route {
                     if top_route.quality < craft.quality {
-                        *top_route = craft;
+                        // TODO: Should we erase the craft if the improvement is cosmetic (aka, already finished)
+                        *top_route = craft; 
                     }
                 } else {
                     top_route = Some(craft);
