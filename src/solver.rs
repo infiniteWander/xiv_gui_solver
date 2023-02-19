@@ -7,6 +7,7 @@ use crate::specs::Success;
 macro_rules! action_vec {
     ($($tt:expr),*) => { vec![ $(Some(&$tt),)*]};
 }
+
 pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     if craft.success != Success::Pending { return vec![None]; }
     let mut available_actions = Vec::<Option<&'a Action>>::new();
@@ -17,8 +18,8 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     if craft.step_count == 1 { return action_vec![ACTIONS.manipulation]; }
 
     // Prune some actions if not requested by --long
-    if craft.step_count == 2 { return action_vec![ACTIONS.waste_not, ACTIONS.waste_not_ii, ACTIONS.veneration]; }
-    if craft.step_count == 3 { available_actions.append(&mut action_vec![ACTIONS.waste_not_ii,ACTIONS.waste_not]) }
+    if craft.step_count == 2 { return action_vec![/*ACTIONS.waste_not, ACTIONS.waste_not_ii, */ACTIONS.veneration]; }
+    if craft.step_count == 3 { available_actions.append(&mut action_vec![ACTIONS.waste_not_ii/*,ACTIONS.waste_not*/]) }
 
     // Groundwork mostly for wn / mm
     if craft.buffs.waste_not > 0 || craft.buffs.muscle_memory > 0 { available_actions.append(&mut action_vec![ACTIONS.groundwork]) }
@@ -127,7 +128,7 @@ pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
         forbidden_actions.push(&ACTIONS.basic_touch);
     }
     // Todo, allow earlier byregot if the craft can be finished all the same (useless with always optimize on)
-    if craft.buffs.inner_quiet >= 10 {
+    if craft.buffs.inner_quiet >= 8 { // 10
         available_actions.push(&ACTIONS.trained_finesse);
         available_actions.push(&ACTIONS.great_strides);
     }

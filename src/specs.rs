@@ -1,6 +1,7 @@
 use std::fmt::{Debug};
 use strum_macros::EnumIter;
 
+
 #[derive(Debug, Clone, Copy)]
 pub struct Recipe {
     pub durability: u32,

@@ -13,6 +13,14 @@ pub mod action;
 pub mod craft;
 mod solver;
 
+
+#[derive(Debug, Clone)]
+pub struct Config<'a> {
+    pub craft: craft::Craft<'a>,
+    // pub recipe: solver::Recipe,
+    pub depth: usize,
+}
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -44,6 +52,78 @@ struct Args {
 #[derive(Debug)]
 struct CustomError(String);
 
+///
+fn load_config<'a>(args: Args ) -> Craft<'a> {
+    //read craft.toml
+    let config: toml::Value = toml::from_str(
+        &std::fs::read_to_string(&args.file_name)
+        .expect(&format!("Can't open {}",&args.file_name))
+        ).unwrap();
+
+    let recp = match config.get(&args.recipe_name){
+        Some(r) => r,
+        None => panic!("Can't find value '{}' in '{}'",&args.recipe_name, &args.file_name)
+    };
+
+    // Load receipe values
+    let recipe = Recipe {
+        durability: recp
+            .get("durability").expect(&format!("Can't find 'durability' in recipe '{}' on file '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert durability as an integer") as u32,
+        progress: recp
+            .get("progress").expect(&format!("Can't find 'progress' in recipe '{}' on '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert progress as an integer") as u32,
+        quality: recp
+            .get("quality").expect(&format!("Can't find 'quality' in recipe '{}' on '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert quality as an integer") as u32,
+        progress_divider: recp
+            .get("progress_divider").expect(&format!("Can't find 'progress_divider' in recipe '{}' on '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert progress_divider as an integer") as u32,
+        quality_divider: recp
+            .get("quality_divider").expect(&format!("Can't find 'quality_divider' in recipe '{}' on '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert quality_divider as an integer") as u32,
+        progress_modifier: recp
+            .get("progress_modifier").expect(&format!("Can't find 'progress_modifier' in recipe '{}' on '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert progress_modifier as an integer") as u32,
+        quality_modifier: recp
+            .get("quality_modifier").expect(&format!("Can't find 'quality_modifier' in recipe '{}' on '{}'",
+                &args.recipe_name,&args.file_name))
+            .as_integer().expect("Can't convert quality_modifier as an integer") as u32,
+    };
+
+    let cfg = match config.get(&args.character_name){
+        Some(c) => c,
+        None => panic!("Can't find '{}' in file '{}'",&args.character_name,&args.file_name),
+    };
+    let stats = Stats {
+        craftsmanship: cfg
+            .get("craftsmanship").expect(&format!("Can't find 'craftsmanship' in character '{}' on file '{}'",
+                &args.character_name,&args.file_name))
+            .as_integer().expect("Can't convert craftsmanship as an integer") as u32,
+        control: cfg
+            .get("control").expect(&format!("Can't find 'control' in character '{}' on file '{}'",
+                &args.character_name,&args.file_name))
+            .as_integer().expect("Can't convert control as an integer") as u32,
+        max_cp: cfg
+            .get("max_cp").expect(&format!("Can't find 'max_cp' in character '{}' on file '{}'",
+                &args.character_name,&args.file_name))
+            .as_integer().expect("Can't convert max_cp as an integer") as u32,
+    };
+    let craft = Craft::new(recipe, stats, args.depth);
+    craft
+}
+
+fn make_craft_from_values(){
+
+}
+
+
 fn main() {
     // Get args
     let args = Args::parse();
@@ -51,14 +131,11 @@ fn main() {
     // Start timer
     let now = Instant::now();
 
-
-
     //read craft.toml
     let config: toml::Value = toml::from_str(
         &std::fs::read_to_string(&args.file_name)
         .expect(&format!("Can't open {}",&args.file_name))
         ).unwrap();
-
 
     let recp = match config.get(&args.recipe_name){
         Some(r) => r,
@@ -181,13 +258,6 @@ fn main() {
             return
         },
     };
-
-
-
-    // let top_route = match phase2_routes.iter().min_by_key(|route| route.step_count) {
-    //     Some(top) => top,
-    //     None => return,
-    // };
 
     let mut content = (&top_route.actions)
         .iter()
