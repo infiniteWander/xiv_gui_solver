@@ -89,8 +89,6 @@ pub fn generate_routes_phase1<'a>(craft: Craft<'a>) -> Vec<Craft<'a>> {
 
 
 pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
-    // println!("State of craft {:}",craft);
-
     let mut available_actions = vec![&ACTIONS.basic_touch, &ACTIONS.prudent_touch, &ACTIONS.preparatory_touch];
     let mut forbidden_actions = Vec::new();
     if craft.success != Success::Pending { return vec![None]; }

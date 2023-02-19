@@ -1,3 +1,4 @@
+// #![warn(missing_docs,unsafe_code,unstable_features,)]
 use crate::libs::Parameters;
 use crate::libs::load_from_config;
 use clap::Parser;

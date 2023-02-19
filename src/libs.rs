@@ -47,14 +47,7 @@ pub struct Args {
 
 /// Solve the craft with given arguments
 pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<String>>{
-    // let params = Parameters{
-    //     depth: args.depth,
-    //     threads: args.threads,
-    //     verbose: args.verbose,
-    // };
-
-    // // Load the craft with given arguments
-    // let craft = make_craft_from_config(&args.recipe_name, &args.file_name, &args.character_name,params);
+    // Load the craft with given arguments
     let craft = Craft::new(recipe,stats,params);
     // Start timer
     let now = Instant::now();
@@ -86,7 +79,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     let arc_phase2_routes = Arc::new(Mutex::new(Vec::<Craft>::new()));
 
     for route in phase1_routes {
-        let _phase2_routes = arc_phase2_routes.clone();
+        let _phase2_routes = Arc::clone(&arc_phase2_routes);
 
         pool.execute(move || {
             if let Some(_route) = generate_routes_phase2(route){
@@ -152,8 +145,8 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     println!("Press enter to exit...");
     let mut input = String::new();
     std::io::stdin().read_line(&mut input).unwrap();
-    // Some(top_route.clone())
-    None
+    Some(content)
+    // None
 }
 
 /// Load the config from args and make a craft from it
