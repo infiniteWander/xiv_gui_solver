@@ -71,12 +71,14 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     // Start a threadpool
     let pool = ThreadPool::new(params.threads);
 
+    #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
     let phase1_routes = solver::generate_routes_phase1(craft);
     
+    #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
         if params.verbose>1{
@@ -109,6 +111,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     let phase2_routes = arc_phase2_routes.lock().unwrap();
     
     // Print the results if verbose
+    #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("[P2] Found {} solutions, sorting",phase2_routes.len());
 
@@ -140,6 +143,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
         Some(top) => top,
         None => {
+            #[cfg(feature = "verbose")]
             println!("[P2] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
             return None;
         },
@@ -162,13 +166,16 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         content.push("\"focusedSynthesis\"".to_string());
     }
 
+    #[cfg(feature = "verbose")]
     if params.verbose>2{
         println!("[F] Top route {:?}",top_route);
     }
-
-    println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
-    println!("\t[{}]", content.join(", "));
     
+    {
+        println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
+        println!("\t[{}]", content.join(", "));
+    }
+
     // Wait for enter TODO: Remove
     println!();
     println!("Program finished sucessfuly in {}ms and found {} solutions, [prog:{}]",

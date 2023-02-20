@@ -17,16 +17,18 @@ threadpool = "1.8.1"
 # For python bindings TODO: make it optionnal
 pyo3 = { version = "0.18.0", features = ["extension-module"] }
 
+# [build]
+# target = ["x86_64-unknown-linux-gnu", "x86_64-unknown-windows-gnu"]
+
 [profile.release]
 panic = 'abort'
 opt-level = 3
 lto = true
 vere0 = false
 
-[lib_rust]
-name = "xiv_craft_solver_rust"
-path = "src/lib.rs"
-# crate-type = ["cdylib"]
+[features]
+default = []
+verbose = []
 
 [lib]
 name = "xiv_craft_solver"
