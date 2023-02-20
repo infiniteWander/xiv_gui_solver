@@ -57,9 +57,9 @@ pub struct SolverResult{
     #[pyo3(get)]
     pub actions: Vec<String>,
     #[pyo3(get)]
-    pub step1_solutions: u32,
+    pub step1_solutions: usize,
     #[pyo3(get)]
-    pub step2_solutions: u32,
+    pub step2_solutions: usize,
 }
 
 #[pyfunction]
@@ -79,6 +79,7 @@ pub fn pouet()-> SolverResult {
 
 /// Pretty display for SolverResult
 impl Display for SolverResult{
+
     fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> { 
         println!("{:?}",self.actions);
         Ok(())
@@ -87,21 +88,41 @@ impl Display for SolverResult{
 
 
 impl SolverResult{
-    pub fn from_craft(&self,craft: & Craft)->SolverResult{
+    pub fn from_craft(craft: & Craft,step1_solutions : usize,step2_solutions : usize)->SolverResult{
         // Todo: recreate actions
         // Where steps ?
+        let mut actions = craft.actions.iter().map(|action| 
+            format!("{}",action.short_name)
+        ).collect::<Vec<String>>();
+        let arg = (craft.recipe.progress as f32 - craft.progression as f32) / craft.get_base_progression() as f32;
+        if 0.0 < arg && arg < 1.2 { actions.push("basicSynth2".to_string()); }
+        if 1.2 <= arg && arg < 1.8 { actions.push("carefulSynthesis".to_string()); }
+        if 1.8 <= arg && arg < 2.0 {
+            actions.push("observe".to_string());
+            actions.push("focusedSynthesis".to_string());
+        }
         SolverResult{
             steps:craft.step_count,
             progression: craft.progression,
             quality:craft.quality,
             durability:craft.durability,
+            actions:actions,
+            step1_solutions,
+            step2_solutions,
+        }
+
+    }
+    pub fn default()->Self{
+        Self{
+            steps:0,
+            progression: 0,
+            quality:0,
+            durability:0,
             actions:vec!["BLLLL".to_string(),"WWWWW".to_string()],
             step1_solutions:0,
             step2_solutions:0,
         }
-
     }
-
 }
 
 

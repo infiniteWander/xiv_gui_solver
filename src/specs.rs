@@ -33,7 +33,7 @@ pub enum Buff {
     // v Hidden v
     BasicTouch,
     StandardTouch,
-    // Observe,
+    Observe,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -47,6 +47,7 @@ pub struct BuffState {
     pub muscle_memory: u8,
     pub basic_touch: u8,
     pub standard_touch: u8,
+    pub observe: u8,
 }
 
 impl BuffState {
@@ -61,6 +62,7 @@ impl BuffState {
             muscle_memory: 0,
             basic_touch: 0,
             standard_touch: 0,
+            observe: 0,
         }
     }
 
@@ -75,6 +77,7 @@ impl BuffState {
             Buff::MuscleMemory => self.muscle_memory = 0,
             Buff::BasicTouch => self.basic_touch = 0,
             Buff::StandardTouch => self.standard_touch = 0,
+            Buff::Observe => self.observe = 0,
         }
     }
 
@@ -95,6 +98,7 @@ impl BuffState {
             Buff::MuscleMemory => self.muscle_memory = value,
             Buff::BasicTouch => self.basic_touch = value,
             Buff::StandardTouch => self.standard_touch = value,
+            Buff::Observe => self.standard_touch = value,
         }
     }
 

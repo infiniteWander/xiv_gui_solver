@@ -1,3 +1,4 @@
+use crate::io::SolverResult;
 use crate::{
     craft::Craft,
     specs::{Recipe,Stats},
@@ -26,7 +27,7 @@ pub mod io;
 
 
 /// Solve the craft with given arguments, this functions calls threads and must own it's values
-pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<Craft<'a>>>{
+pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<SolverResult>>{
     // Load the craft with given arguments
     let craft = Craft::new(recipe,stats,params);
 
@@ -79,59 +80,60 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
 
     // Prune the results for analysis
     let mut valid_routes : Vec<Craft> = vec![];
+    let mut valid_solutions: Vec<SolverResult> = vec![];
     for route in phase2_routes.iter(){
         if route.quality>=route.recipe.quality{
             valid_routes.push(route.clone());
+            valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2));
         }
     }
     // If no craft can make it to 100% HQ, fallback to base results
-    if valid_routes.len()==0{
-        for route in phase2_routes.iter(){valid_routes.push(route.clone())} // Deep copy through the mutex guard
+    if valid_solutions.len()==0{
+        for route in phase2_routes.iter(){valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2));}
     }
 
 
     //// Show best results
     // Select best route TODO: Seperate function
-    let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
-        Some(top) => top,
-        None => {
-            #[cfg(feature = "verbose")]
-            println!("[P2] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
-            return None;
-        },
-    };
+    // let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
+    //     Some(top) => top,
+    //     None => {
+    //         #[cfg(feature = "verbose")]
+    //         println!("[F] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
+    //         return None;
+    //     },
+    // };
 
     // Print best route TODO: Seperate function
-    let mut content = (&top_route.actions)
-        .iter()
-        .map(|action| {
-            format!("\"{}\"", action.short_name.clone())
-        })
-        .collect::<Vec<String>>();
-
+    // let mut content = (&top_route.actions)
+    //     .iter()
+    //     .map(|action| {
+    //         format!("\"{}\"", action.short_name.clone())
+    //     })
+    //     .collect::<Vec<String>>();
 
     // Setting something to print, adding the missing actions TODO: Change this behaviour and move to separate function
-    let arg = (top_route.recipe.progress as f32 - top_route.progression as f32) / top_route.get_base_progression() as f32;
-    if 0.0 < arg && arg < 1.2 { content.push("\"basicSynth2\"".to_string()); }
-    if 1.2 <= arg && arg < 1.8 { content.push("\"carefulSynthesis\"".to_string()); }
-    if 1.8 <= arg && arg < 2.0 {
-        content.push("\"observe\"".to_string());
-        content.push("\"focusedSynthesis\"".to_string());
-    }
+    // let arg = (top_route.recipe.progress as f32 - top_route.progression as f32) / top_route.get_base_progression() as f32;
+    // if 0.0 < arg && arg < 1.2 { content.push("\"basicSynth2\"".to_string()); }
+    // if 1.2 <= arg && arg < 1.8 { content.push("\"carefulSynthesis\"".to_string()); }
+    // if 1.8 <= arg && arg < 2.0 {
+    //     content.push("\"observe\"".to_string());
+    //     content.push("\"focusedSynthesis\"".to_string());
+    // }
 
-    #[cfg(feature = "verbose")]
-    if params.verbose>2{
-        println!("[F] Top route {:?}",top_route);
-    }
+    // #[cfg(feature = "verbose")]
+    // if params.verbose>2{
+    //     println!("[F] Top route {:?}",top_route);
+    // }
     
-    {
-        println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
-        println!("\t[{}]", content.join(", "));
-    }
+    // {
+    //     println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
+    //     println!("\t[{}]", content.join(", "));
+    // }
 
     
 
-    Some(valid_routes)
+    Some(valid_solutions)
 }
 
 /// Load the config from args and make a craft from it
@@ -210,9 +212,26 @@ pub fn load_from_config<'a>(recipe_name: &str, file_name: &str, character_name: 
 //     SAFEST,
 //     SHORTEST,
 // }
-pub fn print_routes<'a>(routes: Option<Vec<Craft<'a>>>){
+
+pub fn print_routes<'a>(routes: Option<Vec<SolverResult>>){
     match routes{
-        Some(r) => println!("{:?}",r),
-        None => println!("Noooooooooooooo")
+        Some(r) => {
+            for c in r.iter(){
+                println!("\n[{}¤][{}@][{}#] {:?} ",c.quality,c.durability,c.steps,c.actions)                
+            }
+        },
+        None => println!("No routes to print")
     }
+}
+
+pub fn find_fast_route(routes: Option<Vec<SolverResult>>){
+
+}
+
+pub fn find_quality_route(routes: Option<Vec<SolverResult>>){
+    
+}
+
+pub fn find_(routes: Option<Vec<SolverResult>>){
+    
 }

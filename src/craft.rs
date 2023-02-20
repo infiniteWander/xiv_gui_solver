@@ -1,3 +1,4 @@
+use crate::action::ACTIONS;
 use std::fmt::{Debug, Formatter,Display};
 use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
@@ -70,6 +71,20 @@ impl<'a> Craft<'a> {
         self.actions.push(action);
         return self;
     }
+
+    // Assumes the craft is finished and tries to add the last actions
+    // pub fn add_last_actions(&mut self)->&Self{
+    //     let arg = (self.recipe.progress as f32 - self.progression as f32) / self.get_base_progression() as f32;
+    //     self.durability+=10;
+    //     if 0.0 < arg && arg < 1.2 { self.run_action(&ACTIONS.basic_synthesis);}
+    //     if 1.2 <= arg && arg < 1.8 { self.cp+=7; self.run_action(&ACTIONS.careful_synthesis); }
+    //     if 1.8 <= arg && arg < 2.0 {
+    //         self.cp+=12;
+    //         self.run_action(&ACTIONS.observe);
+    //         self.run_action(&ACTIONS.focused_synthesis);
+    //     }
+    //     self
+    // }
 }
 
 impl<'a> Debug for Craft<'a> {

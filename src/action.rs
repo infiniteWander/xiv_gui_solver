@@ -179,6 +179,8 @@ pub struct ActionList {
     pub veneration: Action,
     pub great_strides: Action,
     pub innovation: Action,
+    //pub observe: Action,
+    //pub focused_synthesis: Action,
 }
 
 impl Default for ActionList {
@@ -208,6 +210,10 @@ impl Default for ActionList {
             veneration: ActionBuilder::new("Veneration").cp(18).buff(Some((Buff::Veneration, 4))).build(),
             great_strides: ActionBuilder::new("Great Strides").cp(32).buff(Some((Buff::GreatStrides, 3))).build(),
             innovation: ActionBuilder::new("Innovation").cp(18).buff(Some((Buff::Innovation, 4))).build(),
+
+            // Todo: Add back
+            //observe: ActionBuilder::new("observe").cp(18).buff(Some((Buff::Observe, 1))).build(),
+            //focused_synthesis: ActionBuilder::new("focused_synthesis").cp(18).quality(100).build(),
         }
     }
 }
