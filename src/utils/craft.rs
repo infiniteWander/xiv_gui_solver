@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Formatter,Display};
-use crate::action::Action;
-use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
-use crate::libs::Parameters;
+use crate::utils::action::Action;
+use crate::utils::specs::{Buff, BuffState, Recipe, Stats, Success};
+use crate::utils::Parameters;
 
 
 #[derive(Clone)]

@@ -1,14 +1,17 @@
-use std::sync::{Arc,Mutex};
-use crate::solver::{generate_routes_phase1, generate_routes_phase2};
+use crate::utils::{
+    craft::Craft,
+    specs::{Recipe,Stats},
+};
 use std::time::{Instant};
 use threadpool::ThreadPool;
-use crate::Recipe;
-use crate::Craft;
-use crate::Stats;
+use std::sync::{Arc,Mutex};
 use clap::Parser;
-// use crate::Stats;
-// use crate::Recipe;
-// use crate::Craft;
+
+mod solver;
+mod specs;
+pub mod action;
+pub mod craft;
+
 
 #[derive(Debug, Clone, Copy)]
 pub struct Parameters {
@@ -59,7 +62,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
-    let phase1_routes = generate_routes_phase1(craft);
+    let phase1_routes = solver::generate_routes_phase1(craft);
     
     if params.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
@@ -82,7 +85,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         let _phase2_routes = Arc::clone(&arc_phase2_routes);
 
         pool.execute(move || {
-            if let Some(_route) = generate_routes_phase2(route){
+            if let Some(_route) = solver::generate_routes_phase2(route){
                 let mut shared = _phase2_routes.lock().unwrap();
                 shared.push(_route);
             };

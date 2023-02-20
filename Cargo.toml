@@ -1,5 +1,5 @@
 [package]
-name = "xiv_craft_simulator"
+name = "xiv_craft_solver"
 version = "0.1.2"
 edition = "2021"
 authors = ["谭俊健","Dandaedre"]
@@ -14,8 +14,22 @@ lazy_static = "1.4.0"
 toml = "0.5.9"
 clap = {version = "4.1.6", features = ["derive"]}
 threadpool = "1.8.1"
+# For python bindings TODO: make it optionnal
+pyo3 = { version = "0.18.0", features = ["extension-module"] }
 
 [profile.release]
 panic = 'abort'
 opt-level = 3
 lto = true
+
+# [lib]
+# name = "xiv_craft_solver"
+# path = "src/lib/libs.rs"
+# crate-type = ["cdylib"]
+
+# [[bin]]
+# name = "xiv_craft_solver"
+# path = "src/main.rs"
+
+[tool.maturin]
+python-source = "python"

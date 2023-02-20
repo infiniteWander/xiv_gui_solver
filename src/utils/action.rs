@@ -1,7 +1,9 @@
+#[allow(dead_code)]
+
 use std::fmt::Debug;
 use lazy_static::lazy_static;
-use crate::craft::Craft;
-use crate::specs::{Buff, Success};
+use crate::utils::craft::Craft;
+use crate::utils::specs::{Buff, Success};
 
 pub struct Action {
     pub name: String,
