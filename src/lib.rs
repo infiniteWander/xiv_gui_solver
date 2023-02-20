@@ -1,72 +1,34 @@
 use crate::{
     craft::Craft,
     specs::{Recipe,Stats},
+    io::Parameters,
 };
-use std::time::{Instant};
 use threadpool::ThreadPool;
 use std::sync::{Arc,Mutex};
-use clap::Parser;
-use pyo3::prelude::*;
 
 mod solver;
 mod specs;
 pub mod action;
 pub mod craft;
+pub mod io;
 
 
-#[derive(Debug, Clone, Copy)]
-pub struct Parameters {
-    pub threads: usize,
-    pub verbose: u8,
-    pub depth: u32,
-}
 
-#[derive(Parser, Debug, Clone)]
-#[command(author, version, about, long_about = None)]
-pub struct Args {
-    /// Name of the receipe
-    #[arg(short, long, default_value_t = String::from("default_recipe"))]
-    pub recipe_name: String,
+/// Create stats
 
-    /// Name of the character
-    #[arg(short, long, default_value_t = String::from("default_character"))]
-    pub character_name: String,
+/// Create recipe
 
-    /// The ml file name
-    #[arg(short, long, default_value_t = String::from("craft.toml"))]
-    pub file_name: String,
-   
-    /// The verbose flag
-    #[arg(short, long, action = clap::ArgAction::Count)]
-    pub verbose: u8,
+/// Create parameters
 
-    /// The depth of the first pass
-    #[arg(short, long, default_value_t = 8)]
-    pub depth: u32,
 
-    /// Thread counts, default is 4 (can you even run ff with less ?)
-    #[arg(short, long, default_value_t = 4)]
-    pub threads: usize,
-}
+/// Create from config
 
-#[pyfunction]
-pub fn pouet()-> &'static str {
-    return "pouet";
-}
 
-/// A Python module implemented in Rust.
-#[pymodule]
-fn xiv_craft_solver(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(pouet, m)?)?;
-    Ok(())
-}
 
-/// Solve the craft with given arguments
+/// Solve the craft with given arguments, this functions calls threads and must own it's values
 pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<Craft<'a>>>{
     // Load the craft with given arguments
     let craft = Craft::new(recipe,stats,params);
-    // Start timer
-    let now = Instant::now();
 
     // Start a threadpool
     let pool = ThreadPool::new(params.threads);
@@ -76,23 +38,18 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
+
     let phase1_routes = solver::generate_routes_phase1(craft);
-    
+    let nb_p1 = phase1_routes.len();
+
     #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
-        if params.verbose>1{
-            for r in &phase1_routes{
-                println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",
-                    r.actions, 
-                    r.progression * 100 / r.recipe.progress, 
-                    r.quality * 100 / r.recipe.quality,
-                    r.cp,
-                    r.durability,
-                    );
-            };
-        }
+        if params.verbose>1{ for r in &phase1_routes{
+            println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",r.actions,r.quality * 100 / r.recipe.quality,r.cp,r.durability);
+        }}
     }
+
     // Core algorithm, fill all found routes with the best route (doesn't branch, just replace)
     let arc_phase2_routes = Arc::new(Mutex::new(Vec::<Craft>::new()));
 
@@ -109,36 +66,31 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
 
     pool.join();
     let phase2_routes = arc_phase2_routes.lock().unwrap();
-    
+    let nb_p2 = phase2_routes.len();
+
     // Print the results if verbose
     #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("[P2] Found {} solutions, sorting",phase2_routes.len());
-
-        if params.verbose>1{
-            for r in phase2_routes.iter(){
-                println!("[P2] {:?} p:{}% q:{}% d:{}",
-                    r.actions, 
-                    r.progression * 100 / r.recipe.progress, 
-                    r.quality * 100 / r.recipe.quality,
-                    r.durability);
-            };
-        }
+        if params.verbose>1{ for r in phase2_routes.iter(){
+                println!("[P2] {:?} p:{}% q:{}% d:{}", r.actions, r.progression * 100 / r.recipe.progress, r.quality * 100 / r.recipe.quality, r.durability);
+        }}
     }
 
-    // Copy the valid results for analysis, by default only the valid one are copied
+    // Prune the results for analysis
     let mut valid_routes : Vec<Craft> = vec![];
     for route in phase2_routes.iter(){
         if route.quality>=route.recipe.quality{
             valid_routes.push(route.clone());
         }
     }
-
+    // If no craft can make it to 100% HQ, fallback to base results
     if valid_routes.len()==0{
         for route in phase2_routes.iter(){valid_routes.push(route.clone())} // Deep copy through the mutex guard
     }
 
 
+    //// Show best results
     // Select best route TODO: Seperate function
     let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
         Some(top) => top,
@@ -156,6 +108,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
             format!("\"{}\"", action.short_name.clone())
         })
         .collect::<Vec<String>>();
+
 
     // Setting something to print, adding the missing actions TODO: Change this behaviour and move to separate function
     let arg = (top_route.recipe.progress as f32 - top_route.progression as f32) / top_route.get_base_progression() as f32;
@@ -176,15 +129,8 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         println!("\t[{}]", content.join(", "));
     }
 
-    // Wait for enter TODO: Remove
-    println!();
-    println!("Program finished sucessfuly in {}ms and found {} solutions, [prog:{}]",
-        now.elapsed().as_millis(),
-        phase2_routes.len(),
-        top_route.recipe.progress);
-    println!("Press enter to exit...");
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input).unwrap();
+    
+
     Some(valid_routes)
 }
 
@@ -257,3 +203,16 @@ pub fn load_from_config<'a>(recipe_name: &str, file_name: &str, character_name: 
 // fn make_craft_from_values(){
 
 // }
+
+// /// Print results
+// enum SHOW_TYPE{
+//     BEST,
+//     SAFEST,
+//     SHORTEST,
+// }
+pub fn print_routes<'a>(routes: Option<Vec<Craft<'a>>>){
+    match routes{
+        Some(r) => println!("{:?}",r),
+        None => println!("Noooooooooooooo")
+    }
+}
