@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Formatter,Display};
 use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
-
+use crate::libs::Parameters;
 
 
 #[derive(Clone)]
@@ -16,11 +16,11 @@ pub struct Craft<'a> {
     pub cp: i32,
     pub success: Success,
     pub actions: Vec<&'a Action>,
-    pub depth: u32,
+    pub args: Parameters,
 }
 
 impl<'a> Craft<'a> {
-    pub fn new(recipe:  Recipe, stats:  Stats, depth:  u32) -> Craft<'a> {
+    pub fn new(recipe:  Recipe, stats:  Stats, params: Parameters) -> Craft<'a> {
         Self {
             recipe,
             stats,
@@ -32,7 +32,7 @@ impl<'a> Craft<'a> {
             cp: stats.max_cp as i32,
             success: Success::Pending,
             actions: Vec::new(),
-            depth: depth,
+            args: params,
         }
     }
 

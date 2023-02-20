@@ -2,7 +2,8 @@
 name = "xiv_craft_simulator"
 version = "0.1.2"
 edition = "2021"
-author = "谭俊健 & Dandaedre"
+authors = ["谭俊健","Dandaedre"]
+description = "Small XIV solver library in rust, with python and rust bindings"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

@@ -8,7 +8,7 @@ macro_rules! action_vec {
     ($($tt:expr),*) => { vec![ $(Some(&$tt),)*]};
 }
 
-pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
+pub fn next_action_picker_1<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
     if craft.success != Success::Pending { return vec![None]; }
     let mut available_actions = Vec::<Option<&'a Action>>::new();
     let mut forbidden_actions = Vec::<Option<&'a Action>>::new();
@@ -38,24 +38,23 @@ pub fn next_action_picker_1<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
     // Pruning the actions with the forbidden ones
     let mut result_actions = Vec::<Option<&'a Action>>::new();
     for action in available_actions {
-        if !forbidden_actions.contains(&action) && action.unwrap().can_use(craft) && result_actions.iter().any(|x| x.unwrap() == action.unwrap()).not() {
+        if !forbidden_actions.contains(&action) && action.unwrap().can_use(&craft) && result_actions.iter().any(|x| x.unwrap() == action.unwrap()).not() {
             result_actions.push(action);
         }
     }
 
-    // println!("Av: {:?}",result_actions);
     result_actions
 }
 
-pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
+pub fn generate_routes_phase1<'a>(craft: Craft<'a>) -> Vec<Craft<'a>> {
     let mut queue = Vec::new();
-    // if craft.verbose>2 {print!("#")};
     queue.push(craft);
     let mut routes = Vec::new();
     while !queue.is_empty() {
         let craft = queue.pop().unwrap();
-        for action in next_action_picker_1(&craft) {
+        for action in next_action_picker_1(& craft) {
             let mut craft = craft.clone();
+
             match action{
                 Some(a) => craft.run_action(a),
                 None => break,
@@ -82,16 +81,14 @@ pub fn generate_routes_phase1(craft: Craft) -> Vec<Craft> {
             // A higher value will yield more initial guesses with minimal benefits
             // A lover value will yield less initial guesses and might spent too much CP to get to the required progression
             // TODO: Pass a flag to get more attempts 
-            if craft.step_count < craft.depth { queue.push(craft); }
+            if craft.step_count < craft.args.depth { queue.push(craft); }
         }
     }
     routes
 }
 
 
-pub fn next_action_phase_2<'a>(craft: &Craft) -> Vec<Option<&'a Action>> {
-    // println!("State of craft {:}",craft);
-
+pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
     let mut available_actions = vec![&ACTIONS.basic_touch, &ACTIONS.prudent_touch, &ACTIONS.preparatory_touch];
     let mut forbidden_actions = Vec::new();
     if craft.success != Success::Pending { return vec![None]; }
