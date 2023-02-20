@@ -56,7 +56,7 @@ pub fn pouet()-> &'static str {
 
 /// A Python module implemented in Rust.
 #[pymodule]
-fn xiv_craft_solver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
+fn xiv_craft_solver(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(pouet, m)?)?;
     Ok(())
 }

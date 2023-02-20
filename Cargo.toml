@@ -1,5 +1,5 @@
 [package]
-name = "xiv_craft_solver_lib"
+name = "xiv_craft_solver"
 version = "0.1.2"
 edition = "2021"
 authors = ["谭俊健","Dandaedre"]
@@ -21,15 +21,21 @@ pyo3 = { version = "0.18.0", features = ["extension-module"] }
 panic = 'abort'
 opt-level = 3
 lto = true
+vere0 = false
+
+[lib_rust]
+name = "xiv_craft_solver_rust"
+path = "src/lib.rs"
+# crate-type = ["cdylib"]
 
 [lib]
-name = "xiv_craft_solver_lib"
+name = "xiv_craft_solver"
 path = "src/lib.rs"
-crate-type = ["cdylib"]
+crate-type = ["cdylib","rlib"]
 
 [[bin]]
-name = "xiv_craft_solver"
-path = "src/bin/bin.rs"
+name = "ffcraft"
+path = "src/bin/ffcraft.rs"
 
 [tool.maturin]
 python-source = "python"
