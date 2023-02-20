@@ -46,7 +46,7 @@ pub struct Args {
 }
 
 /// Solve the craft with given arguments
-pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<String>>{
+pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<Craft<'a>>>{
     // Load the craft with given arguments
     let craft = Craft::new(recipe,stats,params);
     // Start timer
@@ -107,7 +107,21 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         }
     }
 
-    let top_route = match phase2_routes.iter().max_by_key(|route| route.quality) {
+    // Copy the valid results for analysis, by default only the valid one are copied
+    let mut valid_routes : Vec<Craft> = vec![];
+    for route in phase2_routes.iter(){
+        if route.quality>=route.recipe.quality{
+            valid_routes.push(route.clone());
+        }
+    }
+
+    if valid_routes.len()==0{
+        for route in phase2_routes.iter(){valid_routes.push(route.clone())} // Deep copy through the mutex guard
+    }
+
+
+    // Select best route TODO: Seperate function
+    let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
         Some(top) => top,
         None => {
             println!("[P2] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
@@ -115,12 +129,15 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         },
     };
 
+    // Print best route TODO: Seperate function
     let mut content = (&top_route.actions)
         .iter()
         .map(|action| {
             format!("\"{}\"", action.short_name.clone())
         })
         .collect::<Vec<String>>();
+
+    // Setting something to print, adding the missing actions TODO: Change this behaviour and move to separate function
     let arg = (top_route.recipe.progress as f32 - top_route.progression as f32) / top_route.get_base_progression() as f32;
     if 0.0 < arg && arg < 1.2 { content.push("\"basicSynth2\"".to_string()); }
     if 1.2 <= arg && arg < 1.8 { content.push("\"carefulSynthesis\"".to_string()); }
@@ -136,7 +153,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
     println!("\t[{}]", content.join(", "));
     
-    // Wait for enter
+    // Wait for enter TODO: Remove
     println!();
     println!("Program finished sucessfuly in {}ms and found {} solutions, [prog:{}]",
         now.elapsed().as_millis(),
@@ -145,8 +162,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     println!("Press enter to exit...");
     let mut input = String::new();
     std::io::stdin().read_line(&mut input).unwrap();
-    Some(content)
-    // None
+    Some(valid_routes)
 }
 
 /// Load the config from args and make a craft from it
