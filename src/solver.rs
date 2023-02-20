@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 use std::ops::Not;
-use crate::utils::action::{Action, ACTIONS};
-use crate::utils::craft::Craft;
-use crate::utils::specs::Success;
+use crate::action::{Action, ACTIONS};
+use crate::craft::Craft;
+use crate::specs::Success;
 
 macro_rules! action_vec {
     ($($tt:expr),*) => { vec![ $(Some(&$tt),)*]};

@@ -1,5 +1,5 @@
 [package]
-name = "xiv_craft_solver"
+name = "xiv_craft_solver_lib"
 version = "0.1.2"
 edition = "2021"
 authors = ["谭俊健","Dandaedre"]
@@ -22,14 +22,14 @@ panic = 'abort'
 opt-level = 3
 lto = true
 
-# [lib]
-# name = "xiv_craft_solver"
-# path = "src/lib/libs.rs"
-# crate-type = ["cdylib"]
+[lib]
+name = "xiv_craft_solver_lib"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
 
-# [[bin]]
-# name = "xiv_craft_solver"
-# path = "src/main.rs"
+[[bin]]
+name = "xiv_craft_solver"
+path = "src/bin/bin.rs"
 
 [tool.maturin]
 python-source = "python"

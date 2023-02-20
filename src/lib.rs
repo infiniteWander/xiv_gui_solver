@@ -1,4 +1,4 @@
-use crate::utils::{
+use crate::{
     craft::Craft,
     specs::{Recipe,Stats},
 };
@@ -6,6 +6,7 @@ use std::time::{Instant};
 use threadpool::ThreadPool;
 use std::sync::{Arc,Mutex};
 use clap::Parser;
+use pyo3::prelude::*;
 
 mod solver;
 mod specs;
@@ -46,6 +47,18 @@ pub struct Args {
     /// Thread counts, default is 4 (can you even run ff with less ?)
     #[arg(short, long, default_value_t = 4)]
     pub threads: usize,
+}
+
+#[pyfunction]
+pub fn pouet()-> &'static str {
+    return "pouet";
+}
+
+/// A Python module implemented in Rust.
+#[pymodule]
+fn xiv_craft_solver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(pouet, m)?)?;
+    Ok(())
 }
 
 /// Solve the craft with given arguments
