@@ -16,6 +16,7 @@ fn main() {
 
     // Start timer
     let now = Instant::now();
+    println!("Solving...");
 
     // Solve from config
     let (recipe,stats) = xiv_craft_solver::load_from_config(&args.recipe_name, &args.file_name, &args.character_name);
@@ -31,19 +32,17 @@ fn main() {
     }
 
     // Show best result depending on selected value
-    println!("FAST {:?}",xiv_craft_solver::find_fast_route(&results));
-    println!("SAFE {:?}",xiv_craft_solver::find_safe_route(&results));
-    println!("QLTY {:?}",xiv_craft_solver::find_quality_route(&results));
+    println!("\n > SOLUTION [Least steps] <");
+    xiv_craft_solver::find_fast_route(&results).unwrap().pretty_print();
+    println!("\n > SOLUTION [Most durability] <");
+    xiv_craft_solver::find_safe_route(&results).unwrap().pretty_print();
+    println!("\n > SOLUTION [Most quality] < ");
+    xiv_craft_solver::find_quality_route(&results).unwrap().pretty_print();
 
     #[cfg(feature = "verbose")]
     if params.verbose>2{
-        println!("[F] Top route {:?}",results);
+        println!("[F] Top routes {:?}",results);
     }
-    
-    // {
-    //     println!("Quality: {}/{}", results.quality, results.recipe.quality);
-    //     println!("\t[{}]", results.join(", "));
-    // }
 
     // Wait for user input
     println!("\nProgram finished successfully in {}ms\nPress enter to exit...", t_final);

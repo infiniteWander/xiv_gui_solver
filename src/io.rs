@@ -55,6 +55,16 @@ pub struct SolverResult{
     #[pyo3(get)]
     pub durability: i32,
     #[pyo3(get)]
+    pub cp:i32,
+    #[pyo3(get)]
+    pub total_cp:u32,
+    #[pyo3(get)]
+    pub total_progression:u32,
+    #[pyo3(get)]
+    pub total_quality:u32,
+    #[pyo3(get)]
+    pub total_durability:u32,
+    #[pyo3(get)]
     pub actions: Vec<String>,
     #[pyo3(get)]
     pub step1_solutions: usize,
@@ -72,6 +82,7 @@ impl Display for SolverResult{
     }
 }
 
+// #[pymethods]
 impl SolverResult{
     pub fn from_craft(craft: & Craft,step1_solutions : usize,step2_solutions : usize, found_100_percent: bool)->SolverResult{
         // Todo: recreate actions
@@ -95,20 +106,37 @@ impl SolverResult{
             step1_solutions,
             step2_solutions,
             found_100_percent,
+            total_progression:craft.recipe.progress,
+            total_quality:craft.recipe.quality,
+            total_durability:craft.recipe.durability,
+            cp: craft.cp,
+            total_cp : craft.stats.max_cp,
         }
 
     }
+    // #[new]
     pub fn default()->Self{
         Self{
             steps:0,
             progression: 0,
             quality:0,
             durability:0,
+            total_progression:0,
+            total_quality:0,
+            total_durability:0,
             actions:vec!["Act1".to_string(),"Act2".to_string()],
             step1_solutions:0,
             step2_solutions:0,
             found_100_percent:false,
+            cp:0,
+            total_cp:0,
         }
+    }
+
+    pub fn pretty_print(&self){
+        println!("Quality: [{}/{}] | Durability: [{}/{}] | Cp : [{}/{}]", 
+            self.quality, self.total_quality, self.durability, self.total_durability, self.cp, self.total_cp);
+        println!("{:?}", self.actions);
     }
 }
 

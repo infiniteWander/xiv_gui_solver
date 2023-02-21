@@ -174,20 +174,27 @@ pub fn print_routes<'a>(routes: Option<Vec<SolverResult>>){
     }
 }
 
-// TODO: Fix it for not completed crafts
 /// Find the route with the least amount of steps
 pub fn find_fast_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
-    let res = match routes {
-         Some(route) => route.iter().min_by_key(|key| key.steps),
-         None => None,
-    };
-    res
+    match routes {
+        Some(_routes) => {
+            if _routes.len()>0{
+                if _routes[0].found_100_percent {
+                    _routes.iter().min_by_key(|key| key.steps)
+                } else { 
+                    // If the quality didn't reach 100% the fastest is meaningless
+                    find_quality_route(routes)
+                }
+            } else { None }
+        },
+        None => None,
+    }
 }
 
 /// Find the route with the maximum amount of quality
 pub fn find_quality_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
     match routes {
-         Some(route) => route.iter().max_by_key(|key| key.quality),
+         Some(_routes) => _routes.iter().max_by_key(|key| key.quality),
          None => None,
     }
 }
@@ -195,7 +202,18 @@ pub fn find_quality_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverR
 /// Find the route with the maximum of durability left
 pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
     match routes {
-         Some(route) => route.iter().min_by_key(|key| key.durability),
-         None => None,
+         Some(_routes) => {
+            if _routes.len()>0{
+                if _routes[0].found_100_percent{
+                    _routes.iter().min_by_key(|key| key.durability)
+                } else {
+                    // If the craft didn't reach 100% quality the durability is meaningless
+                    find_quality_route(routes)
+                }
+            } else {
+                None
+            }        
+        },
+        None => None,
     }
 }
