@@ -187,31 +187,31 @@ pub fn test_result()-> SolverResult {
 
 /// Create a stat struct stats with the base values
 #[cfg(not(feature="no_python"))]
-use crate::{Recipe,Stats};
+use crate::{Recipe,Stats,solve_craft};
 
 #[cfg(not(feature="no_python"))]
 #[pyfunction]
-pub fn solve_from_python(values : &PyAny)->PyResult<()>{
+pub fn solve_from_python(values : &PyAny)->PyResult<Option<Vec<SolverResult>>>{
     // // Create Recipe
-    let _recipe = Recipe{
+    let recipe = Recipe{
         durability: values.getattr("durability")?.extract()?,
         progress: values.getattr("progress")?.extract()?, 
         progress_divider: values.getattr("progress_divider")?.extract()?,
         progress_modifier: values.getattr("progress_modifier")?.extract()?,
-        quality:values.getattr("values")?.extract()?,
+        quality: values.getattr("quality")?.extract()?,
         quality_divider:values.getattr("quality_divider")?.extract()?,
         quality_modifier:values.getattr("quality_modifier")?.extract()?,
     };
 
     // Create Stats
-    let _stats = Stats{
+    let stats = Stats{
         craftsmanship: values.getattr("craftsmanship")?.extract()?,
         control: values.getattr("control")?.extract()?,
         max_cp: values.getattr("max_cp")?.extract()?,
     };
 
     // Create parameters
-    let _param = Parameters{
+    let param = Parameters{
         depth: values.getattr("depth")?.extract()?,
         byregot_step: values.getattr("byregot_step")?.extract()?,
         desperate: values.getattr("desperate")?.extract()?,
@@ -220,6 +220,6 @@ pub fn solve_from_python(values : &PyAny)->PyResult<()>{
     };
 
     // println!("{:?} len: {:?} ",values,values.getattr("len()"));
-
-    Ok(())
+    let res = solve_craft(recipe, stats, param);
+    Ok(res)
 }
