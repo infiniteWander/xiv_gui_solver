@@ -103,7 +103,6 @@ impl BuffState {
     }
 
     pub fn tick(&mut self) {
-
         if self.waste_not > 0 { self.waste_not -= 1; }
         if self.great_strides > 0 { self.great_strides -= 1; }
         if self.innovation > 0 { self.innovation -= 1; }

@@ -10,6 +10,8 @@ pub struct Parameters {
     pub threads: usize,
     pub verbose: u8,
     pub depth: u32,
+    pub desperate:bool,
+    pub byregot_step: u8,
 }
 
 #[derive(Parser, Debug, Clone)]
@@ -35,9 +37,17 @@ pub struct Args {
     #[arg(short, long, default_value_t = 8)]
     pub depth: u32,
 
-    /// Thread counts, default is 4 (can you even run ff with less ?)
+    /// Thread counts, default is 4
     #[arg(short, long, default_value_t = 4)]
     pub threads: usize,
+
+    /// Desperate mode, will try to finish the craft above all
+    #[arg(short='D', long, default_value_t = false)]
+    pub desperate: bool,
+
+    /// Long mode, will try to find more solutions, at the expense of time
+    #[arg(short='l', long, default_value_t = false)]
+    pub long: bool,
 }
 
 
@@ -134,9 +144,21 @@ impl SolverResult{
     }
 
     pub fn pretty_print(&self){
-        println!("Quality: [{}/{}] | Durability: [{}/{}] | Cp : [{}/{}]", 
-            self.quality, self.total_quality, self.durability, self.total_durability, self.cp, self.total_cp);
+        println!("Quality: [{}/{}] | Durability: [{}/{}] | Cp : [{}/{}] | Steps : {}", 
+            self.quality, self.total_quality, self.durability, self.total_durability, self.cp, self.total_cp, self.steps);
         println!("{:?}", self.actions);
+    }
+}
+
+impl Parameters{
+    pub fn from_args(args:& Args) -> Self{
+        Self{
+            depth: if args.desperate{10}else{8},
+            threads: args.threads,
+            verbose: args.verbose,
+            desperate: args.desperate,
+            byregot_step: if args.long{8}else{10}
+        }
     }
 }
 

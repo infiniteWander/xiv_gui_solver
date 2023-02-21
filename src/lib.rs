@@ -47,7 +47,7 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     if params.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
         if params.verbose>1{ for r in &phase1_routes{
-            println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",r.actions,r.quality * 100 / r.recipe.quality,r.cp,r.durability);
+            println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",r.actions,r.progression,r.quality * 100 / r.recipe.quality,r.cp,r.durability);
         }}
     }
 
@@ -68,6 +68,11 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     pool.join();
     let phase2_routes = arc_phase2_routes.lock().unwrap();
     let nb_p2 = phase2_routes.len();
+
+    // Drop on empty results
+    if phase2_routes.len()==0{
+        return None
+    }
 
     // Print the results if verbose
     #[cfg(feature = "verbose")]
@@ -162,7 +167,7 @@ pub fn load_from_config<'a>(recipe_name: &str, file_name: &str, character_name: 
 }
 
 /// Print all routes in the vect, verbose
-pub fn print_routes<'a>(routes: Option<Vec<SolverResult>>){
+pub fn print_routes<'a>(routes: & Option<Vec<SolverResult>>){
     match routes{
         Some(r) => {
             println!("Showing {} routes",r.len());
@@ -179,12 +184,12 @@ pub fn find_fast_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResu
     match routes {
         Some(_routes) => {
             if _routes.len()>0{
-                if _routes[0].found_100_percent {
+                //if _routes[0].found_100_percent {
                     _routes.iter().min_by_key(|key| key.steps)
-                } else { 
+                //} else { 
                     // If the quality didn't reach 100% the fastest is meaningless
-                    find_quality_route(routes)
-                }
+                //    find_quality_route(routes)
+                //}
             } else { None }
         },
         None => None,
@@ -204,12 +209,12 @@ pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResu
     match routes {
          Some(_routes) => {
             if _routes.len()>0{
-                if _routes[0].found_100_percent{
-                    _routes.iter().min_by_key(|key| key.durability)
-                } else {
+                //if _routes[0].found_100_percent{
+                    _routes.iter().max_by_key(|key| key.durability)
+                //} else {
                     // If the craft didn't reach 100% quality the durability is meaningless
-                    find_quality_route(routes)
-                }
+                //    find_quality_route(routes)
+                //}
             } else {
                 None
             }        
