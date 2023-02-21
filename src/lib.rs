@@ -1,72 +1,22 @@
+use crate::io::SolverResult;
 use crate::{
     craft::Craft,
     specs::{Recipe,Stats},
+    io::Parameters,
 };
-use std::time::{Instant};
 use threadpool::ThreadPool;
 use std::sync::{Arc,Mutex};
-use clap::Parser;
-use pyo3::prelude::*;
 
 mod solver;
 mod specs;
 pub mod action;
 pub mod craft;
+pub mod io;
 
-
-#[derive(Debug, Clone, Copy)]
-pub struct Parameters {
-    pub threads: usize,
-    pub verbose: u8,
-    pub depth: u32,
-}
-
-#[derive(Parser, Debug, Clone)]
-#[command(author, version, about, long_about = None)]
-pub struct Args {
-    /// Name of the receipe
-    #[arg(short, long, default_value_t = String::from("default_recipe"))]
-    pub recipe_name: String,
-
-    /// Name of the character
-    #[arg(short, long, default_value_t = String::from("default_character"))]
-    pub character_name: String,
-
-    /// The ml file name
-    #[arg(short, long, default_value_t = String::from("craft.toml"))]
-    pub file_name: String,
-   
-    /// The verbose flag
-    #[arg(short, long, action = clap::ArgAction::Count)]
-    pub verbose: u8,
-
-    /// The depth of the first pass
-    #[arg(short, long, default_value_t = 8)]
-    pub depth: u32,
-
-    /// Thread counts, default is 4 (can you even run ff with less ?)
-    #[arg(short, long, default_value_t = 4)]
-    pub threads: usize,
-}
-
-#[pyfunction]
-pub fn pouet()-> &'static str {
-    return "pouet";
-}
-
-/// A Python module implemented in Rust.
-#[pymodule]
-fn xiv_craft_solver(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(pouet, m)?)?;
-    Ok(())
-}
-
-/// Solve the craft with given arguments
-pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<Craft<'a>>>{
+/// Solve the craft with given arguments, this functions calls threads and must own it's values
+pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<SolverResult>>{
     // Load the craft with given arguments
     let craft = Craft::new(recipe,stats,params);
-    // Start timer
-    let now = Instant::now();
 
     // Start a threadpool
     let pool = ThreadPool::new(params.threads);
@@ -76,23 +26,18 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
+
     let phase1_routes = solver::generate_routes_phase1(craft);
-    
+    let nb_p1 = phase1_routes.len();
+
     #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("[P1] Found {} routes, testing them all...",phase1_routes.len());
-        if params.verbose>1{
-            for r in &phase1_routes{
-                println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",
-                    r.actions, 
-                    r.progression * 100 / r.recipe.progress, 
-                    r.quality * 100 / r.recipe.quality,
-                    r.cp,
-                    r.durability,
-                    );
-            };
-        }
+        if params.verbose>1{ for r in &phase1_routes{
+            println!("[P1] {:?} p:{}% q:{}% c:{} d:{}",r.actions,r.progression,r.quality * 100 / r.recipe.quality,r.cp,r.durability);
+        }}
     }
+
     // Core algorithm, fill all found routes with the best route (doesn't branch, just replace)
     let arc_phase2_routes = Arc::new(Mutex::new(Vec::<Craft>::new()));
 
@@ -109,83 +54,37 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
 
     pool.join();
     let phase2_routes = arc_phase2_routes.lock().unwrap();
-    
+    let nb_p2 = phase2_routes.len();
+
+    // Drop on empty results
+    if phase2_routes.len()==0{
+        return None
+    }
+
     // Print the results if verbose
     #[cfg(feature = "verbose")]
     if params.verbose>0{
         println!("[P2] Found {} solutions, sorting",phase2_routes.len());
-
-        if params.verbose>1{
-            for r in phase2_routes.iter(){
-                println!("[P2] {:?} p:{}% q:{}% d:{}",
-                    r.actions, 
-                    r.progression * 100 / r.recipe.progress, 
-                    r.quality * 100 / r.recipe.quality,
-                    r.durability);
-            };
-        }
+        if params.verbose>1{ for r in phase2_routes.iter(){
+                println!("[P2] {:?} p:{}% q:{}% d:{}", r.actions, r.progression * 100 / r.recipe.progress, r.quality * 100 / r.recipe.quality, r.durability);
+        }}
     }
 
-    // Copy the valid results for analysis, by default only the valid one are copied
+    // Prune the results for analysis
     let mut valid_routes : Vec<Craft> = vec![];
+    let mut valid_solutions: Vec<SolverResult> = vec![];
     for route in phase2_routes.iter(){
         if route.quality>=route.recipe.quality{
             valid_routes.push(route.clone());
+            valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2,true));
         }
     }
-
-    if valid_routes.len()==0{
-        for route in phase2_routes.iter(){valid_routes.push(route.clone())} // Deep copy through the mutex guard
+    // If no craft can make it to 100% HQ, fallback to base results
+    if valid_solutions.len()==0{
+        for route in phase2_routes.iter(){valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2,false));}
     }
 
-
-    // Select best route TODO: Seperate function
-    let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
-        Some(top) => top,
-        None => {
-            #[cfg(feature = "verbose")]
-            println!("[P2] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
-            return None;
-        },
-    };
-
-    // Print best route TODO: Seperate function
-    let mut content = (&top_route.actions)
-        .iter()
-        .map(|action| {
-            format!("\"{}\"", action.short_name.clone())
-        })
-        .collect::<Vec<String>>();
-
-    // Setting something to print, adding the missing actions TODO: Change this behaviour and move to separate function
-    let arg = (top_route.recipe.progress as f32 - top_route.progression as f32) / top_route.get_base_progression() as f32;
-    if 0.0 < arg && arg < 1.2 { content.push("\"basicSynth2\"".to_string()); }
-    if 1.2 <= arg && arg < 1.8 { content.push("\"carefulSynthesis\"".to_string()); }
-    if 1.8 <= arg && arg < 2.0 {
-        content.push("\"observe\"".to_string());
-        content.push("\"focusedSynthesis\"".to_string());
-    }
-
-    #[cfg(feature = "verbose")]
-    if params.verbose>2{
-        println!("[F] Top route {:?}",top_route);
-    }
-    
-    {
-        println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
-        println!("\t[{}]", content.join(", "));
-    }
-
-    // Wait for enter TODO: Remove
-    println!();
-    println!("Program finished sucessfuly in {}ms and found {} solutions, [prog:{}]",
-        now.elapsed().as_millis(),
-        phase2_routes.len(),
-        top_route.recipe.progress);
-    println!("Press enter to exit...");
-    let mut input = String::new();
-    std::io::stdin().read_line(&mut input).unwrap();
-    Some(valid_routes)
+    Some(valid_solutions)
 }
 
 /// Load the config from args and make a craft from it
@@ -254,6 +153,59 @@ pub fn load_from_config<'a>(recipe_name: &str, file_name: &str, character_name: 
     (recipe,stats)
 }
 
-// fn make_craft_from_values(){
+/// Print all routes in the vect, verbose
+pub fn print_routes<'a>(routes: & Option<Vec<SolverResult>>){
+    match routes{
+        Some(r) => {
+            println!("Showing {} routes",r.len());
+            for c in r.iter(){
+                println!("\n[{}¤][{}@][{}#] {:?} ",c.quality,c.durability,c.steps,c.actions)                
+            }
+        },
+        None => println!("No routes to print")
+    }
+}
 
-// }
+/// Find the route with the least amount of steps
+pub fn find_fast_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
+    match routes {
+        Some(_routes) => {
+            if _routes.len()>0{
+                //if _routes[0].found_100_percent {
+                    _routes.iter().min_by_key(|key| key.steps)
+                //} else { 
+                    // If the quality didn't reach 100% the fastest is meaningless
+                //    find_quality_route(routes)
+                //}
+            } else { None }
+        },
+        None => None,
+    }
+}
+
+/// Find the route with the maximum amount of quality
+pub fn find_quality_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
+    match routes {
+         Some(_routes) => _routes.iter().max_by_key(|key| key.quality),
+         None => None,
+    }
+}
+
+/// Find the route with the maximum of durability left
+pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
+    match routes {
+         Some(_routes) => {
+            if _routes.len()>0{
+                //if _routes[0].found_100_percent{
+                    _routes.iter().max_by_key(|key| key.durability)
+                //} else {
+                    // If the craft didn't reach 100% quality the durability is meaningless
+                //    find_quality_route(routes)
+                //}
+            } else {
+                None
+            }        
+        },
+        None => None,
+    }
+}
