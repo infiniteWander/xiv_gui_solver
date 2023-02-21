@@ -84,54 +84,13 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     for route in phase2_routes.iter(){
         if route.quality>=route.recipe.quality{
             valid_routes.push(route.clone());
-            valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2));
+            valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2,true));
         }
     }
     // If no craft can make it to 100% HQ, fallback to base results
     if valid_solutions.len()==0{
-        for route in phase2_routes.iter(){valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2));}
+        for route in phase2_routes.iter(){valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2,false));}
     }
-
-
-    //// Show best results
-    // Select best route TODO: Seperate function
-    // let top_route = match valid_routes.iter().max_by_key(|route| route.quality) {
-    //     Some(top) => top,
-    //     None => {
-    //         #[cfg(feature = "verbose")]
-    //         println!("[F] No route could finish the craft.\n[P2] Runtime {}ms. Now exiting...",now.elapsed().as_millis());
-    //         return None;
-    //     },
-    // };
-
-    // Print best route TODO: Seperate function
-    // let mut content = (&top_route.actions)
-    //     .iter()
-    //     .map(|action| {
-    //         format!("\"{}\"", action.short_name.clone())
-    //     })
-    //     .collect::<Vec<String>>();
-
-    // Setting something to print, adding the missing actions TODO: Change this behaviour and move to separate function
-    // let arg = (top_route.recipe.progress as f32 - top_route.progression as f32) / top_route.get_base_progression() as f32;
-    // if 0.0 < arg && arg < 1.2 { content.push("\"basicSynth2\"".to_string()); }
-    // if 1.2 <= arg && arg < 1.8 { content.push("\"carefulSynthesis\"".to_string()); }
-    // if 1.8 <= arg && arg < 2.0 {
-    //     content.push("\"observe\"".to_string());
-    //     content.push("\"focusedSynthesis\"".to_string());
-    // }
-
-    // #[cfg(feature = "verbose")]
-    // if params.verbose>2{
-    //     println!("[F] Top route {:?}",top_route);
-    // }
-    
-    // {
-    //     println!("Quality: {}/{}", top_route.quality, top_route.recipe.quality);
-    //     println!("\t[{}]", content.join(", "));
-    // }
-
-    
 
     Some(valid_solutions)
 }
@@ -202,20 +161,11 @@ pub fn load_from_config<'a>(recipe_name: &str, file_name: &str, character_name: 
     (recipe,stats)
 }
 
-// fn make_craft_from_values(){
-
-// }
-
-// /// Print results
-// enum SHOW_TYPE{
-//     BEST,
-//     SAFEST,
-//     SHORTEST,
-// }
-
+/// Print all routes in the vect, verbose
 pub fn print_routes<'a>(routes: Option<Vec<SolverResult>>){
     match routes{
         Some(r) => {
+            println!("Showing {} routes",r.len());
             for c in r.iter(){
                 println!("\n[{}¤][{}@][{}#] {:?} ",c.quality,c.durability,c.steps,c.actions)                
             }
@@ -224,14 +174,28 @@ pub fn print_routes<'a>(routes: Option<Vec<SolverResult>>){
     }
 }
 
-pub fn find_fast_route(routes: Option<Vec<SolverResult>>){
-
+// TODO: Fix it for not completed crafts
+/// Find the route with the least amount of steps
+pub fn find_fast_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
+    let res = match routes {
+         Some(route) => route.iter().min_by_key(|key| key.steps),
+         None => None,
+    };
+    res
 }
 
-pub fn find_quality_route(routes: Option<Vec<SolverResult>>){
-    
+/// Find the route with the maximum amount of quality
+pub fn find_quality_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
+    match routes {
+         Some(route) => route.iter().max_by_key(|key| key.quality),
+         None => None,
+    }
 }
 
-pub fn find_(routes: Option<Vec<SolverResult>>){
-    
+/// Find the route with the maximum of durability left
+pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult>{
+    match routes {
+         Some(route) => route.iter().min_by_key(|key| key.durability),
+         None => None,
+    }
 }

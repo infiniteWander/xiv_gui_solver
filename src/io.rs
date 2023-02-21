@@ -60,35 +60,20 @@ pub struct SolverResult{
     pub step1_solutions: usize,
     #[pyo3(get)]
     pub step2_solutions: usize,
-}
-
-#[pyfunction]
-pub fn pouet()-> SolverResult {
-    // return "pouet";
-    SolverResult{
-        steps:0,
-        progression: 0,
-        quality:0,
-        durability:0,
-        actions:vec!["BLLLL".to_string(),"WWWWW".to_string()],
-        step1_solutions:0,
-        step2_solutions:0,
-
-    }
+    #[pyo3(get)]
+    pub found_100_percent: bool,
 }
 
 /// Pretty display for SolverResult
 impl Display for SolverResult{
-
     fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> { 
         println!("{:?}",self.actions);
         Ok(())
     }
 }
 
-
 impl SolverResult{
-    pub fn from_craft(craft: & Craft,step1_solutions : usize,step2_solutions : usize)->SolverResult{
+    pub fn from_craft(craft: & Craft,step1_solutions : usize,step2_solutions : usize, found_100_percent: bool)->SolverResult{
         // Todo: recreate actions
         // Where steps ?
         let mut actions = craft.actions.iter().map(|action| 
@@ -109,6 +94,7 @@ impl SolverResult{
             actions:actions,
             step1_solutions,
             step2_solutions,
+            found_100_percent,
         }
 
     }
@@ -118,13 +104,13 @@ impl SolverResult{
             progression: 0,
             quality:0,
             durability:0,
-            actions:vec!["BLLLL".to_string(),"WWWWW".to_string()],
+            actions:vec!["Act1".to_string(),"Act2".to_string()],
             step1_solutions:0,
             step2_solutions:0,
+            found_100_percent:false,
         }
     }
 }
-
 
 /// Python Bindings
 
@@ -136,6 +122,7 @@ fn xiv_craft_solver(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub fn e(){
-
+#[pyfunction]
+pub fn pouet()-> SolverResult {
+    SolverResult::default()
 }

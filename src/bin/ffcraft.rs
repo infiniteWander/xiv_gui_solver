@@ -1,5 +1,4 @@
 // #![warn(missing_docs,unsafe_code,unstable_features,)]
-use xiv_craft_solver::print_routes;
 use std::time::{Instant};
 use clap::Parser;
 use xiv_craft_solver;
@@ -22,9 +21,29 @@ fn main() {
     let (recipe,stats) = xiv_craft_solver::load_from_config(&args.recipe_name, &args.file_name, &args.character_name);
     let results = xiv_craft_solver::solve_craft(recipe,stats,params);
     
-    // Show results
+    // Stop timer
     let t_final = now.elapsed().as_millis();
-    print_routes(results);
+    
+    // Show best results
+    #[cfg(feature = "verbose")]
+    if args.verbose>0{
+        print_routes(results);
+    }
+
+    // Show best result depending on selected value
+    println!("FAST {:?}",xiv_craft_solver::find_fast_route(&results));
+    println!("SAFE {:?}",xiv_craft_solver::find_safe_route(&results));
+    println!("QLTY {:?}",xiv_craft_solver::find_quality_route(&results));
+
+    #[cfg(feature = "verbose")]
+    if params.verbose>2{
+        println!("[F] Top route {:?}",results);
+    }
+    
+    // {
+    //     println!("Quality: {}/{}", results.quality, results.recipe.quality);
+    //     println!("\t[{}]", results.join(", "));
+    // }
 
     // Wait for user input
     println!("\nProgram finished successfully in {}ms\nPress enter to exit...", t_final);
