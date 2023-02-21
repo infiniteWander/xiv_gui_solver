@@ -13,19 +13,6 @@ pub mod action;
 pub mod craft;
 pub mod io;
 
-
-
-/// Create stats
-
-/// Create recipe
-
-/// Create parameters
-
-
-/// Create from config
-
-
-
 /// Solve the craft with given arguments, this functions calls threads and must own it's values
 pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Option<Vec<SolverResult>>{
     // Load the craft with given arguments

@@ -3,7 +3,6 @@ use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
 use crate::Parameters;
 
-
 #[derive(Clone)]
 pub struct Craft<'a> {
     pub recipe:  Recipe,

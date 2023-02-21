@@ -92,7 +92,7 @@ impl Display for SolverResult{
     }
 }
 
-// #[pymethods]
+//#[pymethods]
 impl SolverResult{
     pub fn from_craft(craft: & Craft,step1_solutions : usize,step2_solutions : usize, found_100_percent: bool)->SolverResult{
         // Todo: recreate actions
@@ -124,7 +124,11 @@ impl SolverResult{
         }
 
     }
-    // #[new]
+}
+
+#[pymethods]
+impl SolverResult{
+    #[staticmethod]
     pub fn default()->Self{
         Self{
             steps:0,
@@ -162,17 +166,60 @@ impl Parameters{
     }
 }
 
-/// Python Bindings
+
+////// Python Bindings //////
 
 /// A Python module implemented in Rust.
 #[cfg(not(feature="no_python"))]
 #[pymodule]
 fn xiv_craft_solver(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(pouet, m)?)?;
+    m.add_function(wrap_pyfunction!(test_result, m)?)?;
+    m.add_function(wrap_pyfunction!(solve_from_python, m)?)?;
     Ok(())
 }
 
+///
+#[cfg(not(feature="no_python"))]
 #[pyfunction]
-pub fn pouet()-> SolverResult {
+pub fn test_result()-> SolverResult {
     SolverResult::default()
+}
+
+/// Create a stat struct stats with the base values
+#[cfg(not(feature="no_python"))]
+use crate::{Recipe,Stats};
+
+#[cfg(not(feature="no_python"))]
+#[pyfunction]
+pub fn solve_from_python(values : &PyAny)->PyResult<()>{
+    // // Create Recipe
+    let _recipe = Recipe{
+        durability: values.getattr("durability")?.extract()?,
+        progress: values.getattr("progress")?.extract()?, 
+        progress_divider: values.getattr("progress_divider")?.extract()?,
+        progress_modifier: values.getattr("progress_modifier")?.extract()?,
+        quality:values.getattr("values")?.extract()?,
+        quality_divider:values.getattr("quality_divider")?.extract()?,
+        quality_modifier:values.getattr("quality_modifier")?.extract()?,
+    };
+
+    // Create Stats
+    let _stats = Stats{
+        craftsmanship: values.getattr("craftsmanship")?.extract()?,
+        control: values.getattr("control")?.extract()?,
+        max_cp: values.getattr("max_cp")?.extract()?,
+    };
+
+    // Create parameters
+    let _param = Parameters{
+        depth: values.getattr("depth")?.extract()?,
+        byregot_step: values.getattr("byregot_step")?.extract()?,
+        desperate: values.getattr("desperate")?.extract()?,
+        threads: values.getattr("threads")?.extract()?,
+        verbose: values.getattr("verbose")?.extract()?,
+    };
+
+    // println!("{:?} len: {:?} ",values,values.getattr("len()"));
+
+    Ok(())
 }
