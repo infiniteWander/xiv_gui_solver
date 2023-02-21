@@ -171,11 +171,13 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Vec<Craft<'a>>> {
             craft.run_action(action.unwrap());
             if action.unwrap() == &ACTIONS.byregot_blessing {
                 if let Some(top_route) = &mut top_route {
+                    #[cfg(not(feature="fast"))]
                     if top_route.quality>craft.recipe.quality{
                         top_routes.push(craft.clone());  // Me memory
                     }
                     if top_route.quality < craft.quality {
-                        // TODO: Return several routes, doing so will come at a big performance cost    
+                        #[cfg(feature="fast")]
+                        top_routes.push(craft.clone());
                         *top_route = craft;
                     }
                 } else {

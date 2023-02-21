@@ -31,7 +31,8 @@ lto = true
 [features]
 default = []
 verbose = []
-no_python = []
+no_python = [] # Removes the python bindings
+fast = []      # Remove some under optimisations that try to find other routes
 
 [lib]
 name = "xiv_craft_solver"

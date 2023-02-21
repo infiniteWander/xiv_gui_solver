@@ -23,7 +23,6 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
 
     #[cfg(feature = "verbose")]
     if params.verbose>0{
-        println!("Solving...\n");
         println!("[P1] Starting phase 1...");
     }
 
@@ -48,9 +47,6 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
             if let Some(mut _route) = solver::generate_routes_phase2(route){
                 let mut shared = _phase2_routes.lock().unwrap();
                 shared.append(&mut _route);
-                // for inner_route in _route{
-                //     shared.push(inner_route.clone());
-                // }
             };
         });
     }
