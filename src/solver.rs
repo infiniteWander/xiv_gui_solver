@@ -157,7 +157,7 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Vec<Craft<'a>>> {
     
     // Todo: Return a vec of relevant functions, instead of the most quality one
     let mut top_route: Craft<'a> = craft.clone(); // Default route, no hq on that one
-    let mut top_routes: Vec<Craft<'a>> = vec![craft.clone()];
+    let mut top_routes: Vec<Craft<'a>> = vec![];
 
     queue.push_back(craft);
 
@@ -170,25 +170,21 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Vec<Craft<'a>>> {
             let mut craft = _craft.clone();
             craft.run_action(action.unwrap());
             if action.unwrap() == &ACTIONS.byregot_blessing {
-                // if let Some(top_route) = &mut top_route {
-                    #[cfg(not(feature="fast"))]
-                    if top_route.quality>=craft.recipe.quality{
-                        top_routes.push(craft.clone());  // Me memory
-                    }
-                    if top_route.quality < craft.quality {
-                        #[cfg(feature="fast")]
-                        top_routes.push(craft.clone());
-                        top_route = craft;
-                    }
-                // } else {
-                //     println!("Why are we here ?");
-                //     top_routes.push(craft.clone());
-                //     top_route = Some(craft);
-                // }
+                #[cfg(not(feature="fast"))]
+                if top_route.quality>=craft.recipe.quality{
+                    top_routes.push(craft.clone());  // Me memory
+                }
+                if top_route.quality < craft.quality {
+                    #[cfg(feature="fast")]
+                    top_routes.push(craft.clone());
+                    top_route = craft;
+                }
             } else {
                 queue.push_back(craft);
             }
         }
     }
+    // Let's not forget the best result
+    top_routes.push(top_route);
     Some(top_routes)
 }
