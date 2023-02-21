@@ -45,9 +45,12 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
         let _phase2_routes = Arc::clone(&arc_phase2_routes);
 
         pool.execute(move || {
-            if let Some(_route) = solver::generate_routes_phase2(route){
+            if let Some(mut _route) = solver::generate_routes_phase2(route){
                 let mut shared = _phase2_routes.lock().unwrap();
-                shared.push(_route);
+                shared.append(&mut _route);
+                // for inner_route in _route{
+                //     shared.push(inner_route.clone());
+                // }
             };
         });
     }
@@ -71,11 +74,11 @@ pub fn solve_craft<'a>(recipe: Recipe, stats: Stats, params: Parameters) -> Opti
     }
 
     // Prune the results for analysis
-    let mut valid_routes : Vec<Craft> = vec![];
+    // let mut valid_routes : Vec<Craft> = vec![];
     let mut valid_solutions: Vec<SolverResult> = vec![];
     for route in phase2_routes.iter(){
         if route.quality>=route.recipe.quality{
-            valid_routes.push(route.clone());
+            // valid_routes.push(route.clone());
             valid_solutions.push(SolverResult::from_craft(route,nb_p1,nb_p2,true));
         }
     }
@@ -171,12 +174,7 @@ pub fn find_fast_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResu
     match routes {
         Some(_routes) => {
             if _routes.len()>0{
-                //if _routes[0].found_100_percent {
-                    _routes.iter().min_by_key(|key| key.steps)
-                //} else { 
-                    // If the quality didn't reach 100% the fastest is meaningless
-                //    find_quality_route(routes)
-                //}
+                _routes.iter().min_by_key(|key| key.steps)
             } else { None }
         },
         None => None,
@@ -196,12 +194,7 @@ pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResu
     match routes {
          Some(_routes) => {
             if _routes.len()>0{
-                //if _routes[0].found_100_percent{
-                    _routes.iter().max_by_key(|key| key.durability)
-                //} else {
-                    // If the craft didn't reach 100% quality the durability is meaningless
-                //    find_quality_route(routes)
-                //}
+                _routes.iter().max_by_key(|key| key.durability)
             } else {
                 None
             }        

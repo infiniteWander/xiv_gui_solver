@@ -161,7 +161,7 @@ impl Parameters{
             threads: args.threads,
             verbose: args.verbose,
             desperate: args.desperate,
-            byregot_step: if args.long{8}else{10}
+            byregot_step: if args.long{6}else{8}
         }
     }
 }
