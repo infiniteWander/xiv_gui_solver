@@ -157,11 +157,11 @@ impl SolverResult{
 impl Parameters{
     pub fn from_args(args:& Args) -> Self{
         Self{
-            depth: if args.desperate{10}else{8},
+            depth: if args.desperate{11}else{8},
             threads: args.threads,
             verbose: args.verbose,
             desperate: args.desperate,
-            byregot_step: if args.long{8}else{10}
+            byregot_step: if args.long{6}else{8}
         }
     }
 }

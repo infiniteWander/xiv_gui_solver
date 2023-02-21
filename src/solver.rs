@@ -130,7 +130,7 @@ pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
         forbidden_actions.push(&ACTIONS.basic_touch);
     }
     // Todo, allow earlier byregot if the craft can be finished all the same (useless with always optimize on)
-    if craft.buffs.inner_quiet >= 8 { //craft.args.byregot_step { // 10
+    if craft.buffs.inner_quiet >= craft.args.byregot_step { // 10
         available_actions.push(&ACTIONS.trained_finesse);
         available_actions.push(&ACTIONS.great_strides);
     }
@@ -152,12 +152,13 @@ pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
 }
 
 /// Apply all actions to the current route
-pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Craft<'a>> {
+pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Vec<Craft<'a>>> {
     let mut queue = VecDeque::new();
     
     // Todo: Return a vec of relevant functions, instead of the most quality one
     let mut top_route: Option<Craft<'a>> = Some(craft.clone()); // Default route, no hq on that one
-    
+    let mut top_routes: Vec<Craft<'a>> = vec![craft.clone()];
+
     queue.push_back(craft);
 
     while !queue.is_empty() {
@@ -170,11 +171,18 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Craft<'a>> {
             craft.run_action(action.unwrap());
             if action.unwrap() == &ACTIONS.byregot_blessing {
                 if let Some(top_route) = &mut top_route {
+                    #[cfg(not(feature="fast"))]
+                    if top_route.quality>craft.recipe.quality{
+                        top_routes.push(craft.clone());  // Me memory
+                    }
                     if top_route.quality < craft.quality {
-                        // TODO: Return several routes, doing so will come at a big performance cost
+                        #[cfg(feature="fast")]
+                        top_routes.push(craft.clone());
                         *top_route = craft;
                     }
                 } else {
+                    println!("Why are we here ?");
+                    top_routes.push(craft.clone());
                     top_route = Some(craft);
                 }
             } else {
@@ -182,5 +190,5 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Craft<'a>> {
             }
         }
     }
-    top_route
+    Some(top_routes)
 }
