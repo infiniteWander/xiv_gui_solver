@@ -20,11 +20,11 @@ class feedMeDaddy:
 	max_cp = 602
 
 	# Config
-	depth=10
-	byregot_step=10
-	desperate=False
-	threads=8
-	verbose=0
+	depth = 10
+	byregot_step = 10
+	desperate = False
+	threads = 8
+	verbose = 0
 	
 
 el_daddy=feedMeDaddy()
