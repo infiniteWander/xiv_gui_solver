@@ -1,7 +1,8 @@
 /target
 /.idea
 *.iml
-
+/bin.py
+python/dontlook.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
