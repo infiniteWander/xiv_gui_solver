@@ -6,8 +6,6 @@ import rich
 dpg.create_context()
 dpg.configure_app(manual_callback_management=True)
 dpg.create_viewport(title='XIV Solver', width=500, height=700)
-dpg.set_viewport_large_icon("/home/dandaedre/Documents/Git/xiv_craft_solver/python/src/ffcraft_solver/resources/ffxiv_solver.ico")
-dpg.set_viewport_small_icon("/home/dandaedre/Documents/Git/xiv_craft_solver/python/src/ffcraft_solver/resources/ffxiv_solver.ico")
 
 class User:
     name = 'NEW'
