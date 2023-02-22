@@ -1,12 +1,11 @@
 import dearpygui.dearpygui as dpg
-import loader
-import rich
 import xiv_craft_solver as xcs
+from ffcraft_solver.modules import loader
+import rich
 
 dpg.create_context()
 dpg.configure_app(manual_callback_management=True)
 dpg.create_viewport(title='XIV Solver', width=500, height=700)
-
 
 class User:
     name = 'NEW'

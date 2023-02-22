@@ -1,0 +1,8 @@
+flake8==4.0.1
+tox==3.24.5
+pytest==7.1.1
+pytest-cov==3.0.0
+mypy==0.941
+dearpygui==1.8.0
+PyYAML==6.0
+rich==13.3.1
