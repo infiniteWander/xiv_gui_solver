@@ -3,10 +3,6 @@ import xiv_craft_solver as xcs
 from ffcraft_solver.modules import loader, log, solver
 import rich
 
-dpg.create_context()
-dpg.configure_app(manual_callback_management=True)
-dpg.create_viewport(title='XIV Solver', width=500, height=700)
-
 
 class User:
     name = '   '
@@ -173,85 +169,90 @@ class Recipe:
         return self.name
 
 
-def request_solve(self):
-    solve = solver.Solver(user, recipe)
-    solve.solve()
+def request_solve() -> True:
+    solver.Solver(user, recipe)
+    return True
 
 
-with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True, no_move=True):
-    # Initialization of all our classes
-    user = User()
-    recipe = Recipe()
+if __name__ == '__main__':
+    dpg.create_context()
+    dpg.configure_app(manual_callback_management=True)
+    dpg.create_viewport(title='XIV Solver', width=500, height=700)
 
-    full_config = loader.Loader()
-    characters_names = full_config.get_users_names()
-    foods_names = full_config.get_foods_names()
-    pots_names = full_config.get_pots_names()
-    recipe_names = full_config.get_recipes_names()
+    with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True, no_move=True):
+        # Initialization of all our classes
+        user = User()
+        recipe = Recipe()
 
-    loggers = log.Loggers()
+        full_config = loader.Loader()
+        characters_names = full_config.get_users_names()
+        foods_names = full_config.get_foods_names()
+        pots_names = full_config.get_pots_names()
+        recipe_names = full_config.get_recipes_names()
 
-    # Start of GUI drawing
-    # CHARACTER
-    dpg.add_text("Character")
-    user_combo = dpg.add_combo(items=characters_names, label="Your character", callback=user.set_name_combo)
-    dpg.set_value(user_combo, "   ")
-    # TODO: Load 1rst user in users.yaml by default
-    user_stats = dpg.add_input_intx(size=3, label="Stats", tag="stats_tooltip", callback=user.set_initial_stats)
-    with dpg.tooltip("stats_tooltip"):
-        dpg.add_text("Craftsmanship / Control / CP")
-    with dpg.group(horizontal=True):
-        save_user_as = dpg.add_input_text(hint='Save as...')
-        dpg.add_button(label="Save!")
-        # TODO: Can't save if value == '   '
+        loggers = log.Loggers()
 
-    # EFFECTIVE STATS
-    dpg.add_separator()
-    user_effective_stats = dpg.add_input_intx(size=3, label="Effective stats", tag="effective_stats_tooltip", readonly=True)
-    with dpg.tooltip("effective_stats_tooltip"):
-        dpg.add_text("Craftsmanship / Control / CP")
-    dpg.add_separator()
+        # Start of GUI drawing
+        # CHARACTER
+        dpg.add_text("Character")
+        user_combo = dpg.add_combo(items=characters_names, label="Your character", callback=user.set_name_combo)
+        dpg.set_value(user_combo, "   ")
+        # TODO: Load 1rst user in users.yaml by default
+        user_stats = dpg.add_input_intx(size=3, label="Stats", tag="stats_tooltip", callback=user.set_initial_stats)
+        with dpg.tooltip("stats_tooltip"):
+            dpg.add_text("Craftsmanship / Control / CP")
+        with dpg.group(horizontal=True):
+            save_user_as = dpg.add_input_text(hint='Save as...')
+            dpg.add_button(label="Save!")
+            # TODO: Can't save if value == '   '
 
-    # MODIFIERS
-    dpg.add_text("Modifiers")
-    food_combo = dpg.add_combo(items=foods_names, label="Food", callback=user.set_food)
-    pot_combo = dpg.add_combo(items=pots_names, label="Pot", callback=user.set_pot)
-    specialist_checkbox = dpg.add_checkbox(label="Specialist", tag="specialist", callback=user.set_specialist)
+        # EFFECTIVE STATS
+        dpg.add_separator()
+        user_effective_stats = dpg.add_input_intx(size=3, label="Effective stats", tag="effective_stats_tooltip", readonly=True)
+        with dpg.tooltip("effective_stats_tooltip"):
+            dpg.add_text("Craftsmanship / Control / CP")
+        dpg.add_separator()
 
-    # RECIPE
-    dpg.add_separator()
-    dpg.add_text("Recipe")
-    recipe_combo = dpg.add_combo(items=recipe_names, label="Recipe", callback=recipe.set_recipe_name)
-    dpg.set_value(recipe_combo, "   ")
-    recipe_stats = dpg.add_input_intx(size=3, label="Stats", tag="recipe_tooltip", callback=recipe.set_recipe_stats)
-    with dpg.tooltip("recipe_tooltip"):
-        dpg.add_text("Progress / Quality / Durability")
-    advanced_recipe_stats = dpg.add_input_intx(
-        size=4, label="Advanced stats", tag="advanced_recipe_tooltip", callback=recipe.set_recipe_stats
-    )
-    with dpg.tooltip("advanced_recipe_tooltip"):
-        dpg.add_text("Progress / Quality difficulty // Progress / Quality extra difficulty")
-    # TODO: add a log if recipe matches a known recipe
-    with dpg.group(horizontal=True):
-        save_recipe_as = dpg.add_input_text(hint='Save as...')
-        dpg.add_button(label="Save!", callback=request_solve)
-        # TODO: Can't save if value == '   '
+        # MODIFIERS
+        dpg.add_text("Modifiers")
+        food_combo = dpg.add_combo(items=foods_names, label="Food", callback=user.set_food)
+        pot_combo = dpg.add_combo(items=pots_names, label="Pot", callback=user.set_pot)
+        specialist_checkbox = dpg.add_checkbox(label="Specialist", tag="specialist", callback=user.set_specialist)
 
-    # SOLVE
-    dpg.add_separator()
-    dpg.add_button(label="Solve!")
-    dpg.add_text()
-    dpg.add_collapsing_header(label="Result")
+        # RECIPE
+        dpg.add_separator()
+        dpg.add_text("Recipe")
+        recipe_combo = dpg.add_combo(items=recipe_names, label="Recipe", callback=recipe.set_recipe_name)
+        dpg.set_value(recipe_combo, "   ")
+        recipe_stats = dpg.add_input_intx(size=3, label="Stats", tag="recipe_tooltip", callback=recipe.set_recipe_stats)
+        with dpg.tooltip("recipe_tooltip"):
+            dpg.add_text("Progress / Quality / Durability")
+        advanced_recipe_stats = dpg.add_input_intx(
+            size=4, label="Advanced stats", tag="advanced_recipe_tooltip", callback=recipe.set_recipe_stats
+        )
+        with dpg.tooltip("advanced_recipe_tooltip"):
+            dpg.add_text("Progress / Quality difficulty // Progress / Quality extra difficulty")
+        # TODO: add a log if recipe matches a known recipe
+        with dpg.group(horizontal=True):
+            save_recipe_as = dpg.add_input_text(hint='Save as...')
+            dpg.add_button(label="Save!", callback=request_solve)
+            # TODO: Can't save if value == '   '
 
-    # LOG
-    log_window = dpg.add_input_text(multiline=True, default_value=loggers.log, height=50, width=500,
-                                    tab_input=True, pos=[0, 642], tracked=True)
+        # SOLVE
+        dpg.add_separator()
+        dpg.add_button(label="Solve!", callback=request_solve)
+        dpg.add_text()
+        dpg.add_collapsing_header(label="Result")
 
-dpg.setup_dearpygui()
-dpg.show_viewport()
-while dpg.is_dearpygui_running():
-    jobs = dpg.get_callback_queue()  # retrieves and clears queue
-    dpg.run_callbacks(jobs)
-    dpg.render_dearpygui_frame()
-dpg.start_dearpygui()
-dpg.destroy_context()
+        # LOG
+        log_window = dpg.add_input_text(multiline=True, default_value=loggers.log, height=50, width=500,
+                                        tab_input=True, pos=[0, 642], tracked=True)
+
+    dpg.setup_dearpygui()
+    dpg.show_viewport()
+    while dpg.is_dearpygui_running():
+        jobs = dpg.get_callback_queue()  # retrieves and clears queue
+        dpg.run_callbacks(jobs)
+        dpg.render_dearpygui_frame()
+    dpg.start_dearpygui()
+    dpg.destroy_context()

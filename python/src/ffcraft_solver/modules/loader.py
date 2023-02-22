@@ -1,10 +1,10 @@
 import rich
 import yaml
 import os
-# from xiv_craft_solver.modules import log
+from ffcraft_solver.modules import log
 
 
-# loggers = log.Loggers()
+loggers = log.Loggers()
 
 
 class DefaultConfig:
@@ -48,7 +48,7 @@ class Loader:
         return os.path.normpath(os.path.join(__file__, "../..", path))
 
     def get_users_dict(self) -> dict:
-        # loggers + 'Loaded user dictionary from users.yaml'
+        loggers + 'Loaded user dictionary from users.yaml'
         return self.user_list
 
     def get_users_names(self) -> list:
