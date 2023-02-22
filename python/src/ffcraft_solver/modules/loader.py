@@ -1,6 +1,11 @@
 import rich
 import yaml
 import os
+# from xiv_craft_solver.modules import log
+
+
+# loggers = log.Loggers()
+
 
 class DefaultConfig:
     yaml_user = 'configs/users.yaml'
@@ -8,16 +13,14 @@ class DefaultConfig:
     yaml_recipes = 'configs/recipes.yaml'
 
 
-
-
 class Loader:
     # TODO: create folder/file if missing when clicking "save"
     # TODO: log any missing file(s) or the whole folder
     def __init__(self):
-        self.user_list = {'NEW': [0, 0, 0]}
+        self.user_list = {'   ': [0, 0, 0]}
         self.foods_list = {'   ': [[0, 0], [0, 0], [0, 0]]}
         self.pots_list = {'   ': [[0, 0], [0, 0], [0, 0]]}
-        self.recipes_list = {'NEW': [0, 0, 0]}
+        self.recipes_list = {'   ': [0, 0, 0, 0, 0, 0, 0]}
         self.config = DefaultConfig()
 
         try:
@@ -25,6 +28,7 @@ class Loader:
                 self.user_list.update(yaml.safe_load(file))
         except FileNotFoundError as e:
             print(e)
+
         try:
             with open(self.relative_import(self.config.yaml_consumable), 'r') as file:
                 loaded_file = yaml.safe_load(file)
@@ -32,16 +36,19 @@ class Loader:
                 self.pots_list.update(loaded_file['Pots'])
         except FileNotFoundError as e:
             print(e)
+
         try:
             with open(self.relative_import(self.config.yaml_recipes), 'r') as file:
                 self.recipes_list.update(yaml.safe_load(file))
-        except (FileNotFoundError,IsADirectoryError) as e:
+        except (FileNotFoundError, IsADirectoryError) as e:
             print(e)
 
-    def relative_import(self, path):
-        return (os.path.normpath(os.path.join(__file__,"../..",path)))
+    @staticmethod
+    def relative_import(path):
+        return os.path.normpath(os.path.join(__file__, "../..", path))
 
     def get_users_dict(self) -> dict:
+        # loggers + 'Loaded user dictionary from users.yaml'
         return self.user_list
 
     def get_users_names(self) -> list:
