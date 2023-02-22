@@ -1,6 +1,6 @@
 [build-system]
-requires = ["maturin>=0.14,<0.15"]
-build-backend = "maturin"
+requires = ["maturin>=0.14,<0.15"] #,"setuptools>=42.0", "wheel"]
+build-backend = "maturin" #setuptools.build_meta
 
 [project]
 name = "xiv_craft_solver"
@@ -11,4 +11,22 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+[tool.pytest.ini_options]
+addopts = "--cov=ffcraft_solver"
+testpaths = [
+    "tests",
+]
 
+[tool.mypy]
+mypy_path = "python"
+check_untyped_defs = true
+disallow_any_generics = true
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+no_implicit_reexport = true
