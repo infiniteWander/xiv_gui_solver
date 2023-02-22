@@ -4,7 +4,8 @@ A rust program for solving FFXIV craft recipe.
 Originaly written by [RikaKagurasaka](https://github.com/RikaKagurasaka/xiv_craft_solver),
 it now is widely improved and provides python bindings for a GUI (or anything else really)
 
-## Usage
+### Basic RUST CLI Usage
+Everything is done through the regular cargo interface
 1. Download the latest release.
 2. Unzip the file.
 3. Edit the `craft.toml` file.
@@ -42,11 +43,28 @@ Options:
   -V, --version
           Print version
 ```
-
-## Python
+## Developpement
+### Rust
+Everything is located in the root & src.
+You can build the program (CLI) with cargo build the following features are available
+``cargo build --features=["fast","no_python","verbose"]``
+- The ``no_python`` will not build the lib (WIP, not fully implemented)
+- The ``fast`` feature will not allow some under-optimisation to run (saving global run-time)
+- The ``verbose`` feature will allow even more debug messages (They might not be shown depending on the verbosity level hoever)
+#### Maturin
 To build the python module, run ``maturin develop`` or ``maturin build`` then ``maturin install``
 
-#### Example
+### Python
+#### Developping the GUI
+0. Activate the venv ``source .venv/bin/activate``
+1. Go to the ``python`` directory
+2. Install the dev dependencies ``pip install -r requirements_dev.txt``
+3. Install the project (in editable mode) ``pip install -e .``
+4. Invoke the project (from anywhere) ``python -m ffcraft_solver`` 
+5. Edit the project and re-invoke it (no need to install / compile again)
+
+
+#### Rust CLI Example
 Note: The recipe data can be retrieved from a [FFXIV Crafting Optimizer](https://yyyy.games/crafter/#/simulator)
 with checking of **Custom Recipe** after selecting the recipe.
 ![img.png](img.png)
