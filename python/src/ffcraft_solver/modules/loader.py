@@ -1,5 +1,13 @@
 import rich
 import yaml
+import os
+
+class DefaultConfig:
+    yaml_user = 'configs/users.yaml'
+    yaml_consumable = 'configs/consumables.yaml'
+    yaml_recipes = 'configs/recipes.yaml'
+
+
 
 
 class Loader:
@@ -10,23 +18,28 @@ class Loader:
         self.foods_list = {'   ': [[0, 0], [0, 0], [0, 0]]}
         self.pots_list = {'   ': [[0, 0], [0, 0], [0, 0]]}
         self.recipes_list = {'NEW': [0, 0, 0]}
+        self.config = DefaultConfig()
+
         try:
-            with open('../configs/users.yaml', 'r') as file:
+            with open(self.relative_import(self.config.yaml_user), 'r') as file:
                 self.user_list.update(yaml.safe_load(file))
         except FileNotFoundError as e:
             print(e)
         try:
-            with open('../configs/consumables.yaml', 'r') as file:
+            with open(self.relative_import(self.config.yaml_consumable), 'r') as file:
                 loaded_file = yaml.safe_load(file)
                 self.foods_list.update(loaded_file['Foods'])
                 self.pots_list.update(loaded_file['Pots'])
         except FileNotFoundError as e:
             print(e)
         try:
-            with open('../configs/recipes.yaml', 'r') as file:
+            with open(self.relative_import(self.config.yaml_recipes), 'r') as file:
                 self.recipes_list.update(yaml.safe_load(file))
-        except FileNotFoundError as e:
+        except (FileNotFoundError,IsADirectoryError) as e:
             print(e)
+
+    def relative_import(self, path):
+        return (os.path.normpath(os.path.join(__file__,"../..",path)))
 
     def get_users_dict(self) -> dict:
         return self.user_list
