@@ -126,7 +126,7 @@ class Recipe:
         return self.name
 
 
-with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True):
+with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True, no_move=True):
     user = User()
     recipe = Recipe()
 
@@ -165,7 +165,7 @@ with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_titl
     recipe_stats = dpg.add_input_intx(size=3, label="Stats", tag="recipe_tooltip", callback=recipe.set_recipe_stats)
     with dpg.tooltip("recipe_tooltip"):
         dpg.add_text("Quality / Difficulty / Durability")
-    # TODO: add a small grey text message if recipe matches a known recipe
+    # TODO: add a log if recipe matches a known recipe
     dpg.add_button(label="Save!", indent=282)
 
     dpg.add_button(label="Solve!")
