@@ -1,11 +1,11 @@
 Foods:
-  # Name: [(Bonus craftsmanship%, max value), (bonus control%, max value), (bonus cp%, max value)]
+  # Name: [[Bonus craftsmanship%, max value], [bonus control%, max value], [bonus cp%, max value]]
   # For example, Calamari Ripieni HQ gives 5% craftsmanship up to a maximum of 120, and 26% CP up to a
   # maximum of 82, and is hence noted as:
-  # Calamari Ripieni HQ: [(5, 120), (0, 0), (26, 82)]
+  # Calamari Ripieni HQ: [[5, 120], [0, 0], [26, 82]]
   #
   # Here is your template to copy/paste and fill in:
-  # Name: [(0, 0), (0, 0), (0, 0)]
+  # Name: [[0, 0], [0, 0], [0, 0]]
 
   Calamari Ripieni HQ: [[5, 120], [0, 0], [26, 82]]
   Calamari Ripieni: [[4, 96], [0, 0], [21, 66]]
@@ -14,12 +14,12 @@ Foods:
 
 Pots:
   # Same as above:
-  # Name: [(Bonus craftsmanship%, max value), (bonus control%, max value), (bonus cp%, max value)]
+  # Name: [[Bonus craftsmanship%, max value], [bonus control%, max value], [bonus cp%, max value]]
   # For example, Cunning Craftsman's Draught HQ gives 6% CP up to a maximum of 21, and is hence noted as:
-  # Cunning Craftsman's Draught HQ: [(0, 0), (0, 0), (6, 21)]
+  # Cunning Craftsman's Draught HQ: [[0, 0], [0, 0], [6, 21]]
   #
   # Here is your template to copy/paste and fill in:
-  # Name: [(0, 0), (0, 0), (0, 0)]
+  # Name: [[0, 0], [0, 0], [0, 0]]
 
-  Cunning Craftsman's Draught HQ: [(0, 0), (0, 0), (6, 21)]
-  Cunning Craftsman's Draught: [(0, 0), (0, 0), (5, 17)]
+  Cunning Craftsman's Draught HQ: [[0, 0], [0, 0], [6, 21]]
+  Cunning Craftsman's Draught: [[0, 0], [0, 0], [5, 17]]
