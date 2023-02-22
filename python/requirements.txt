@@ -1,0 +1,3 @@
+dearpygui==1.8.0
+PyYAML==6.0
+rich==13.3.1
