@@ -1,7 +1,7 @@
 import rich
 import xiv_craft_solver
 from ffcraft_solver.__main__ import User, Recipe
-from ffcraft_solver.modules import log
+from ffcraft_solver.modules import log, translator
 
 loggers = log.Loggers()
 
@@ -14,7 +14,17 @@ class Result:
         self.actions = result.actions
         self.steps = result.steps
         self.remaining_cp = result.cp
+
+        self.all_buffs_list = ['manipulation', 'veneration', 'mastersMend', 'wasteNot', 'wasteNot2', 'greatStrides',
+                               'innovation', 'finalAppraisal', 'carefulObservation', 'heartAndSoul']
+
         self.readable_actions = self.text_wrap(self.actions)
+
+        self.macro1 = ''
+        self.macro2 = ''
+        self.macro3 = ''
+        self.make_macro()
+
         self.readable = f"""/// {self.title}
 Rotation:
 {self.readable_actions}
@@ -27,22 +37,51 @@ Remaining CP: {self.remaining_cp}"""
 
     @staticmethod  # il est con ou quoi?
     def text_wrap(text: list[str]) -> str:
-        """Transforms a list of words into a string and wraps them at 60 characters with an indent."""
-
+        """Transforms a list of words into a string and wraps them at 34 characters with an indent."""
         line = '    '
         saved_lines = []
         justified_text = ''
         for w in text:
-            if len(line) < 56:
+            if len(line) < 31:
                 line += w + ' '
             else:
                 saved_lines.append(line)
                 line = '    ' + w + ' '
 
+        if line != saved_lines[-1]:
+            saved_lines.append(line)
+
         for line in saved_lines:
             justified_text += line + '\n'
 
         return justified_text[:-1]
+
+    def make_macro(self) -> str:
+        saved_lines = ['']
+        translated_actions = translator.translate(self.actions, "en")
+        count = 0
+
+        for action in translated_actions:
+            line = f'/ac "{action}" <wait.{"2" if self.actions[count] in self.all_buffs_list else "3"}>'
+            saved_lines.append(line)
+            count += 1
+
+        count = 0
+        for line in saved_lines:
+            count += 1
+            if count < 16:
+                self.macro1 += line + '\n'
+            elif 15 < count < 31:
+                self.macro2 += line + '\n'
+            elif 30 < count < 46:
+                self.macro3 += line + '\n'
+            else:
+                print("Log: Macro too long!")
+
+        self.macro1 = self.macro1[1:]
+        self.macro2 = self.macro2[1:]
+        self.macro3 = self.macro3[1:]
+        return self.macro1
 
 
 class Solver:

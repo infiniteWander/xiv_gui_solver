@@ -169,8 +169,39 @@ class Recipe:
         return self.name
 
 
+class Solution:
+    def __init__(self, title):
+        self.result = None
+        self.title = title
+
+    def print_result(self):
+        if self.result:
+            dpg.set_value(results, self.result)
+        else:
+            loggers.add_log('No solution to display.')
+
+    def print_macro_1(self):
+        if self.result and self.result.macro1:
+            dpg.set_value(results, self.result.macro1)
+        else:
+            loggers.add_log('No macro to display.')
+
+    def print_macro_2(self):
+        if self.result and self.result.macro2:
+            dpg.set_value(results, self.result.macro2)
+        else:
+            loggers.add_log('No macro to display.')
+
+    def print_macro_3(self):
+        if self.result and self.result.macro3:
+            dpg.set_value(results, self.result.macro3)
+        else:
+            loggers.add_log('No macro to display.')
+
+
 def request_solve() -> True:
-    dpg.set_value(results, str(solver.Solver(user, recipe).best_quality))
+    best_quality.result = solver.Solver(user, recipe).best_quality
+    dpg.set_value(results, best_quality.result)
     return True
 
 
@@ -188,6 +219,7 @@ if __name__ == '__main__':
         # Initialization of all our classes
         user = User()
         recipe = Recipe()
+        best_quality = Solution("Best Quality")
 
         full_config = loader.Loader()
         characters_names = full_config.get_users_names()
@@ -201,7 +233,7 @@ if __name__ == '__main__':
         # CHARACTER
         dpg.add_text("Character")
         user_combo = dpg.add_combo(items=characters_names, label="Your character", callback=user.set_name_combo)
-        dpg.set_value(user_combo, "   ")
+        dpg.set_value(user_combo, '   ')
         # TODO: Load 1rst user in users.yaml by default
         user_stats = dpg.add_input_intx(size=3, label="Stats", tag="stats_tooltip", callback=user.set_initial_stats)
         with dpg.tooltip("stats_tooltip"):
@@ -247,8 +279,19 @@ if __name__ == '__main__':
         dpg.add_separator()
         dpg.add_button(label="Solve!", callback=request_solve)
         dpg.add_text()
-        dpg.add_collapsing_header(label="Result", leaf=True)
-        results = dpg.add_input_text(multiline=True, height=220, width=485, readonly=True)
+        dpg.add_collapsing_header(label="Results", leaf=True)
+        with dpg.group(horizontal=True):
+            results = dpg.add_input_text(multiline=True, height=220, readonly=True)
+            with dpg.child_window(autosize_x=True, height=220):
+                dpg.add_button(label="BEST QUALITY", width=136, callback=best_quality.print_result)
+                dpg.add_button(label="Macro 1", width=136, callback=best_quality.print_macro_1)
+                dpg.add_button(label="Macro 2", width=136, callback=best_quality.print_macro_2)
+                dpg.add_button(label="SAFE MARGIN", width=136, callback=best_quality.print_result)
+                dpg.add_button(label="Macro 1", width=136, callback=best_quality.print_macro_1)
+                dpg.add_button(label="Macro 2", width=136, callback=best_quality.print_macro_2)
+                dpg.add_button(label="QUICKEST", width=136, callback=best_quality.print_result)
+                dpg.add_button(label="Macro 1", width=136, callback=best_quality.print_macro_1)
+                dpg.add_button(label="Macro 2", width=136, callback=best_quality.print_macro_2)
 
         # LOG
         log_window = dpg.add_input_text(multiline=True, default_value=loggers.log, height=50, width=500,
