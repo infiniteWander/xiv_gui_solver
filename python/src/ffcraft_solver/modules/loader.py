@@ -48,7 +48,7 @@ class Loader:
         return os.path.normpath(os.path.join(__file__, "../..", path))
 
     def get_users_dict(self) -> dict:
-        loggers + 'Loaded user dictionary from users.yaml'
+        loggers.add_log('Loaded user dictionary from users.yaml')
         return self.user_list
 
     def get_users_names(self) -> list:

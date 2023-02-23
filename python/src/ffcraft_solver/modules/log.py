@@ -6,9 +6,10 @@ class Loggers:
         timestamp = self.get_timestamp()
         self.log = f"{timestamp} Log initialised."
 
-    def __add__(self, other: str) -> str:
+    def add_log(self, other: str) -> str:
         timestamp = self.get_timestamp()
         self.log += '\n' + timestamp + ' ' + other
+        print(self.log)
         return self.log
 
     # noinspection PyMethodMayBeStatic

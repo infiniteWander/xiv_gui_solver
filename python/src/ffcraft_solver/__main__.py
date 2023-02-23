@@ -170,7 +170,12 @@ class Recipe:
 
 
 def request_solve() -> True:
-    solver.Solver(user, recipe)
+    dpg.set_value(results, str(solver.Solver(user, recipe).best_quality))
+    return True
+
+
+def refresh_log() -> True:
+    dpg.set_value(log_window, loggers.log)
     return True
 
 
@@ -242,11 +247,12 @@ if __name__ == '__main__':
         dpg.add_separator()
         dpg.add_button(label="Solve!", callback=request_solve)
         dpg.add_text()
-        dpg.add_collapsing_header(label="Result")
+        dpg.add_collapsing_header(label="Result", leaf=True)
+        results = dpg.add_input_text(multiline=True, height=220, width=485, readonly=True)
 
         # LOG
         log_window = dpg.add_input_text(multiline=True, default_value=loggers.log, height=50, width=500,
-                                        tab_input=True, pos=[0, 642], tracked=True)
+                                        tab_input=True, pos=[0, 642], tracked=True, readonly=True)
 
     dpg.setup_dearpygui()
     dpg.show_viewport()
