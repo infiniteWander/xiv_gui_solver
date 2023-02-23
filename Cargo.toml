@@ -4,6 +4,10 @@ version = "0.1.3"
 edition = "2021"
 authors = ["谭俊健","Dandaedre","Vkyfox"]
 description = "Small XIV solver library in rust, with python and rust bindings"
+homepage = "https://proxy.dandaedre.com/gitea/Dandaedre/rcraft_solver"
+documentation = "https://proxy.dandaedre.com/gitea/Dandaedre/rcraft_solver"
+repository = "https://proxy.dandaedre.com/gitea/Dandaedre/rcraft_solver.git"
+license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
