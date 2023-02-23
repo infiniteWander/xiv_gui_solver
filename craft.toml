@@ -48,6 +48,21 @@ craftsmanship = 4041
 control = 3959
 max_cp = 602
 
+[frenetic]
+craftsmanship = 4041
+control = 3971
+max_cp = 595
+
+[frenefood]
+craftsmanship = 4041
+control = 4061
+max_cp = 681
+
+[frenechad]
+craftsmanship = 4041
+control = 4055
+max_cp = 619
+
 [cero]
 craftsmanship = 1818
 control = 1983

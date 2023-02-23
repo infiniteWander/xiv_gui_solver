@@ -4,6 +4,8 @@
 expected_values.md
 /bin.py
 python/dontlook.py
+expected_values.md
+releases/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
