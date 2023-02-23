@@ -129,7 +129,7 @@ pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
         available_actions.push(&ACTIONS.advanced_touch);
         forbidden_actions.push(&ACTIONS.basic_touch);
     }
-    // Todo, allow earlier byregot if the craft can be finished all the same (useless with always optimize on)
+
     if craft.buffs.inner_quiet >= craft.args.byregot_step { // 10
         available_actions.push(&ACTIONS.trained_finesse);
         available_actions.push(&ACTIONS.great_strides);
@@ -155,7 +155,6 @@ pub fn next_action_phase_2<'a>(craft: & Craft<'a>) -> Vec<Option<&'a Action>> {
 pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Vec<Craft<'a>>> {
     let mut queue = VecDeque::new();
     
-    // Todo: Return a vec of relevant functions, instead of the most quality one
     let mut top_route: Craft<'a> = craft.clone(); // Default route, no hq on that one
     let mut top_routes: Vec<Craft<'a>> = vec![];
 
