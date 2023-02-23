@@ -200,7 +200,10 @@ class Solution:
 
 
 def request_solve() -> True:
-    best_quality.result = solver.Solver(user, recipe).best_quality
+    all_results = solver.Solver(user, recipe)
+    best_quality.result = all_results.best_quality
+    least_steps.result = all_results.least_steps
+    safe_50.result = all_results.safe_50
     dpg.set_value(results, best_quality.result)
     return True
 
@@ -220,6 +223,8 @@ if __name__ == '__main__':
         user = User()
         recipe = Recipe()
         best_quality = Solution("Best Quality")
+        least_steps = Solution("Least Steps")
+        safe_50 = Solution("Safe Margin")
 
         full_config = loader.Loader()
         characters_names = full_config.get_users_names()
@@ -280,18 +285,19 @@ if __name__ == '__main__':
         dpg.add_button(label="Solve!", callback=request_solve)
         dpg.add_text()
         dpg.add_collapsing_header(label="Results", leaf=True)
+        # TODO: Add feedback when pressed
         with dpg.group(horizontal=True):
             results = dpg.add_input_text(multiline=True, height=220, readonly=True)
             with dpg.child_window(autosize_x=True, height=220):
                 dpg.add_button(label="BEST QUALITY", width=136, callback=best_quality.print_result)
                 dpg.add_button(label="Macro 1", width=136, callback=best_quality.print_macro_1)
                 dpg.add_button(label="Macro 2", width=136, callback=best_quality.print_macro_2)
-                dpg.add_button(label="SAFE MARGIN", width=136, callback=best_quality.print_result)
-                dpg.add_button(label="Macro 1", width=136, callback=best_quality.print_macro_1)
-                dpg.add_button(label="Macro 2", width=136, callback=best_quality.print_macro_2)
-                dpg.add_button(label="QUICKEST", width=136, callback=best_quality.print_result)
-                dpg.add_button(label="Macro 1", width=136, callback=best_quality.print_macro_1)
-                dpg.add_button(label="Macro 2", width=136, callback=best_quality.print_macro_2)
+                dpg.add_button(label="SAFE MARGIN", width=136, callback=safe_50.print_result)
+                dpg.add_button(label="Macro 1", width=136, callback=safe_50.print_macro_1)
+                dpg.add_button(label="Macro 2", width=136, callback=safe_50.print_macro_2)
+                dpg.add_button(label="QUICKEST", width=136, callback=least_steps.print_result)
+                dpg.add_button(label="Macro 1", width=136, callback=least_steps.print_macro_1)
+                dpg.add_button(label="Macro 2", width=136, callback=least_steps.print_macro_2)
 
         # LOG
         log_window = dpg.add_input_text(multiline=True, default_value=loggers.log, height=50, width=500,

@@ -58,7 +58,7 @@ Remaining CP: {self.remaining_cp}"""
 
     def make_macro(self) -> str:
         saved_lines = ['']
-        translated_actions = translator.translate(self.actions, "en")
+        translated_actions = translator.translate_list(self.actions, "en")
         count = 0
 
         for action in translated_actions:
@@ -106,6 +106,8 @@ class Solver:
 
         self.solutions = []
         self.best_quality = None
+        self.least_steps = None
+        self.safe_50 = None
 
         self.solve()
         self.compute_all()
@@ -115,20 +117,48 @@ class Solver:
         return xiv_craft_solver.solve_from_python(self)
 
     def compute_all(self) -> True:
-        self.compute_best_quality()
+        if self.solutions:
+            self.sort_quality()
+            self.compute_best_quality()
+            self.compute_least_steps()
+            self.compute_50percent_quality()
+
+    def sort_quality(self) -> True:
+        self.solutions.sort(key=lambda x: x.quality)
+        return True
 
     def compute_best_quality(self) -> Result:
-        best_quality = 0
-        output = 0
+        self.best_quality = Result(self.solutions[-1], 'Best quality')
+        return self.best_quality
+
+    def compute_50percent_quality(self) -> Result:
+        self.safe_50 = Result(self.solutions[round(len(self.solutions)/2)+1], 'Safe 50')
+        return self.safe_50
+
+    # def compute_best_quality(self) -> Result:
+    #     best_quality = 0
+    #     output = 0
+    #     if self.solutions:
+    #         for e in self.solutions:
+    #             if e.quality > best_quality:
+    #                 best_quality = e.quality
+    #                 output = e
+    #         self.best_quality = Result(output, 'Best quality')
+    #
+    #     else:
+    #         loggers.add_log('Could not complete craft with current effective stats.')
+    #     return self.best_quality
+
+    def compute_least_steps(self) -> Result:
+        least_steps = 100
+        output = None
         if self.solutions:
             for e in self.solutions:
-                if e.quality > best_quality:
-                    best_quality = e.quality
+                if e.steps < least_steps:
+                    least_steps = e.steps
                     output = e
-            self.best_quality = Result(output, 'Best quality')
+            self.least_steps = Result(output, 'Least steps')
 
-        else:
-            loggers.add_log('Could not complete craft with current effective stats.')
-        return self.best_quality
+        return self.least_steps
 
 

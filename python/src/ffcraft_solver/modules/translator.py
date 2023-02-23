@@ -1,5 +1,10 @@
+from ffcraft_solver.modules import log
+
+loggers = log.Loggers
+
 supported_languages = {
     "en": {
+        'basicSynth': 'Basic Synthesis',
         'basicSynth2': 'Basic Synthesis',
         'basicTouch': 'Basic Touch',
         'mastersMend': "Master's mend",
@@ -33,13 +38,20 @@ supported_languages = {
 }
 
 
-def translate(actions, lang: str):
+def translate_list(actions: list, lang: str):
     output = []
     print(actions)
     if lang in supported_languages:
         dictionary = supported_languages[lang]
         for action in actions:
-            output.append(dictionary[action])
+            try:
+                output.append(dictionary[action])
+            except KeyError:
+                output.append(supported_languages["en"][action])
+                loggers.log('Translation not found. Defaulting to English.\n'
+                            '    Macros will probably be broken because of this.')
+
+
     else:
         print(f'Log: Language code "{lang}" not recognised.')
 
