@@ -66,17 +66,31 @@ Remaining CP: {self.remaining_cp}"""
             saved_lines.append(line)
             count += 1
 
+        if self.steps != 29 or self.steps != 44:
+            saved_lines.append('/echo Craft complete ! <se.3>')
+        else:
+            loggers.log(f'No completion message in macro because rotation is exactly {self.steps} steps.')
+
         count = 0
         for line in saved_lines:
             count += 1
-            if count < 16:
+            if count < 15:
                 self.macro1 += line + '\n'
-            elif 15 < count < 31:
+            elif 14 < count < 30:
                 self.macro2 += line + '\n'
-            elif 30 < count < 46:
+            elif 29 < count < 45:
                 self.macro3 += line + '\n'
             else:
                 print("Log: Macro too long!")
+
+        nb_macros = 0
+        if self.macro1:
+            nb_macros = 1
+        if self.macro2:
+            nb_macros += 1
+        if self.macro3:
+            nb_macros += 1
+        # TODO: add next macro line
 
         self.macro1 = self.macro1[1:]
         self.macro2 = self.macro2[1:]
@@ -134,20 +148,6 @@ class Solver:
     def compute_50percent_quality(self) -> Result:
         self.safe_50 = Result(self.solutions[round(len(self.solutions)/2)+1], 'Safe 50')
         return self.safe_50
-
-    # def compute_best_quality(self) -> Result:
-    #     best_quality = 0
-    #     output = 0
-    #     if self.solutions:
-    #         for e in self.solutions:
-    #             if e.quality > best_quality:
-    #                 best_quality = e.quality
-    #                 output = e
-    #         self.best_quality = Result(output, 'Best quality')
-    #
-    #     else:
-    #         loggers.add_log('Could not complete craft with current effective stats.')
-    #     return self.best_quality
 
     def compute_least_steps(self) -> Result:
         least_steps = 100
