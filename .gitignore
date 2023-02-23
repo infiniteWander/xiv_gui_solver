@@ -1,6 +1,8 @@
 /target
 /.idea
 *.iml
+/bin.py
+python/dontlook.py
 expected_values.md
 /bin.py
 python/dontlook.py
