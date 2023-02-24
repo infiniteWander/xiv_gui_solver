@@ -5,8 +5,9 @@
  🟩 (GUI) Visual feedback when pressing solve
  🟩 (GUI) Ability to save
  🟩 (GUI) Make the logging work
+ 🟩 (PKG) Rename libs, bin, python, exe
 ### Important
- 🟩 (PKG) Have xtasks setup for release/cleanup/build
+ 🟩 (PKG) Have cargo-make setup for release/cleanup/build
  🟩 (PKG) Merge latest pre-release for the GUI
 ### Features
  🟩 (GUI) Refactor code
