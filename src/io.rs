@@ -95,8 +95,7 @@ impl Display for SolverResult{
 //#[pymethods]
 impl SolverResult{
     pub fn from_craft(craft: & Craft,step1_solutions : usize,step2_solutions : usize, found_100_percent: bool)->SolverResult{
-        // Todo: recreate actions
-        // Where steps ?
+
         let mut actions = craft.actions.iter().map(|action| 
             format!("{}",action.short_name)
         ).collect::<Vec<String>>();
