@@ -151,7 +151,7 @@ class Solver:
                 done = True
 
         if not done:
-            self.loggers.add_log('Could not find a rotation for 150% quality.\n'
+            self.loggers.add_log('Could not find a rotation for a 50% Safe Margin.\n'
                                  '    Defaulting to Best Quality.')
             self.safe_50 = self.best_quality
 
