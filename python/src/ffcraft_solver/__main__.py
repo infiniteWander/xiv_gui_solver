@@ -220,9 +220,9 @@ def refresh_log() -> True:
 if __name__ == '__main__':
     dpg.create_context()
     dpg.configure_app(manual_callback_management=True)
-    dpg.create_viewport(title='XIV Solver', width=500, height=700)
+    dpg.create_viewport(title='XIV Solver', width=500, height=700, resizable=False)
 
-    with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True, no_move=True):
+    with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True, no_move=True, no_collapse=True):
         # Initialization of all our classes
         loggers = log.Loggers()
 
