@@ -1,15 +1,19 @@
 from datetime import datetime
+import dearpygui.dearpygui as dpg
 
 
 class Loggers:
-    def __init__(self):
+    def __init__(self, log=None):
         timestamp = self.get_timestamp()
-        self.log = f"{timestamp} Log initialised."
+        if not log:
+            self.log = f"{timestamp} Log initialised."
+        else:
+            self.log = log
 
     def add_log(self, other: str) -> str:
         timestamp = self.get_timestamp()
-        self.log += '\n' + timestamp + ' ' + other
-        print(self.log)
+        self.log = timestamp + ' ' + other + '\n' + self.log
+        dpg.set_value('log_window', self.log)
         return self.log
 
     # noinspection PyMethodMayBeStatic

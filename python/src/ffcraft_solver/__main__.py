@@ -1,5 +1,6 @@
+import time
+
 import dearpygui.dearpygui as dpg
-import xiv_craft_solver as xcs
 from ffcraft_solver.modules import loader, log, solver
 import rich
 
@@ -170,7 +171,8 @@ class Recipe:
 
 
 class Solution:
-    def __init__(self, title):
+    def __init__(self, title, logger):
+        self.loggers = logger
         self.result = None
         self.title = title
 
@@ -178,33 +180,35 @@ class Solution:
         if self.result:
             dpg.set_value(results, self.result)
         else:
-            loggers.add_log('No solution to display.')
+            self.loggers.add_log('No solution to display.')
 
     def print_macro_1(self):
         if self.result and self.result.macro1:
             dpg.set_value(results, self.result.macro1)
         else:
-            loggers.add_log('No macro to display.')
+            self.loggers.add_log('No macro to display.')
 
     def print_macro_2(self):
         if self.result and self.result.macro2:
             dpg.set_value(results, self.result.macro2)
         else:
-            loggers.add_log('No macro to display.')
+            self.loggers.add_log('No macro to display.')
 
     def print_macro_3(self):
         if self.result and self.result.macro3:
             dpg.set_value(results, self.result.macro3)
         else:
-            loggers.add_log('No macro to display.')
+            self.loggers.add_log('No macro to display.')
 
 
 def request_solve() -> True:
+    loggers.add_log('Solver initialised. Please stand by.')
     all_results = solver.Solver(user, recipe)
     best_quality.result = all_results.best_quality
     least_steps.result = all_results.least_steps
     safe_50.result = all_results.safe_50
     dpg.set_value(results, best_quality.result)
+    loggers.add_log('Solved!')
     return True
 
 
@@ -220,19 +224,19 @@ if __name__ == '__main__':
 
     with dpg.window(label="Settings", width=500, height=700, no_resize=True, no_title_bar=True, no_move=True):
         # Initialization of all our classes
+        loggers = log.Loggers()
+
         user = User()
         recipe = Recipe()
-        best_quality = Solution("Best Quality")
-        least_steps = Solution("Least Steps")
-        safe_50 = Solution("Safe Margin")
+        best_quality = Solution("Best Quality", loggers)
+        least_steps = Solution("Least Steps", loggers)
+        safe_50 = Solution("Safe Margin", loggers)
 
-        full_config = loader.Loader()
+        full_config = loader.Loader(loggers)
         characters_names = full_config.get_users_names()
         foods_names = full_config.get_foods_names()
         pots_names = full_config.get_pots_names()
         recipe_names = full_config.get_recipes_names()
-
-        loggers = log.Loggers()
 
         # Start of GUI drawing
         # CHARACTER
@@ -286,6 +290,7 @@ if __name__ == '__main__':
         dpg.add_text()
         dpg.add_collapsing_header(label="Results", leaf=True)
         # TODO: Add feedback when pressed
+
         with dpg.group(horizontal=True):
             results = dpg.add_input_text(multiline=True, height=220, readonly=True)
             with dpg.child_window(autosize_x=True, height=220):
@@ -301,7 +306,7 @@ if __name__ == '__main__':
 
         # LOG
         log_window = dpg.add_input_text(multiline=True, default_value=loggers.log, height=50, width=500,
-                                        tab_input=True, pos=[0, 642], tracked=True, readonly=True)
+                                        tab_input=True, pos=[0, 642], tracked=False, readonly=True, tag="log_window")
 
     dpg.setup_dearpygui()
     dpg.show_viewport()

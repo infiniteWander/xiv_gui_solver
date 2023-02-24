@@ -1,9 +1,7 @@
 import rich
-import xiv_craft_solver
+import xiv_craft_solver as xcs
 from ffcraft_solver.__main__ import User, Recipe
 from ffcraft_solver.modules import log, translator
-
-loggers = log.Loggers()
 
 
 class Result:
@@ -124,8 +122,8 @@ class Solver:
         self.compute_all()
 
     def solve(self) -> str:
-        self.solutions = xiv_craft_solver.solve_from_python(self)
-        return xiv_craft_solver.solve_from_python(self)
+        self.solutions = xcs.solve_from_python(self)
+        return xcs.solve_from_python(self)
 
     def compute_all(self) -> True:
         if self.solutions:

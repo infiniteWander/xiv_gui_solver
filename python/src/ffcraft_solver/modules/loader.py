@@ -1,10 +1,6 @@
-import rich
 import yaml
 import os
 from ffcraft_solver.modules import log
-
-
-loggers = log.Loggers()
 
 
 class DefaultConfig:
@@ -16,7 +12,8 @@ class DefaultConfig:
 class Loader:
     # TODO: create folder/file if missing when clicking "save"
     # TODO: log any missing file(s) or the whole folder
-    def __init__(self):
+    def __init__(self, loggers: log.Loggers):
+        self.loggers = loggers
         self.user_list = {'   ': [0, 0, 0]}
         self.foods_list = {'   ': [[0, 0], [0, 0], [0, 0]]}
         self.pots_list = {'   ': [[0, 0], [0, 0], [0, 0]]}
@@ -27,7 +24,7 @@ class Loader:
             with open(self.relative_import(self.config.yaml_user), 'r') as file:
                 self.user_list.update(yaml.safe_load(file))
         except FileNotFoundError as e:
-            loggers.add_log(e)
+            self.loggers.add_log(e)
 
         try:
             with open(self.relative_import(self.config.yaml_consumable), 'r') as file:
@@ -35,20 +32,20 @@ class Loader:
                 self.foods_list.update(loaded_file['Foods'])
                 self.pots_list.update(loaded_file['Pots'])
         except FileNotFoundError as e:
-            loggers.add_log(e)
+            self.loggers.add_log(e)
 
         try:
             with open(self.relative_import(self.config.yaml_recipes), 'r') as file:
                 self.recipes_list.update(yaml.safe_load(file))
         except (FileNotFoundError, IsADirectoryError) as e:
-            loggers.add_log(e)
+            self.loggers.add_log(e)
 
     @staticmethod
     def relative_import(path):
         return os.path.normpath(os.path.join(__file__, "../..", path))
 
     def get_users_dict(self) -> dict:
-        loggers.add_log('Loaded user dictionary from users.yaml')
+        self.loggers.add_log('Loaded user dictionary from users.yaml')
         return self.user_list
 
     def get_users_names(self) -> list:
@@ -83,7 +80,3 @@ class Loader:
         for r in self.recipes_list:
             recipes_names.append(r)
         return recipes_names
-
-
-if __name__ == "__main__":
-    loader = Loader()
