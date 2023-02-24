@@ -2,13 +2,14 @@
 
 ## v0.2
 ### Breaking
+ ✅ (GUI) Make macros work
  🟩 (GUI) Visual feedback when pressing solve
  🟩 (GUI) Ability to save
- 🟩 (GUI) Make the logging work
+ ✅ (GUI) Make the logging work
  🟩 (PKG) Rename libs, bin, python, exe
 ### Important
- 🟩 (PKG) Have cargo-make setup for release/cleanup/build
- 🟩 (PKG) Merge latest pre-release for the GUI
+ ✅ (PKG) Have cargo-make setup for release/cleanup/build
+ ✅ (PKG) Merge latest pre-release for the GUI
 ### Features
  🟩 (GUI) Refactor code
 
