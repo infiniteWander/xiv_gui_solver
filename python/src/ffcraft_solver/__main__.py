@@ -142,7 +142,7 @@ class Recipe:
             stats = [app_data[0], app_data[1], app_data[2]]
             advanced_stats = [app_data[3], app_data[4], app_data[5], app_data[6]]
         else:
-            print('Log: Something went very wrong in recipe stat assignment.')
+            loggers.add_log('Something went very wrong in recipe stat assignment.')
 
         self.progress = stats[0]
         self.quality = stats[1]

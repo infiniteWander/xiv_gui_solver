@@ -27,7 +27,7 @@ class Loader:
             with open(self.relative_import(self.config.yaml_user), 'r') as file:
                 self.user_list.update(yaml.safe_load(file))
         except FileNotFoundError as e:
-            print(e)
+            loggers.add_log(e)
 
         try:
             with open(self.relative_import(self.config.yaml_consumable), 'r') as file:
@@ -35,13 +35,13 @@ class Loader:
                 self.foods_list.update(loaded_file['Foods'])
                 self.pots_list.update(loaded_file['Pots'])
         except FileNotFoundError as e:
-            print(e)
+            loggers.add_log(e)
 
         try:
             with open(self.relative_import(self.config.yaml_recipes), 'r') as file:
                 self.recipes_list.update(yaml.safe_load(file))
         except (FileNotFoundError, IsADirectoryError) as e:
-            print(e)
+            loggers.add_log(e)
 
     @staticmethod
     def relative_import(path):

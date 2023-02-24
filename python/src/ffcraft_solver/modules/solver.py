@@ -56,7 +56,7 @@ Remaining CP: {self.remaining_cp}"""
 
         return justified_text[:-1]
 
-    def make_macro(self) -> str:
+    def make_macro(self) -> True:
         saved_lines = ['']
         translated_actions = translator.translate_list(self.actions, "en")
         count = 0
@@ -65,37 +65,34 @@ Remaining CP: {self.remaining_cp}"""
             line = f'/ac "{action}" <wait.{"2" if self.actions[count] in self.all_buffs_list else "3"}>'
             saved_lines.append(line)
             count += 1
+        saved_lines = saved_lines[1:]
 
-        if self.steps != 29 or self.steps != 44:
+        if self.steps != 15 and self.steps != 29 and self.steps != 44:
             saved_lines.append('/echo Craft complete ! <se.3>')
         else:
             loggers.log(f'No completion message in macro because rotation is exactly {self.steps} steps.')
 
+        if self.steps > 15:
+            saved_lines.insert(14, '/echo Macro 1 complete <se.2>')
+
+        if self.steps > 30:
+            saved_lines.insert(30, '/echo Macro 2 complete <se.2>')
+            # TODO : test index
+
         count = 0
         for line in saved_lines:
             count += 1
-            if count < 15:
+            if count < 16:
                 self.macro1 += line + '\n'
-            elif 14 < count < 30:
+            elif 15 < count < 31:
                 self.macro2 += line + '\n'
-            elif 29 < count < 45:
+            elif 30 < count < 46:
                 self.macro3 += line + '\n'
-            else:
-                print("Log: Macro too long!")
 
-        nb_macros = 0
-        if self.macro1:
-            nb_macros = 1
-        if self.macro2:
-            nb_macros += 1
-        if self.macro3:
-            nb_macros += 1
-        # TODO: add next macro line
-
-        self.macro1 = self.macro1[1:]
-        self.macro2 = self.macro2[1:]
-        self.macro3 = self.macro3[1:]
-        return self.macro1
+        self.macro1 = self.macro1[:-1]
+        self.macro2 = self.macro2[:-1]
+        self.macro3 = self.macro3[:-1]
+        return True
 
 
 class Solver:
@@ -146,7 +143,19 @@ class Solver:
         return self.best_quality
 
     def compute_50percent_quality(self) -> Result:
-        self.safe_50 = Result(self.solutions[round(len(self.solutions)/2)+1], 'Safe 50')
+        done = False
+        threshold = self.quality * 1.5
+        for s in reversed(self.solutions):
+            if s.quality > threshold:
+                self.safe_50 = Result(s, 'Safe 50')
+                done = True
+
+        if not done:
+            loggers.add_log('Could not find a rotation for 150% quality.\n'
+                            '    Defaulting to Best Quality.')
+            self.safe_50 = self.best_quality
+
+        # self.safe_50 = Result(self.solutions[round(len(self.solutions)/2)+1], 'Safe 50')  # old version
         return self.safe_50
 
     def compute_least_steps(self) -> Result:

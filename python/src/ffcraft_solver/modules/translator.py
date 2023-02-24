@@ -40,7 +40,6 @@ supported_languages = {
 
 def translate_list(actions: list, lang: str):
     output = []
-    print(actions)
     if lang in supported_languages:
         dictionary = supported_languages[lang]
         for action in actions:
@@ -51,9 +50,8 @@ def translate_list(actions: list, lang: str):
                 loggers.log('Translation not found. Defaulting to English.\n'
                             '    Macros will probably be broken because of this.')
 
-
     else:
-        print(f'Log: Language code "{lang}" not recognised.')
+        loggers.add_log(f'Language code "{lang}" not recognised.')
 
     return output
 
