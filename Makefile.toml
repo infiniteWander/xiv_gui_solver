@@ -46,8 +46,17 @@ script_runner = "@shell"
 script = '''
     mkdir -p releases # Add version as an arg and things
     cp target/wheels/*.whl releases/
-    zip releases/ffcraft_solver_cli.zip -q -j target/release/ffcraft_solver_cli craft.toml -j target/release/libxiv_craft_solver.so 
-    cd python/dist/ && zip -q ../../releases/ffcraft_solver_gui.zip -r ffcraft_solver_gui/
+    zip releases/ffcraft_solver_cli.zip -j target/release/ffcraft_solver_cli craft.toml -j target/release/libxiv_craft_solver.so 
+    cd python/dist/ && zip ../../releases/ffcraft_solver_gui.zip -r ffcraft_solver_gui_linux/
+'''
+
+[tasks.zip_win]
+script_runner = "@shell"
+script = '''
+    mkdir -p releases # Add version as an arg and things
+    cp target/wheels/*.whl releases/
+    tar acvf releases/ff_craft_solver_cli_win.zip .\craft.toml -C .\target\release\ ffcraft_solver_cli.exe libxiv_craft_solver.d
+    tar acvf releases/ff_craft_solver_gui_win.zip -C .\python\dist\ .\ffcraft_solver_gui_win\*
 '''
 
 [tasks.zip_win]
