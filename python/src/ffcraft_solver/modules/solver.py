@@ -68,7 +68,7 @@ Remaining CP: {self.remaining_cp}"""
         if self.steps != 15 and self.steps != 29 and self.steps != 44:
             saved_lines.append('/echo Craft complete ! <se.3>')
         else:
-            loggers.log(f'No completion message in macro because rotation is exactly {self.steps} steps.')
+            self.loggers.log(f'No completion message in macro because rotation is exactly {self.steps} steps.')
 
         if self.steps > 15:
             saved_lines.insert(14, '/echo Macro 1 complete <se.2>')
@@ -94,7 +94,7 @@ Remaining CP: {self.remaining_cp}"""
 
 
 class Solver:
-    def __init__(self, user: User, recipe: Recipe):
+    def __init__(self, user: User, recipe: Recipe, loggers: log.Loggers):
         self.durability = recipe.durability
         self.progress = recipe.progress
         self.quality = recipe.quality
@@ -112,6 +112,8 @@ class Solver:
         self.desperate = False
         self.threads = 8
         self.verbose = 0
+
+        self.loggers = loggers
 
         self.solutions = []
         self.best_quality = None
@@ -149,8 +151,8 @@ class Solver:
                 done = True
 
         if not done:
-            loggers.add_log('Could not find a rotation for 150% quality.\n'
-                            '    Defaulting to Best Quality.')
+            self.loggers.add_log('Could not find a rotation for 150% quality.\n'
+                                 '    Defaulting to Best Quality.')
             self.safe_50 = self.best_quality
 
         # self.safe_50 = Result(self.solutions[round(len(self.solutions)/2)+1], 'Safe 50')  # old version

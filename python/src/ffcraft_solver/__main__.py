@@ -203,7 +203,7 @@ class Solution:
 
 def request_solve() -> True:
     loggers.add_log('Solver initialised. Please stand by.')
-    all_results = solver.Solver(user, recipe)
+    all_results = solver.Solver(user, recipe, loggers)
     best_quality.result = all_results.best_quality
     least_steps.result = all_results.least_steps
     safe_50.result = all_results.safe_50
