@@ -7,7 +7,7 @@ rich.inspect(xiv_craft_solver.test_result())
 rich.inspect(xiv_craft_solver.test_result())
 
 
-class feedMeDaddy:
+class FeedMeDaddy:
 	durability = 70
 	progress = 3900
 	quality = 10920
@@ -27,6 +27,6 @@ class feedMeDaddy:
 	verbose = 0
 	
 
-el_daddy=feedMeDaddy()
+el_daddy = FeedMeDaddy()
 rich.inspect(xiv_craft_solver.solve_from_python(el_daddy))
 
