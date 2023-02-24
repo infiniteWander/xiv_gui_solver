@@ -7,6 +7,7 @@ supported_languages = {
         'basicSynth': 'Basic Synthesis',
         'basicSynth2': 'Basic Synthesis',
         'basicTouch': 'Basic Touch',
+        'observe': 'Observe',
         'mastersMend': "Master's mend",
         'hastyTouch': 'Hasty Touch',
         'rapidSynthesis': 'Rapid Synthesis',
