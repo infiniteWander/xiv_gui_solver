@@ -4,6 +4,7 @@
 ### Breaking
  ✅ (GUI) Make macros work
  🟩 (GUI) Visual feedback when pressing solve
+ 🟩 (GUI) Update on the Quality %
  🟩 (GUI) Ability to save
  ✅ (GUI) Make the logging work
  🟩 (PKG) Rename libs, bin, python, exe
