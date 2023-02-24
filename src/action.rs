@@ -1,9 +1,8 @@
-#[allow(dead_code)]
-
-use std::fmt::Debug;
-use lazy_static::lazy_static;
 use crate::craft::Craft;
 use crate::specs::{Buff, Success};
+use lazy_static::lazy_static;
+#[allow(dead_code)]
+use std::fmt::Debug;
 
 pub struct Action {
     pub name: String,
@@ -25,9 +24,15 @@ impl ActionBuilder {
         short_name = short_name.replace("II", "2");
         short_name.retain(|c| !c.is_whitespace() && c != '\'');
         short_name[0..1].make_ascii_lowercase();
-        if name == "Basic Synthesis" { short_name = "basicSynth2".to_string(); }
-        if name == "Groundwork" { short_name = "groundwork".to_string(); }
-        if name == "Careful Synthesis" { short_name = "carefulSynthesis".to_string(); }
+        if name == "Basic Synthesis" {
+            short_name = "basicSynth2".to_string();
+        }
+        if name == "Groundwork" {
+            short_name = "groundwork".to_string();
+        }
+        if name == "Careful Synthesis" {
+            short_name = "carefulSynthesis".to_string();
+        }
 
         Self {
             action: Action {
@@ -38,7 +43,7 @@ impl ActionBuilder {
                 quality: 0,
                 buff: None,
                 short_name,
-            }
+            },
         }
     }
     pub fn dur(mut self, dur: u32) -> Self {
@@ -68,7 +73,10 @@ impl ActionBuilder {
 
 impl PartialEq for Action {
     fn eq(&self, other: &Self) -> bool {
-        self.cp == other.cp && self.dur == other.dur && self.progress == other.progress && self.quality == other.quality
+        self.cp == other.cp
+            && self.dur == other.dur
+            && self.progress == other.progress
+            && self.quality == other.quality
     }
 }
 
@@ -77,12 +85,18 @@ impl Action {
         self.name.clone()
     }
     pub fn get_cp_cost(&self, _craft: &Craft) -> u32 {
-        if self == &ACTIONS.standard_touch && _craft.buffs.basic_touch > 0 { return 18; };
-        if self == &ACTIONS.advanced_touch && _craft.buffs.standard_touch > 0 { return 18; };
+        if self == &ACTIONS.standard_touch && _craft.buffs.basic_touch > 0 {
+            return 18;
+        };
+        if self == &ACTIONS.advanced_touch && _craft.buffs.standard_touch > 0 {
+            return 18;
+        };
         self.cp
     }
     pub fn get_durability_cost(&self, _craft: &Craft) -> u32 {
-        if self == &ACTIONS.masters_mend { return 30; }
+        if self == &ACTIONS.masters_mend {
+            return 30;
+        }
         if self.dur == 0 || self.progress == 0 && self.quality == 0 {
             return 0;
         }
@@ -156,7 +170,6 @@ impl Debug for Action {
     }
 }
 
-
 pub struct ActionList {
     pub muscle_memory: Action,
     pub reflect: Action,
@@ -186,31 +199,99 @@ pub struct ActionList {
 impl Default for ActionList {
     fn default() -> Self {
         Self {
-            muscle_memory: ActionBuilder::new("Muscle Memory").cp(6).progress(300).buff(Some((Buff::MuscleMemory, 5))).build(),
-            reflect: ActionBuilder::new("Reflect").cp(6).quality(100).buff(Some((Buff::InnerQuiet, 1))).build(),
+            muscle_memory: ActionBuilder::new("Muscle Memory")
+                .cp(6)
+                .progress(300)
+                .buff(Some((Buff::MuscleMemory, 5)))
+                .build(),
+            reflect: ActionBuilder::new("Reflect")
+                .cp(6)
+                .quality(100)
+                .buff(Some((Buff::InnerQuiet, 1)))
+                .build(),
 
             basic_synthesis: ActionBuilder::new("Basic Synthesis").progress(120).build(),
-            careful_synthesis: ActionBuilder::new("Careful Synthesis").cp(7).progress(180).build(),
-            groundwork: ActionBuilder::new("Groundwork").cp(18).dur(20).progress(360).build(),
-            prudent_synthesis: ActionBuilder::new("Prudent Synthesis").cp(18).dur(5).progress(180).build(),
-            delicate_synthesis: ActionBuilder::new("Delicate Synthesis").cp(32).progress(100).quality(100).build(),
+            careful_synthesis: ActionBuilder::new("Careful Synthesis")
+                .cp(7)
+                .progress(180)
+                .build(),
+            groundwork: ActionBuilder::new("Groundwork")
+                .cp(18)
+                .dur(20)
+                .progress(360)
+                .build(),
+            prudent_synthesis: ActionBuilder::new("Prudent Synthesis")
+                .cp(18)
+                .dur(5)
+                .progress(180)
+                .build(),
+            delicate_synthesis: ActionBuilder::new("Delicate Synthesis")
+                .cp(32)
+                .progress(100)
+                .quality(100)
+                .build(),
 
-            basic_touch: ActionBuilder::new("Basic Touch").cp(18).quality(100).buff(Some((Buff::BasicTouch, 1))).build(),
-            standard_touch: ActionBuilder::new("Standard Touch").quality(125).cp(32).buff(Some((Buff::StandardTouch, 1))).build(),
-            byregot_blessing: ActionBuilder::new("Byregot's Blessing").cp(24).quality(100).buff(Some((Buff::InnerQuiet, 0))).build(),
-            prudent_touch: ActionBuilder::new("Prudent Touch").cp(25).dur(5).quality(100).build(),
-            preparatory_touch: ActionBuilder::new("Preparatory Touch").cp(40).dur(20).quality(200).buff(Some((Buff::InnerQuiet, 1))).build(),
-            advanced_touch: ActionBuilder::new("Advanced Touch").quality(150).cp(46).build(),
-            trained_finesse: ActionBuilder::new("Trained Finesse").cp(32).quality(100).dur(0).build(),
+            basic_touch: ActionBuilder::new("Basic Touch")
+                .cp(18)
+                .quality(100)
+                .buff(Some((Buff::BasicTouch, 1)))
+                .build(),
+            standard_touch: ActionBuilder::new("Standard Touch")
+                .quality(125)
+                .cp(32)
+                .buff(Some((Buff::StandardTouch, 1)))
+                .build(),
+            byregot_blessing: ActionBuilder::new("Byregot's Blessing")
+                .cp(24)
+                .quality(100)
+                .buff(Some((Buff::InnerQuiet, 0)))
+                .build(),
+            prudent_touch: ActionBuilder::new("Prudent Touch")
+                .cp(25)
+                .dur(5)
+                .quality(100)
+                .build(),
+            preparatory_touch: ActionBuilder::new("Preparatory Touch")
+                .cp(40)
+                .dur(20)
+                .quality(200)
+                .buff(Some((Buff::InnerQuiet, 1)))
+                .build(),
+            advanced_touch: ActionBuilder::new("Advanced Touch")
+                .quality(150)
+                .cp(46)
+                .build(),
+            trained_finesse: ActionBuilder::new("Trained Finesse")
+                .cp(32)
+                .quality(100)
+                .dur(0)
+                .build(),
 
             masters_mend: ActionBuilder::new("Master's Mend").cp(88).build(),
-            waste_not: ActionBuilder::new("Waste Not").cp(56).buff(Some((Buff::WasteNot, 4))).build(),
-            waste_not_ii: ActionBuilder::new("Waste Not II").cp(98).buff(Some((Buff::WasteNot, 8))).build(),
-            manipulation: ActionBuilder::new("Manipulation").cp(96).buff(Some((Buff::Manipulation, 8))).build(),
-            veneration: ActionBuilder::new("Veneration").cp(18).buff(Some((Buff::Veneration, 4))).build(),
-            great_strides: ActionBuilder::new("Great Strides").cp(32).buff(Some((Buff::GreatStrides, 3))).build(),
-            innovation: ActionBuilder::new("Innovation").cp(18).buff(Some((Buff::Innovation, 4))).build(),
-
+            waste_not: ActionBuilder::new("Waste Not")
+                .cp(56)
+                .buff(Some((Buff::WasteNot, 4)))
+                .build(),
+            waste_not_ii: ActionBuilder::new("Waste Not II")
+                .cp(98)
+                .buff(Some((Buff::WasteNot, 8)))
+                .build(),
+            manipulation: ActionBuilder::new("Manipulation")
+                .cp(96)
+                .buff(Some((Buff::Manipulation, 8)))
+                .build(),
+            veneration: ActionBuilder::new("Veneration")
+                .cp(18)
+                .buff(Some((Buff::Veneration, 4)))
+                .build(),
+            great_strides: ActionBuilder::new("Great Strides")
+                .cp(32)
+                .buff(Some((Buff::GreatStrides, 3)))
+                .build(),
+            innovation: ActionBuilder::new("Innovation")
+                .cp(18)
+                .buff(Some((Buff::Innovation, 4)))
+                .build(),
             // Todo: Add back
             //observe: ActionBuilder::new("observe").cp(18).buff(Some((Buff::Observe, 1))).build(),
             //focused_synthesis: ActionBuilder::new("focused_synthesis").cp(18).quality(100).build(),
@@ -219,5 +300,5 @@ impl Default for ActionList {
 }
 
 lazy_static! {
-pub static ref ACTIONS: ActionList = ActionList::default();
+    pub static ref ACTIONS: ActionList = ActionList::default();
 }

@@ -1,0 +1,37 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.remove_tmp]
+script_runner = "@shell"
+script = '''
+    rm -rf releases
+    rm -rf python/build
+    rm -rf python/dist
+'''
+
+[tasks.build]
+command = "cargo"
+args = ["build","--release","-q"]
+dependencies = ["clean"]
+
+[tasks.maturin]
+command = "maturin"
+args = ["develop", "--release", "-q"]
+
+[tasks.rust]
+dependencies = ["build","maturin"]
+
+
+[tasks.my-flow]
+dependencies = [
+    "format",
+    "build",
+    "test"
+]
+
