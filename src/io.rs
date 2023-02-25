@@ -2,7 +2,7 @@ use crate::Craft;
 use clap::Parser;
 use core::fmt::Display;
 
-#[cfg(not(feature = "no_python"))]
+// #[cfg(not(feature = "no_python"))]
 use pyo3::prelude::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -187,7 +187,7 @@ impl Parameters {
 /// A Python module implemented in Rust.
 #[cfg(not(feature = "no_python"))]
 #[pymodule]
-fn xiv_craft_solver(_py: Python, m: &PyModule) -> PyResult<()> {
+fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(test_result, m)?)?;
     m.add_function(wrap_pyfunction!(solve_from_python, m)?)?;
     Ok(())

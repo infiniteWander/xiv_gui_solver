@@ -1,6 +1,6 @@
 import yaml
 import os
-from ffcraft_solver.modules import log
+from xiv_csolver.modules import log
 
 
 class DefaultConfig:

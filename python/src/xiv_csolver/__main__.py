@@ -1,7 +1,7 @@
 import time
 
 import dearpygui.dearpygui as dpg
-from ffcraft_solver.modules import loader, log, solver
+from xiv_csolver.modules import loader, log, solver
 import rich
 
 

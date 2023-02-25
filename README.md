@@ -1,4 +1,4 @@
-# xiv_craft_solver
+# xiv_csolver
 A rust program for solving FFXIV craft recipe. 
 
 Originaly written by [RikaKagurasaka](https://github.com/RikaKagurasaka/xiv_craft_solver),
@@ -19,7 +19,7 @@ When building the CLI invocation is done with the following parameters
 ```
 Small XIV solver library in rust, with python and rust bindings
 
-Usage: ffcraft [OPTIONS]
+Usage: xiv_csolver_cli [OPTIONS]
 
 Options:
   -r, --recipe-name <RECIPE_NAME>
@@ -44,6 +44,11 @@ Options:
           Print version
 ```
 ## Developpement
+Please remember to set and use a venv before building
+While not mandatory, using ``cargo-make`` will provide you with the commands:
+- cargo make rebuild (rebuilding both the rust and pip bindings)
+- cargo make release (rebuilding and bundling the executables (for your os)) in a releases folder
+
 ### Rust
 Everything is located in the root & src.
 You can build the program (CLI) with cargo build the following features are available
@@ -51,8 +56,9 @@ You can build the program (CLI) with cargo build the following features are avai
 - The ``no_python`` will not build the lib (WIP, not fully implemented)
 - The ``fast`` feature will not allow some under-optimisation to run (saving global run-time)
 - The ``verbose`` feature will allow even more debug messages (They might not be shown depending on the verbosity level hoever)
+
 #### Maturin
-To build the python module, run ``maturin develop`` or ``maturin build`` then ``maturin install``
+To build the python module, run either ``maturin develop`` or ``maturin build`` then ``maturin install``
 
 ### Python
 #### Developping the GUI
@@ -60,9 +66,8 @@ To build the python module, run ``maturin develop`` or ``maturin build`` then ``
 1. Go to the ``python`` directory
 2. Install the dev dependencies ``pip install -r requirements_dev.txt``
 3. Install the project (in editable mode) ``pip install -e .``
-4. Invoke the project (from anywhere) ``python -m ffcraft_solver`` 
+4. Invoke the project (from anywhere) ``python -m xiv_csolver`` 
 5. Edit the project and re-invoke it (no need to install / compile again)
-
 
 #### Rust CLI Example
 Note: The recipe data can be retrieved from a [FFXIV Crafting Optimizer](https://yyyy.games/crafter/#/simulator)

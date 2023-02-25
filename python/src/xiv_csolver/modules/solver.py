@@ -1,7 +1,7 @@
 import rich
-import xiv_craft_solver as xcs
-from ffcraft_solver.__main__ import User, Recipe
-from ffcraft_solver.modules import log, translator
+import xiv_csolver_lib as xcs
+from xiv_csolver.__main__ import User, Recipe
+from xiv_csolver.modules import log, translator
 
 
 class Result:

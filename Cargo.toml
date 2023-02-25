@@ -1,12 +1,12 @@
 [package]
-name = "xiv_craft_solver"
+name = "xiv_csolver"
 version = "0.1.5"
 edition = "2021"
 authors = ["谭俊健","Dandaedre","Vkyfox"]
 description = "Small XIV solver library in rust, with python and rust bindings"
-homepage = "https://proxy.dandaedre.com/gitea/Dandaedre/rcraft_solver"
-documentation = "https://proxy.dandaedre.com/gitea/Dandaedre/rcraft_solver"
-repository = "https://proxy.dandaedre.com/gitea/Dandaedre/rcraft_solver.git"
+homepage = "https://proxy.dandaedre.com/gitea/Dandaedre/xiv_csolver"
+documentation = "https://proxy.dandaedre.com/gitea/Dandaedre/xiv_csolver"
+repository = "https://proxy.dandaedre.com/gitea/Dandaedre/xiv_csolver.git"
 license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -39,13 +39,13 @@ no_python = [] # Removes the python bindings
 fast = []      # Remove some under optimisations that try to find other routes
 
 [lib]
-name = "xiv_craft_solver" # Pending rename ffcraft_solver_lib
+name = "xiv_csolver_lib" # Pending rename xiv_csolver_lib
 path = "src/lib.rs"
 crate-type = ["cdylib","rlib"]
 
 [[bin]]
-name = "ffcraft_solver_cli"
-path = "src/bin/ffcraft.rs"
+name = "xiv_csolver_cli"
+path = "src/bin/xiv_csolver.rs"
 
 [tool.maturin]
 python-source = "python"

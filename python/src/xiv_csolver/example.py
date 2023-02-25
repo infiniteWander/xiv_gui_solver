@@ -1,10 +1,10 @@
-import xiv_craft_solver
+import xiv_csolver_lib
 import rich
 
-rich.inspect(xiv_craft_solver)
-rich.inspect(xiv_craft_solver.test_result)
-rich.inspect(xiv_craft_solver.test_result())
-rich.inspect(xiv_craft_solver.test_result())
+rich.inspect(xiv_csolver_lib)
+rich.inspect(xiv_csolver_lib.test_result)
+rich.inspect(xiv_csolver_lib.test_result())
+rich.inspect(xiv_csolver_lib.test_result())
 
 
 class FeedMeDaddy:
@@ -28,5 +28,5 @@ class FeedMeDaddy:
 	
 
 el_daddy = FeedMeDaddy()
-rich.inspect(xiv_craft_solver.solve_from_python(el_daddy))
+rich.inspect(xiv_csolver_lib.solve_from_python(el_daddy))
 

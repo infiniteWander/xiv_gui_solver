@@ -7,10 +7,11 @@
  🟩 (GUI) Update on the Quality %
  🟩 (GUI) Ability to save
  ✅ (GUI) Make the logging work
- 🟩 (PKG) Rename libs, bin, python, exe
+ ✅ (PKG) Rename libs, bin, python, exe
 ### Important
  ✅ (PKG) Have cargo-make setup for release/cleanup/build
  ✅ (PKG) Merge latest pre-release for the GUI
+ ✅ (PKG) Have a rebuild function
 ### Features
  🟩 (GUI) Refactor code
 
