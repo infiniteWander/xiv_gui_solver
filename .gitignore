@@ -1,11 +1,12 @@
 /target
 /.idea
 *.iml
-expected_values.md
 /bin.py
 python/dontlook.py
 expected_values.md
 releases/*
+.whl
+pyinstaller_log.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

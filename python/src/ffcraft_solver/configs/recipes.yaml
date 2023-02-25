@@ -1,3 +1,8 @@
-# Name: [Quality, difficulty, durability]
-Grade 7 Tincture of Strength: [12628, 5060, 70]
-Grade 5 Strength Alkahest: [6200, 1300, 35]
+# Name: [Progress, quality, durability, progress difficulty, quality difficulty, extra progress difficulty, extra quality difficulty]
+# as can be found on other solver websites, such as https://yyyy.games/crafter/index.html#/simulator and checking custom recipe.
+# The language option is the second menu to the left from the top-right hand corner.
+# If this seems super convoluted, and you'd rather it was just the three in-game values, know that me too.
+# Unfortunately that is how Square Enix chose to make crafting work in FFXIV.
+
+Grade 7 Tincture of Strength: [5060, 12628, 70, 130, 115, 80, 70]
+Grade 5 Strength Alkahest: [1300, 6200, 40, 123, 107, 100, 100]

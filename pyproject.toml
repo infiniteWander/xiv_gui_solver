@@ -5,7 +5,7 @@ build-backend = "maturin"
 [project] # The rust bindings
 name = "xiv_craft_solver"
 requires-python = ">=3.7"
-version = "0.0.4"
+version = "0.1.5"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",

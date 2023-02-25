@@ -1,0 +1,105 @@
+[tasks.release]
+dependencies = [
+    "format",
+    "clean",
+    "build",
+    "maturin",
+    "maturin_build",
+    "pip",
+    "pyinstaller",
+    "zip",
+]
+
+[tasks.upload]
+script_runner="@shell"
+ignore_errors = true
+script = [
+"twine upload releases/ffcraft_solver*.whl --repository gitea",
+"twine upload releases/xiv_craft_solver*.whl --repository gitea",
+]
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+dependencies = ["remove_tmp"]
+
+[tasks.remove_tmp]
+script_runner = "@shell"
+ignore_errors = true
+script = '''
+    rm -rf releases
+    rm -rf python/build
+    rm -rf python/dist
+'''
+
+[tasks.zip]
+windows_alias = 'zip_win'
+linux_alias = 'zip_linux'
+
+[tasks.zip_linux]
+script_runner = "@shell"
+script = '''
+    mkdir -p releases # Add version as an arg and things
+    cp target/wheels/*.whl releases/
+    zip releases/ffcraft_solver_cli.zip -j target/release/ffcraft_solver_cli craft.toml -j target/release/libxiv_craft_solver.so 
+    cd python/dist/ && zip ../../releases/ffcraft_solver_gui.zip -r ffcraft_solver_gui_linux/
+'''
+
+[tasks.zip_win]
+script_runner = "@shell"
+script = '''
+    mkdir -p releases # Add version as an arg and things
+    cp target/wheels/*.whl releases/
+    tar acvf releases/ff_craft_solver_cli_win.zip .\craft.toml -C .\target\release\ ffcraft_solver_cli.exe libxiv_craft_solver.d
+    tar acvf releases/ff_craft_solver_gui_win.zip -C .\python\dist\ .\ffcraft_solver_gui_win\*
+'''
+
+[tasks.pip]
+script_runner = "@shell"
+ignore_errors = true
+script = '''
+    cd python
+    rm -rf build dist
+    pip install -q -r requirements_dev.txt
+    pip install -q -e .
+    python -m pip wheel . --wheel-dir=../releases/
+'''
+
+[tasks.pyinstaller]
+windows_alias = "windows_pyinstaller"
+linux_alias = "linux_pyinstaller"
+
+[tasks.linux_pyinstaller]
+script_runner = "@shell"
+script = '''
+    cd python
+    pyinstaller src/ffcraft_solver/__main__.py -i "src/ffcraft_solver/ressources/ffcraft_solver.ico" --add-data "src/ffcraft_solver/configs/:ffcraft_solver/configs" --add-data  "src/ffcraft_solver/ressources/:ffcraft_solver/ressources" --name ffcraft_solver_gui_linux  -y
+'''
+
+[tasks.windows_pyinstaller]
+script_runner = "@shell"
+script = '''
+    cd python && pyinstaller src\ffcraft_solver\__main__.py  --add-data "src\ffcraft_solver\configs\;ffcraft_solver\configs" --add-data  "src\ffcraft_solver\ressources\;ffcraft_solver\ressources"  --name ffcraft_solver_gui_win -y
+'''
+
+[tasks.build]
+command = "cargo"
+args = ["build","--release"]
+dependencies = ["clean"]
+
+[tasks.maturin]
+command = "maturin"
+args = ["develop", "--release"]
+
+[tasks.maturin_build]
+command = "maturin"
+args = ["build", "--release"]
+
+
+[tasks.rust]
+dependencies = ["build","maturin"]

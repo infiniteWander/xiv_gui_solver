@@ -1,6 +1,5 @@
-use std::fmt::{Debug};
+use std::fmt::Debug;
 use strum_macros::EnumIter;
-
 
 #[derive(Debug, Clone, Copy)]
 pub struct Recipe {
@@ -12,7 +11,6 @@ pub struct Recipe {
     pub progress_modifier: u32,
     pub quality_modifier: u32,
 }
-
 
 #[derive(Debug, Clone, Copy)]
 pub struct Stats {
@@ -103,14 +101,30 @@ impl BuffState {
     }
 
     pub fn tick(&mut self) {
-        if self.waste_not > 0 { self.waste_not -= 1; }
-        if self.great_strides > 0 { self.great_strides -= 1; }
-        if self.innovation > 0 { self.innovation -= 1; }
-        if self.veneration > 0 { self.veneration -= 1; }
-        if self.manipulation > 0 { self.manipulation -= 1; }
-        if self.muscle_memory > 0 { self.muscle_memory -= 1; }
-        if self.basic_touch > 0 { self.basic_touch -= 1; }
-        if self.standard_touch > 0 { self.standard_touch -= 1; }
+        if self.waste_not > 0 {
+            self.waste_not -= 1;
+        }
+        if self.great_strides > 0 {
+            self.great_strides -= 1;
+        }
+        if self.innovation > 0 {
+            self.innovation -= 1;
+        }
+        if self.veneration > 0 {
+            self.veneration -= 1;
+        }
+        if self.manipulation > 0 {
+            self.manipulation -= 1;
+        }
+        if self.muscle_memory > 0 {
+            self.muscle_memory -= 1;
+        }
+        if self.basic_touch > 0 {
+            self.basic_touch -= 1;
+        }
+        if self.standard_touch > 0 {
+            self.standard_touch -= 1;
+        }
     }
 }
 
