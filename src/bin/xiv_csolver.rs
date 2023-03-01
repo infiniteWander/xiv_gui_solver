@@ -1,4 +1,5 @@
 // #![warn(missing_docs,unsafe_code,unstable_features,)]
+// #![feature(no_coverage)]
 
 use clap::Parser;
 use std::time::Instant;

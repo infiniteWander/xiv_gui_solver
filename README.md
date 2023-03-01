@@ -4,6 +4,9 @@ A rust program for solving FFXIV craft recipe.
 Originaly written by [RikaKagurasaka](https://github.com/RikaKagurasaka/xiv_craft_solver),
 it now is widely improved and provides python bindings for a GUI (or anything else really)
 
+
+![coverage/html/badges/flat.svg](coverage/html/badges/flat.svg)
+
 ### Basic RUST CLI Usage
 Everything is done through the regular cargo interface
 1. Download the latest release.
@@ -43,6 +46,7 @@ Options:
   -V, --version
           Print version
 ```
+
 ## Developpement
 Please remember to set and use a venv before building
 While not mandatory, using ``cargo-make`` will provide you with the commands:

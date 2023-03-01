@@ -27,6 +27,9 @@ pyo3 = { version = "0.18.0", features = ["extension-module"] }
 # [build]
 # target = ["x86_64-unknown-linux-gnu", "x86_64-unknown-windows-gnu"]
 
+[dev-dependencies]
+pretty_assertions = "1"
+
 [profile.release]
 panic = 'abort'
 opt-level = 3

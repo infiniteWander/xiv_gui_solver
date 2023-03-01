@@ -85,9 +85,8 @@ pub struct SolverResult {
 
 /// Pretty display for SolverResult
 impl Display for SolverResult {
-    fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        println!("{:?}", self.actions);
-        Ok(())
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(f, "{:?}", self.actions)
     }
 }
 
@@ -237,4 +236,93 @@ pub fn solve_from_python(values: &PyAny) -> PyResult<Option<Vec<SolverResult>>> 
     // println!("{:?} len: {:?} ",values,values.getattr("len()"));
     let res = solve_craft(recipe, stats, param);
     Ok(res)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::io::Args;
+    use crate::{Parameters, SolverResult};
+    use pretty_assertions::{assert_eq, assert_ne};
+    use clap::Parser;
+
+    impl PartialEq for Parameters {
+        fn eq(&self, rhs: &Parameters) -> bool {
+            (self.byregot_step == rhs.byregot_step)
+                & (self.depth == rhs.depth)
+                & (self.desperate == rhs.desperate)
+                & (self.threads == rhs.threads)
+        }
+    }
+
+    #[test]
+    pub fn test_parameters_derived_attributes() {
+        let def = Parameters {
+            byregot_step: 0,
+            depth: 0,
+            desperate: false,
+            threads: 42,
+            verbose: 1,
+        };
+        let def2 = def;
+        let def3 = def2.clone();
+
+        assert_eq!(def2, def3);
+    }
+
+    #[test]
+    pub fn test_display() {
+        let def = SolverResult::default();
+        assert_ne!(def.to_string(), "");
+        assert_eq!(def.to_string(), "[\"Act1\", \"Act2\"]");
+        def.pretty_print();
+    }
+
+    #[test]
+    pub fn test_debug() {
+        let def = SolverResult::default();
+        assert_eq!(format!("{:?}", def),"SolverResult { steps: 0, quality: 0, progression: 0, durability: 0, cp: 0, total_cp: 0, total_progression: 0, total_quality: 0, total_durability: 0, actions: [\"Act1\", \"Act2\"], step1_solutions: 0, step2_solutions: 0, found_100_percent: false }");
+    }
+
+    #[test]
+    pub fn test_arguments() {
+        // Create false argument parameter
+        let a = Args {
+            character_name: "Bob GZ".to_string(),
+            depth: 77,
+            desperate: false,
+            file_name: "test.toml".to_string(),
+            long: false,
+            recipe_name: "Belladone".to_string(),
+            threads: 11,
+            verbose: 1,
+        };
+        let a2 = a.clone();
+        println!("{:?}",a2);
+        // Test Custom recipe
+        let a3 = Args::parse_from(["ultraman","-r", "recipe","-c","dan","-f","bigfile.toml","-d","45","-t","4","-D","-l","-vvv"]);
+        let _ = Args::parse_from(["-V"]);
+        let _ = Args::parse_from(["-H"]);
+        assert_eq!(a3.recipe_name,"recipe");
+        assert_eq!(a3.character_name,"dan");
+        assert_eq!(a3.file_name,"bigfile.toml");
+        assert_eq!(a3.verbose,3);
+        assert_eq!(a3.depth,45);
+        assert_eq!(a3.threads,4);
+        assert_eq!(a3.desperate,true);
+        assert_eq!(a3.long,true);
+
+        // Test default parameters
+        let a4 = Args::parse_from(["bobGZ"]); 
+        assert_eq!(a4.recipe_name,"default_recipe");
+        assert_eq!(a4.character_name,"default_character");
+        assert_eq!(a4.file_name,"craft.toml");
+        assert_eq!(a4.verbose,0);
+        assert_eq!(a4.depth,8);
+        assert_eq!(a4.threads,4);
+        assert_eq!(a4.desperate,false);
+        assert_eq!(a4.long,false);
+    }
+
+    #[test]
+    pub fn test_parameters() {}
 }

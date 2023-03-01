@@ -7,6 +7,7 @@ expected_values.md
 releases/*
 .whl
 pyinstaller_log.txt
+llvm/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
