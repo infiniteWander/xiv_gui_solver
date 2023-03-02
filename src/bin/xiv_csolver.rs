@@ -1,5 +1,64 @@
-// #![warn(missing_docs,unsafe_code,unstable_features,)]
-// #![feature(no_coverage)]
+//! # Solver bin for FFXIV Crafting in Rust
+//!
+//! This project strives to provide a fast, accurate and reliable way to craft
+//! in FFXIV and obtain HQ results
+//!
+//! This project also provides bindings for python to allow hooking it to any form of better GUI/CLI
+//!
+//! The project is (for now) self hosted and hosted on [Github](https://github.com/Dandaedre/xiv_csolver)
+//!
+//! ## Getting started
+//!
+//! ### Developpement
+//!  
+//! To setup the whole developpement environement it is recommended to use cargo-make
+//!  
+//! Doing so will allow you custom commands to
+//!
+//! ```sh
+//! cargo make rebuild
+//! ```
+//! To rebuild the whole project
+//!
+//! ```sh
+//! cargo make release
+//! ```
+//! To generate the release files, bins and libs, pakage them and make them ready to release
+//!
+//!
+//! It is really recommanded to setup a venv to handle the python developpement
+//!
+//! ### Features
+//!
+//! Use these by running `cargo run/build --features <name of feature>`
+//!
+//! - ``no_python`` : Dont build the lib & python bindings (WIP, not fully implemented)
+//! - ``fast`` : Don't allow some under-optimisation to run (saving global run-time)
+//! - ``verbose`` : Allow for more debug messages (note that -v(vv) must still be passed to activate them)
+//!
+//! ## Regenerating the API Bindings
+//!
+//! The python bindings are generated using maturin
+//!
+//! ```sh
+//! cargo install maturin
+//! maturin develop
+//! ```
+//!
+//! ## Contributing
+//!
+//! All form of contributions are welcome !
+//!
+//! While this project was originnaly a collab and didn't strive to encompass every need
+//! of a modern FFXIV crafter, more polish and finish is always welcome.
+//!
+//! ## Licence
+//!
+//! The original code was released without a licence by [RikaKagurasaka](https://github.com/RikaKagurasaka/xiv_craft_solver)
+//!
+//! All this fork's code is released under [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+#![warn(missing_docs)]
 
 use clap::Parser;
 use std::time::Instant;

@@ -1,8 +1,12 @@
+//! This modules instanciate all the tools needed to load and use the solver
+
 use std::fmt::Debug;
 use strum_macros::EnumIter;
 
+/// The recipe to craft
 #[derive(Debug, Clone, Copy)]
 pub struct Recipe {
+    /// The craft durability (also called solidity)
     pub durability: u32,
     pub progress: u32,
     pub quality: u32,
