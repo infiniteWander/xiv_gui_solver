@@ -12,6 +12,7 @@
  ✅ (PKG) Have cargo-make setup for release/cleanup/build
  ✅ (PKG) Merge latest pre-release for the GUI
  ✅ (PKG) Have a rebuild function
+ 🟩 (CLI) Rework the parameters and return structs to only have one ref each
 ### Features
  🟩 (GUI) Refactor code
 
