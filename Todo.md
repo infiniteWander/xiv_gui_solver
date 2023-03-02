@@ -15,6 +15,7 @@
  🟩 (CLI) Rework the parameters and return structs to only have one ref each
 ### Features
  🟩 (GUI) Refactor code
+ 🟩 (GUI) Restore GUI state
 
 # Roadmap
 ## v1.0.0

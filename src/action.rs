@@ -10,7 +10,7 @@ use lazy_static::lazy_static;
 use std::fmt::Debug;
 
 /// Hold an action for the solver to try using
-/// 
+///
 /// It will be used heavily to try/discard actions durin craft
 pub struct Action {
     /// The action name, in a human readable format, it will be used to generate a short_name
@@ -30,7 +30,7 @@ pub struct Action {
 }
 
 /// Builds an action based on an action
-/// 
+///
 /// Made to initialize lazy_static and nothing more
 pub struct ActionBuilder {
     action: Action,
@@ -39,7 +39,7 @@ pub struct ActionBuilder {
 impl ActionBuilder {
     /// Base creator, takes a name and initialize an empty action with the short_name
     /// and name setup and default values for all other fields
-    /// 
+    ///
     /// # Examples
     /// ```
     /// use xiv_csolver_lib::action::ActionBuilder;
@@ -99,8 +99,8 @@ impl ActionBuilder {
         self
     }
     /// Makes an action add a buff for certain number of actions
-    /// The buffs available are defined in [specs.rs](xiv_csolver::specs::Buff)
-    /// 
+    /// The buffs available are defined in [specs.rs](crate::specs::Buff)
+    ///
     /// ``
     /// (self.recipe.progress as f32 - self.progression as f32) / self.get_base_progression() as f32;
     /// ``   
@@ -126,8 +126,8 @@ impl PartialEq for Action {
     }
 }
 
-/// A craft action, after compilation (with lazy_static) 
-// no other actions should be created  
+/// A craft action, after compilation (with lazy_static)
+// no other actions should be created
 impl Action {
     /// Get the printable name of the action
     pub fn get_name(&self) -> String {
@@ -184,7 +184,7 @@ impl Action {
         (prog * mult).floor() as u32
     }
 
-    /// Get the quality effect this action would have if used at this stage of the craft. 
+    /// Get the quality effect this action would have if used at this stage of the craft.
     /// This method account for the **inner quiet** stacking effect, **innovation** and **great strides**
     pub fn get_quality(&self, _craft: &Craft) -> u32 {
         let mut qual = self.quality as f64;
@@ -210,12 +210,12 @@ impl Action {
     }
     /// Returns a bool representing if this action **can** be used, note that this does only account
     /// for the game limitations and not viability limitation
-    /// 
+    ///
     /// # Improvements
     /// This function could easily prune useless actions by considering them not available.
     /// Doing so could stop early refresh of buffs and spam of observe and such.
     /// However some of such "optimisations" could just plain hurt the craft by forbidding a *seemingly*
-    /// useless action. The "bruteforce" method being easily computatble on a modern computer, such 
+    /// useless action. The "bruteforce" method being easily computatble on a modern computer, such
     /// optimisations arent warrented and left to aother time.
     pub fn can_use(&self, _craft: &Craft) -> bool {
         if self.get_cp_cost(_craft) > _craft.cp as u32 {
@@ -318,27 +318,25 @@ pub struct ActionList {
     ///     Success Rate: 100%
     ///     Available only when Inner Quiet stack size is 10.
     pub trained_finesse: Action,
-    /// Restores item durability by 30. 
+    /// Restores item durability by 30.
     pub masters_mend: Action,
 
-    // Restores item durability by 60. 
+    // Restores item durability by 60.
     // pub masters_mend_2: Action,
-
-    /// Reduces loss of durability by 50% for the next four steps. 
+    /// Reduces loss of durability by 50% for the next four steps.
     pub waste_not: Action,
-    /// Reduces loss of durability by 50% for the next eight steps. 
+    /// Reduces loss of durability by 50% for the next eight steps.
     pub waste_not_ii: Action,
     /// Restores 5 points of durability after each step for the next eight steps.
     pub manipulation: Action,
-    /// Increases efficiency of Synthesis actions by 50% for the next four steps. 
+    /// Increases efficiency of Synthesis actions by 50% for the next four steps.
     pub veneration: Action,
     /// Increases the efficiency of next Touch action by 100%.
-    /// Effect active for three steps. 
+    /// Effect active for three steps.
     pub great_strides: Action,
     /// Increases efficiency of Touch actions by 50% for the next four steps.
     pub innovation: Action,
-
-    // Do nothing for one step. 
+    // Do nothing for one step.
     //pub observe: Action,
     // Increases progress.
     //     Efficiency: 200%
@@ -453,6 +451,6 @@ impl Default for ActionList {
 }
 
 lazy_static! {
-    /// Initialize a static pseudo &Craft: ACTIONS 
+    /// Initialize a static pseudo &Craft: ACTIONS
     pub static ref ACTIONS: ActionList = ActionList::default();
 }

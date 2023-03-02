@@ -1,16 +1,16 @@
 //! Module containing everything to create a craft and all methods to get the current state of the craft
-//! 
+//!
 //! A craft represent the state of the recipe with a vector of actions applied to it.
-//! Applying actions to it will make the craft progress, while branching and trying other actions 
+//! Applying actions to it will make the craft progress, while branching and trying other actions
 //! will be done by cloning
-//! 
+//!
 
 use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
 use crate::Parameters;
 use std::fmt::{Debug, Display, Formatter};
 
-/// The craft structure, note that there is no standard way of backtracking 
+/// The craft structure, note that there is no standard way of backtracking
 /// and a traditional branching method is applied when solving.
 #[derive(Clone)]
 pub struct Craft<'a> {
@@ -32,7 +32,7 @@ pub struct Craft<'a> {
     pub cp: i32,
     /// Wether the craft has succeded, is pending sucess, or failed
     pub success: Success,
-    /// The vector of action already applied, structs are used for the vector since 
+    /// The vector of action already applied, structs are used for the vector since
     /// static references are used and therefore take no additional memory at runtime
     pub actions: Vec<&'a Action>,
     /// The parameters used for the craft
@@ -60,7 +60,7 @@ impl<'a> Craft<'a> {
     }
 
     /// How much progression will be done by an action with 100 efficiency and no buffs
-    /// This function is mainly used to know wether or not the craft will finish in 
+    /// This function is mainly used to know wether or not the craft will finish in
     /// 1, 1.2 or 2.0 actions.
     pub fn get_base_progression(&self) -> u32 {
         let base_value = (self.stats.craftsmanship as f64 / 10.0)
@@ -69,7 +69,7 @@ impl<'a> Craft<'a> {
         (base_value * (self.recipe.progress_modifier as f64 / 100.0) as f64).floor() as u32
     }
     /// How much quality will the crafter generate with one action with 100 efficiency and no buffs
-    /// This function is usually called by [`run_action`](crate::craft::Craft::run_action) 
+    /// This function is usually called by [`run_action`](crate::craft::Craft::run_action)
     /// wich will then apply all needed buff and progress the craft
     pub fn get_base_quality(&self) -> u32 {
         let base_value = (self.stats.control as f64 / 10.0)

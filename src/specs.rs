@@ -4,55 +4,103 @@ use std::fmt::Debug;
 use strum_macros::EnumIter;
 
 /// The recipe to craft
+/// On some websites the fields are instead called
+/// [Progress, quality, durability, progress difficulty, quality difficulty, extra progress difficulty, extra quality difficulty]
 #[derive(Debug, Clone, Copy)]
 pub struct Recipe {
-    /// The craft durability (also called solidity)
+    /// The recipe durability (also called solidity) (35, 40, 70 or 80 usually)
     pub durability: u32,
+    /// The total recipe progress needed
     pub progress: u32,
+    /// The total recipe quality
     pub quality: u32,
+    /// How much the progress is hard to set,
+    /// it's an (hidden) extra progress multiplier,
+    /// inflicting a -10% to -30% to starred recipes
+    /// Also called `progress_difficulty`
     pub progress_divider: u32,
+    /// The same (hidden) difficulty multiplier, for quality
+    /// Also called `progress_difficulty`
     pub quality_divider: u32,
+    /// Modifies how much the base stats are affecting the craft progress
+    /// Also called `progress_extra_difficulty`
     pub progress_modifier: u32,
+    /// Modifies how much the base stats are affectif the craft quality
+    /// Also called `quality_extra_difficulty`
     pub quality_modifier: u32,
 }
 
+/// The craftsman stats
 #[derive(Debug, Clone, Copy)]
 pub struct Stats {
+    /// The craftsmanship, influences the progress
     pub craftsmanship: u32,
+    /// The control, inluences the quality
     pub control: u32,
+    /// The amount of cp, ressource used for actions
     pub max_cp: u32,
 }
 
+/// The buffs available for the crafter
 #[derive(Debug, Clone, Copy, PartialEq, EnumIter)]
 pub enum Buff {
+    /// Gain a stack of Inner Quiet with every increase in quality, up to a maximum of 10.
+    /// Grants a 10% bonus to the efficiency of Touch actions for each stack.
     InnerQuiet,
+    /// Reduces loss of durability by 50%.
     WasteNot,
+    /// Increases the efficiency of next Touch action by 100%.
     GreatStrides,
+    /// Increases efficiency of Touch actions by 50%.
     Innovation,
+    /// Increases efficiency of Synthesis actions by 50%.
     Veneration,
+    /// Restores 5 points of durability after each step.
     Manipulation,
+    /// Increases progress.
+    ///     Efficiency: 300%
+    ///     Success Rate: 100%
+    ///     Additional Effect: Efficiency of your next Synthesis action is increased by 100%
+    ///     Available only on the first step.
+    ///     Additional effect is active for five steps.
     MuscleMemory,
     // v Hidden v
+    /// (Hidden) Combo with Standart touch costs 18 cp.
     BasicTouch,
+    /// (Hidden) Combo with Advanced touch costs 18 cp.
     StandardTouch,
+    /// (Hidden) Do nothing for one step.
     Observe,
 }
 
+/// Keeps track of all the durations remaining on all buffs
+/// Also called buff tracker in the docs
 #[derive(Debug, Clone, Copy)]
 pub struct BuffState {
+    /// Caps at 10 for a 100% extra efficiency in quality increase
     pub inner_quiet: u8,
+    /// Lasts for four steps if Waste not was used, height if Waste Not II was.
     pub waste_not: u8,
+    /// Effect active for three steps, dissipates after a quality action is used.
     pub great_strides: u8,
+    /// Lasts four steps
     pub innovation: u8,
+    /// Lasts four steps.
     pub veneration: u8,
+    /// Lasts height steps
     pub manipulation: u8,
+    /// Lasts five steps, dissipate after a progression action is used.
     pub muscle_memory: u8,
+    /// Lasts one step
     pub basic_touch: u8,
+    /// Lasts one step
     pub standard_touch: u8,
+    /// Lasts one step
     pub observe: u8,
 }
 
 impl BuffState {
+    /// Default state of buffs (all at zero) as per the beggining of craft
     pub fn default() -> Self {
         Self {
             inner_quiet: 0,
@@ -68,6 +116,7 @@ impl BuffState {
         }
     }
 
+    /// Remove the given buff from the buff tracker
     pub fn remove(&mut self, buff: Buff) {
         match buff {
             Buff::InnerQuiet => self.inner_quiet = 0,
@@ -83,6 +132,8 @@ impl BuffState {
         }
     }
 
+    /// Apply the given buff to the buff tracker for `value` steps
+    /// In the case of Inner Quiet, it inseads adds one to the stack counter
     pub fn apply(&mut self, buff: Buff, value: u8) {
         match buff {
             Buff::InnerQuiet => {
@@ -104,6 +155,7 @@ impl BuffState {
         }
     }
 
+    /// Tick downs the remaining duration of all buffs, if up
     pub fn tick(&mut self) {
         if self.waste_not > 0 {
             self.waste_not -= 1;
@@ -132,9 +184,14 @@ impl BuffState {
     }
 }
 
+/// State the craft is in, used to keep track of wether the craft
+/// is to be worked on, added to the success vector or discarded
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Success {
+    /// Pending success and therefor still ongoing
     Pending,
+    /// Finised, not ongoing and finished without breaking (Doens't take quality into account)
     Success,
+    /// Finised because of lack of remaining durability
     Failure,
 }

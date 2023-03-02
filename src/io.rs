@@ -1,7 +1,7 @@
 //! The main IO module
-//! For now it contains the python bindings, the Args bindings (for clap) and the struct 
+//! For now it contains the python bindings, the Args bindings (for clap) and the struct
 //! needed to hold all parameters needed at runtime
-//! 
+//!
 //! Moving the bindings and making them non mandatory is a WIP
 
 use crate::Craft;
@@ -169,7 +169,7 @@ impl SolverResult {
 
 #[pymethods]
 impl SolverResult {
-    /// Default method to create an empty solution, only used for debug purposes 
+    /// Default method to create an empty solution, only used for debug purposes
     /// to test wether the import worked
     /// ```py
     /// import xiv_csolver_lib
@@ -250,7 +250,7 @@ use crate::{solve_craft, Recipe, Stats};
 /// The values are all obtained by a `&PyAny`, wich must guaranty that several attributes are
 /// accesible by `__getattr__`
 ///
-/// ```py
+/// ```python
 /// import xiv_craft_solver, rich
 ///
 /// class FeedingClass:
