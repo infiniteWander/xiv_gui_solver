@@ -1,8 +1,6 @@
-import time
-
+import re
 import dearpygui.dearpygui as dpg
 from xiv_csolver.modules import loader, log, solver, printer
-import rich
 
 
 class User:
@@ -114,10 +112,16 @@ class User:
     def save_users() -> True:
         if dpg.get_value(save_user_as) == '':
             loggers.add_log('Cannot save user without a name.')
+        elif re.search(r'^\s+$', dpg.get_value(save_user_as)):
+            loggers.add_log('Name cannot be only whitespaces.')
+        elif re.search(r'^\s.+', dpg.get_value(save_user_as)):
+            loggers.add_log('Name cannot start with a whitespace.')
+        elif re.search(r'\s$', dpg.get_value(save_user_as)):
+            loggers.add_log('Name cannot end with a whitespace.')
         else:
             saver.save_users(dpg.get_value(save_user_as), dpg.get_value(user_stats))
-
-        dpg.configure_item('user_combo', items=full_config.get_users_names())
+            loggers.add_log('User saved!')
+            dpg.configure_item('user_combo', items=full_config.get_users_names())
         return True
 
 

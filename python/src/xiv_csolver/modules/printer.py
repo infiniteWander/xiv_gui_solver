@@ -1,5 +1,3 @@
-import rich
-
 from xiv_csolver.modules import loader
 
 
@@ -39,18 +37,21 @@ class Printer:
 
         if user_name.title() == '':
             for user, stats in self.full_config.get_users_dict().items():
-                output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\n'
+                if user != '   ':
+                    output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\n'
 
         else:
             self.full_config.get_users_dict()[user_name] = user_stats
             for user, stats in self.full_config.get_users_dict().items():
-                output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\n'
+                if user != '   ':
+                    output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\n'
 
         self.print_users(output)
         return self.full_config.get_users_dict()
 
     def print_users(self, output: str):
-        pass
+        with open(self.full_config.relative_import(self.full_config.config.yaml_user), 'w') as file:
+            file.write(output)
 
     def save_recipe(self):
         pass
