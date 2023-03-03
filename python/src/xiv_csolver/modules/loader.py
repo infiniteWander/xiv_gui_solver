@@ -15,6 +15,7 @@ class Loader:
     # TODO: create folder/file if missing when clicking "save"
     # TODO: log any missing file(s) or the whole folder
     # TODO: find a way to log at initialization
+    # TODO: except ParserError and handle it
     def __init__(self, loggers: log.Loggers):
         self.loggers = loggers
         self.user_list = {'   ': [0, 0, 0]}
