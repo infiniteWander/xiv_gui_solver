@@ -125,7 +125,7 @@ class Solver:
 
     def solve(self) -> str:
         self.solutions = xcs.solve_from_python(self)
-        return xcs.solve_from_python(self)
+        return self.solutions
 
     def compute_all(self) -> True:
         if self.solutions:
@@ -149,24 +149,24 @@ class Solver:
             if s.quality > threshold:
                 self.safe_50 = Result(s, 'Safe 50')
                 done = True
+            else:
+                break
 
         if not done:
             self.loggers.add_log('Could not find a rotation for a 50% Safe Margin.\n'
                                  '    Defaulting to Best Quality.')
             self.safe_50 = self.best_quality
 
-        # self.safe_50 = Result(self.solutions[round(len(self.solutions)/2)+1], 'Safe 50')  # old version
         return self.safe_50
 
     def compute_least_steps(self) -> Result:
         least_steps = 100
         output = None
-        if self.solutions:
-            for e in self.solutions:
-                if e.steps < least_steps:
-                    least_steps = e.steps
-                    output = e
-            self.least_steps = Result(output, 'Least steps')
+        for e in self.solutions:
+            if e.steps < least_steps:
+                least_steps = e.steps
+                output = e
+        self.least_steps = Result(output, 'Least steps')
 
         return self.least_steps
 

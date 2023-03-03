@@ -1,7 +1,7 @@
 import time
 
 import dearpygui.dearpygui as dpg
-from xiv_csolver.modules import loader, log, solver
+from xiv_csolver.modules import loader, log, solver, printer
 import rich
 
 
@@ -109,6 +109,16 @@ class User:
         self.set_initial_stats(0, full_config.get_users_dict()[self.name], None)
         dpg.set_value(user_stats, [self.initial_craftsmanship, self.initial_control, self.initial_cp])
         return self.name
+
+    @staticmethod
+    def save_users() -> True:
+        if dpg.get_value(save_user_as) == '':
+            loggers.add_log('Cannot save user without a name.')
+        else:
+            saver.save_users(dpg.get_value(save_user_as), dpg.get_value(user_stats))
+
+        dpg.configure_item('user_combo', items=full_config.get_users_names())
+        return True
 
 
 class Recipe:
@@ -238,10 +248,12 @@ if __name__ == '__main__':
         pots_names = full_config.get_pots_names()
         recipe_names = full_config.get_recipes_names()
 
+        saver = printer.Printer(full_config)
+
         # Start of GUI drawing
         # CHARACTER
         dpg.add_text("Character")
-        user_combo = dpg.add_combo(items=characters_names, label="Your character", callback=user.set_name_combo)
+        user_combo = dpg.add_combo(tag='user_combo', items=characters_names, label="Your character", callback=user.set_name_combo)
         dpg.set_value(user_combo, '   ')
         # TODO: Load 1rst user in users.yaml by default
         user_stats = dpg.add_input_intx(size=3, label="Stats", tag="stats_tooltip", callback=user.set_initial_stats)
@@ -249,7 +261,8 @@ if __name__ == '__main__':
             dpg.add_text("Craftsmanship / Control / CP")
         with dpg.group(horizontal=True):
             save_user_as = dpg.add_input_text(hint='Save as...')
-            dpg.add_button(label="Save!")
+            # TODO: make it so field is not cleared at every input in stats
+            dpg.add_button(label="Save!", callback=user.save_users)
             # TODO: Can't save if value == '   '
 
         # EFFECTIVE STATS
@@ -264,6 +277,7 @@ if __name__ == '__main__':
         food_combo = dpg.add_combo(items=foods_names, label="Food", callback=user.set_food)
         pot_combo = dpg.add_combo(items=pots_names, label="Pot", callback=user.set_pot)
         specialist_checkbox = dpg.add_checkbox(label="Specialist", tag="specialist", callback=user.set_specialist)
+        # TODO : possibility to add new food/pots without manually adding them to the config files
 
         # RECIPE
         dpg.add_separator()
