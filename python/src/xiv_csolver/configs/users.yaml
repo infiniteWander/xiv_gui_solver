@@ -1,11 +1,9 @@
-# Name: [Craftsmanship, control, cp]
-# You are encouraged to use this either for multiple characters if you have them, or different jobs having
-# different gear or melds.
-# The top line will always be selected by default         
+# Name: [Progress, quality, durability, progress difficulty, quality difficulty, extra progress difficulty, extra quality difficulty]
+# as can be found on other solver websites, such as https://yyyy.games/crafter/index.html#/simulator and checking custom recipe.
+# The language option is the second menu to the left from the top-right hand corner.
+# If this seems super convoluted, and you'd rather it was just the three in-game values, know that me too.
+# Unfortunately that is how the craft system works in FFXIV.
 
-
-Vicky Crosia: [4021, 3933, 587]
-Dandaedre Zadiel: [0, 0, 2]
-Sekundes Dullahan: [2566, 2443, 522]
-ewww: [213, 3124, 0]
-bernard: [0, 0, 0]
+Grade 7 Tincture of Strength: [5060, 12628, 70, 130, 115, 80, 70]
+Grade 5 Strength Alkahest: [1300, 6200, 40, 123, 107, 100, 100]
+ewq: [0, 1, 2, 3, 4, 5, 6]

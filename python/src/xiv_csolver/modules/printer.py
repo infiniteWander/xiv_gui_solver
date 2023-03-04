@@ -32,7 +32,7 @@ class Printer:
 # Unfortunately that is how the craft system works in FFXIV.'''
         }
 
-    def save_users(self, user_name: str = None, user_stats: list = None):
+    def save_users(self, user_name: str = None, user_stats: list = None) -> dict:
         output = self.help_text_dict['users'] + '\n\n'
 
         if user_name.title() == '':
@@ -49,12 +49,29 @@ class Printer:
         self.print_users(output)
         return self.full_config.get_users_dict()
 
-    def print_users(self, output: str):
+    def print_users(self, output: str) -> True:
         with open(self.full_config.relative_import(self.full_config.config.yaml_user), 'w') as file:
             file.write(output)
+        return True
 
-    def save_recipe(self):
-        pass
+    def save_recipe(self, recipe_name: str = None, recipe_basic_stats: list = None, recipe_advanced_stats: list = None) -> dict:
+        output = self.help_text_dict['recipe'] + '\n\n'
 
-    def save_consumables(self):
-        pass
+        if recipe_name.title() == '':
+            for recipe, stats in self.full_config.get_recipes_dict().items():
+                if recipe != '   ':
+                    output += f'{recipe}: [{stats[0]}, {stats[1]}, {stats[2]}, {stats[3]}, {stats[4]}, {stats[5]}, {stats[6]}]\n'
+
+        else:
+            self.full_config.get_recipes_dict()[recipe_name] = recipe_basic_stats[:-1] + recipe_advanced_stats
+            for recipe, stats in self.full_config.get_recipes_dict().items():
+                if recipe != '   ':
+                    output += f'{recipe}: [{stats[0]}, {stats[1]}, {stats[2]}, {stats[3]}, {stats[4]}, {stats[5]}, {stats[6]}]\n'
+
+        self.print_recipe(output)
+        return self.full_config.get_recipes_dict()
+
+    def print_recipe(self, output) -> True:
+        with open(self.full_config.relative_import(self.full_config.config.yaml_recipes), 'w') as file:
+            file.write(output)
+        return True

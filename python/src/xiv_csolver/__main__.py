@@ -136,7 +136,7 @@ class Recipe:
     progress_extra_difficulty = 0
 
     def refresh_gui(self):
-        dpg.set_value(recipe_stats, self.get_recipe_stats()[0:3])
+        dpg.set_value(basic_recipe_stats, self.get_recipe_stats()[0:3])
         dpg.set_value(advanced_recipe_stats, self.get_recipe_stats()[3:7])
         if self.name != '   ':
             dpg.set_value(save_recipe_as, self.name)
@@ -147,11 +147,11 @@ class Recipe:
         stats = [0, 0, 0]
         advanced_stats = [0, 0, 0, 0]
 
-        if tag == 'recipe_tooltip':
+        if tag == 'basic_recipe_stats':
             stats = app_data
             advanced_stats = dpg.get_value(advanced_recipe_stats)
-        elif tag == 'advanced_recipe_tooltip':
-            stats = dpg.get_value(recipe_stats)
+        elif tag == 'advanced_recipe_stats':
+            stats = dpg.get_value(basic_recipe_stats)
             advanced_stats = app_data
         elif tag == 0:
             stats = [app_data[0], app_data[1], app_data[2]]
@@ -182,6 +182,22 @@ class Recipe:
 
     def get_recipe_name(self) -> str:
         return self.name
+
+    @staticmethod
+    def save_recipe() -> True:
+        if dpg.get_value(save_recipe_as) == '':
+            loggers.add_log('Cannot save recipe without a name.')
+        elif re.search(r'^\s+$', dpg.get_value(save_recipe_as)):
+            loggers.add_log('Name cannot be only whitespaces.')
+        elif re.search(r'^\s.+', dpg.get_value(save_recipe_as)):
+            loggers.add_log('Name cannot start with a whitespace.')
+        elif re.search(r'\s$', dpg.get_value(save_recipe_as)):
+            loggers.add_log('Name cannot end with a whitespace.')
+        else:
+            saver.save_recipe(dpg.get_value(save_recipe_as), dpg.get_value(basic_recipe_stats), dpg.get_value(advanced_recipe_stats))
+            loggers.add_log('Recipe saved!')
+            dpg.configure_item('recipe_combo', items=full_config.get_recipes_names())
+        return True
 
 
 class Solution:
@@ -267,7 +283,6 @@ if __name__ == '__main__':
             save_user_as = dpg.add_input_text(hint='Save as...')
             # TODO: make it so field is not cleared at every input in stats
             dpg.add_button(label="Save!", callback=user.save_users)
-            # TODO: Can't save if value == '   '
 
         # EFFECTIVE STATS
         dpg.add_separator()
@@ -286,20 +301,20 @@ if __name__ == '__main__':
         # RECIPE
         dpg.add_separator()
         dpg.add_text("Recipe")
-        recipe_combo = dpg.add_combo(items=recipe_names, label="Recipe", callback=recipe.set_recipe_name)
+        recipe_combo = dpg.add_combo(items=recipe_names, tag='recipe_combo', label="Recipe", callback=recipe.set_recipe_name)
         dpg.set_value(recipe_combo, "   ")
-        recipe_stats = dpg.add_input_intx(size=3, label="Stats", tag="recipe_tooltip", callback=recipe.set_recipe_stats)
-        with dpg.tooltip("recipe_tooltip"):
+        basic_recipe_stats = dpg.add_input_intx(size=3, label="Stats", tag="basic_recipe_stats", callback=recipe.set_recipe_stats)
+        with dpg.tooltip("basic_recipe_stats"):
             dpg.add_text("Progress / Quality / Durability")
         advanced_recipe_stats = dpg.add_input_intx(
-            size=4, label="Advanced stats", tag="advanced_recipe_tooltip", callback=recipe.set_recipe_stats
+            size=4, label="Advanced stats", tag="advanced_recipe_stats", callback=recipe.set_recipe_stats
         )
-        with dpg.tooltip("advanced_recipe_tooltip"):
+        with dpg.tooltip("advanced_recipe_stats"):
             dpg.add_text("Progress / Quality difficulty // Progress / Quality extra difficulty")
         # TODO: add a log if recipe matches a known recipe
         with dpg.group(horizontal=True):
             save_recipe_as = dpg.add_input_text(hint='Save as...')
-            dpg.add_button(label="Save!", callback=request_solve)
+            dpg.add_button(label="Save!", callback=recipe.save_recipe)
             # TODO: Can't save if value == '   '
 
         # SOLVE
