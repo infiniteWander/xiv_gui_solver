@@ -275,7 +275,7 @@ use crate::{solve_craft, Recipe, Stats};
 /// ```
 #[cfg(not(feature = "no_python"))]
 #[pyfunction]
-pub fn solve_from_python(values: &PyAny) -> PyResult<Option<Vec<SolverResult>>> {
+pub fn solve_from_python(py: Python<'_>, values: &PyAny) -> PyResult<Option<Vec<SolverResult>>> {
     // Create Recipe
     let recipe = Recipe {
         durability: values.getattr("durability")?.extract()?,
@@ -304,8 +304,10 @@ pub fn solve_from_python(values: &PyAny) -> PyResult<Option<Vec<SolverResult>>> 
     };
 
     // println!("{:?} len: {:?} ",values,values.getattr("len()"));
-    let res = solve_craft(recipe, stats, param);
-    Ok(res)
+    py.allow_threads(move || {
+        let res = solve_craft(recipe, stats, param);
+        Ok(res)
+    })    
 }
 
 #[cfg(test)]
