@@ -1,6 +1,6 @@
 [package]
 name = "xiv_csolver"
-version = "0.2.0"
+version = "0.1.6"
 edition = "2021"
 authors = ["谭俊健","Dandaedre","Vkyfox"]
 description = "Small XIV solver library in rust, with python and rust bindings"
