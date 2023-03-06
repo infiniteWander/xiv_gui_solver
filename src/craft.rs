@@ -183,3 +183,15 @@ impl<'a> Display for Craft<'a> {
             .finish()
     }
 }
+
+
+#[cfg(test)]
+mod test{
+    // Struct Test
+    #[test]
+    pub fn struct_tests(){
+        
+    }
+
+
+}

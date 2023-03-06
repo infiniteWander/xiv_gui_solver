@@ -307,7 +307,7 @@ pub fn solve_from_python(py: Python<'_>, values: &PyAny) -> PyResult<Option<Vec<
     py.allow_threads(move || {
         let res = solve_craft(recipe, stats, param);
         Ok(res)
-    })    
+    })
 }
 
 #[cfg(test)]
