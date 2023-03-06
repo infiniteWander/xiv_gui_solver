@@ -184,14 +184,9 @@ impl<'a> Display for Craft<'a> {
     }
 }
 
-
 #[cfg(test)]
-mod test{
+mod test {
     // Struct Test
     #[test]
-    pub fn struct_tests(){
-        
-    }
-
-
+    pub fn struct_tests() {}
 }

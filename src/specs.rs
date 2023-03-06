@@ -186,7 +186,7 @@ impl BuffState {
 
 /// State the craft is in, used to keep track of wether the craft
 /// is to be worked on, added to the success vector or discarded
-#[derive(Debug,Clone,PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Success {
     /// Pending success and therefor still ongoing
     Pending,
@@ -200,45 +200,52 @@ pub enum Success {
 #[cfg(test)]
 mod tests {
     // Test default values
-    use pretty_assertions::{assert_eq};
+    use pretty_assertions::assert_eq;
     use strum::IntoEnumIterator;
 
     #[test]
     pub fn test_structs() {
-        format!("{:?}",crate::specs::Recipe {
-            durability: 0,
-            progress: 0,
-            progress_divider: 0,
-            progress_modifier: 0,
-            quality: 0,
-            quality_divider: 0,
-            quality_modifier: 0,
-        }.clone());
+        format!(
+            "{:?}",
+            crate::specs::Recipe {
+                durability: 0,
+                progress: 0,
+                progress_divider: 0,
+                progress_modifier: 0,
+                quality: 0,
+                quality_divider: 0,
+                quality_modifier: 0,
+            }
+            .clone()
+        );
 
-        format!("{:?}",crate::specs::Stats {
-            craftsmanship: 0,
-            control: 0,
-            max_cp: 0,
-        }
-        .clone());
+        format!(
+            "{:?}",
+            crate::specs::Stats {
+                craftsmanship: 0,
+                control: 0,
+                max_cp: 0,
+            }
+            .clone()
+        );
 
         let iq = crate::specs::Buff::InnerQuiet;
         assert_eq!(crate::specs::Buff::InnerQuiet, iq);
-        for buff in crate::specs::Buff::iter(){
-            format!("{:?}",buff);
+        for buff in crate::specs::Buff::iter() {
+            format!("{:?}", buff);
         }
         format!("{:?}", crate::specs::BuffState::default().clone());
 
         let sc = crate::specs::Success::Pending;
-        assert!(crate::specs::Success::Pending==sc);
-        assert!(crate::specs::Success::Success!=sc);
-        format!("{:?}",sc);
+        assert!(crate::specs::Success::Pending == sc);
+        assert!(crate::specs::Success::Success != sc);
+        format!("{:?}", sc);
     }
 
     #[test]
     pub fn test_buffstate() {
         let mut bbs = crate::specs::BuffState::default();
-        for buff in crate::specs::Buff::iter(){
+        for buff in crate::specs::Buff::iter() {
             bbs.apply(buff, 2);
         }
         assert_eq!(bbs.inner_quiet, 2);
@@ -261,7 +268,7 @@ mod tests {
         bbs.tick();
         assert_eq!(bbs.inner_quiet, 3);
         assert_eq!(bbs.innovation, 4);
-        for buff in crate::specs::Buff::iter(){
+        for buff in crate::specs::Buff::iter() {
             bbs.remove(buff);
         }
         assert_eq!(bbs.inner_quiet, 0);
