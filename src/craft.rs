@@ -42,7 +42,6 @@ pub struct Craft<'a> {
 
 impl<'a> Craft<'a> {
     /// Create a new craft with a recipe, stats and parameters
-    ///
     pub fn new(recipe: Recipe, stats: Stats, params: Parameters) -> Craft<'a> {
         Self {
             recipe,
@@ -185,8 +184,41 @@ impl<'a> Display for Craft<'a> {
 }
 
 #[cfg(test)]
+impl<'a> Craft<'a> {
+    /// Create a "Default" craft, testing only
+    pub fn default() -> Craft<'a> {
+        Self::new(
+            crate::specs::Recipe {
+                durability: 200,
+                progress: 200,
+                progress_divider: 100,
+                progress_modifier: 100,
+                quality: 100,
+                quality_divider: 100,
+                quality_modifier: 100,
+            },
+            crate::specs::Stats {
+                craftsmanship: 200,
+                control: 200,
+                max_cp: 200,
+            },
+            crate::io::Parameters {
+                threads: 10,
+                verbose: 2,
+                depth: 10,
+                desperate: false,
+                byregot_step: 10,
+            },
+        )
+    }
+}
+
+#[cfg(test)]
 mod test {
+    // use pretty_assertions::assert_eq;
     // Struct Test
     #[test]
-    pub fn struct_tests() {}
+    pub fn struct_tests() {
+        let _craft = crate::craft::Craft::default();
+    }
 }
