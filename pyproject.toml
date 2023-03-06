@@ -3,9 +3,9 @@ requires = ["maturin>=0.14,<0.15"]
 build-backend = "maturin"
 
 [project] # The rust bindings
-name = "xiv_craft_solver"
+name = "xiv_csolver_lib"
 requires-python = ">=3.7"
-version = "0.1.5"
+version = "0.1.7"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",

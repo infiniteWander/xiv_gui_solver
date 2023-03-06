@@ -3,13 +3,13 @@ requires = ["setuptools>=42.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project] # The Python GUI
-name = "ffcraft_solver"
+name = "xiv_csolver"
 authors = [
     {name="Vkyfox"},
     {name="Dandaedre"},
 ]
 requires-python = ">=3.7"
-version = "0.1.5"
+version = "0.1.7"
 license = {text="Mozilla Public License Version 2.0"}
 classifiers = [
     "Programming Language :: Rust",
@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--cov=ffcraft_solver"
+addopts = "--cov=xiv_csolver"
 testpaths = [
     "tests",
 ]

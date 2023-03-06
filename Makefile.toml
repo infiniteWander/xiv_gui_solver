@@ -14,14 +14,24 @@ dependencies = [
 script_runner="@shell"
 ignore_errors = true
 script = [
-"twine upload releases/ffcraft_solver*.whl --repository gitea",
-"twine upload releases/xiv_craft_solver*.whl --repository gitea",
+"twine upload releases/xiv_csolver*.whl --repository gitea",
+"twine upload releases/xiv_csolver_lib*.whl --repository gitea",
 ]
 
 [tasks.format]
 install_crate = "rustfmt"
 command = "cargo"
 args = ["fmt", "--", "--emit=files"]
+
+[tasks.testcov]
+script_runner = "@shell"
+ignore_errors = true
+script = [
+"mkdir -p coverage",
+"mkdir -p coverage/html",
+"CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='llvm/cargo-test-%p-%m.profraw' cargo test",
+"grcov . --binary-path ./target/debug/deps/ -s . -t html --branch --ignore-not-existing --ignore '../*' --ignore '/*' -o coverage/html/"
+]
 
 [tasks.clean]
 command = "cargo"
@@ -46,8 +56,8 @@ script_runner = "@shell"
 script = '''
     mkdir -p releases # Add version as an arg and things
     cp target/wheels/*.whl releases/
-    zip releases/ffcraft_solver_cli.zip -j target/release/ffcraft_solver_cli craft.toml -j target/release/libxiv_craft_solver.so 
-    cd python/dist/ && zip ../../releases/ffcraft_solver_gui.zip -r ffcraft_solver_gui_linux/
+    zip releases/xiv_csolver_cli_linux.zip -j target/release/xiv_csolver_cli craft.toml -j target/release/libxiv_craft_solver.so 
+    cd python/dist/ && zip ../../releases/xiv_csolver_gui_linux.zip -r xiv_csolver_gui_linux/
 '''
 
 [tasks.zip_win]
@@ -55,8 +65,8 @@ script_runner = "@shell"
 script = '''
     mkdir -p releases # Add version as an arg and things
     cp target/wheels/*.whl releases/
-    tar acvf releases/ff_craft_solver_cli_win.zip .\craft.toml -C .\target\release\ ffcraft_solver_cli.exe libxiv_craft_solver.d
-    tar acvf releases/ff_craft_solver_gui_win.zip -C .\python\dist\ .\ffcraft_solver_gui_win\*
+    tar acvf releases/xiv_csolver_cli_win.zip .\craft.toml -C .\target\release\ xiv_csolver_cli.exe libxiv_craft_solver.d
+    tar acvf releases/xiv_csolver_gui_win.zip -C .\python\dist\ .\xiv_csolver_gui_win\*
 '''
 
 [tasks.pip]
@@ -78,13 +88,14 @@ linux_alias = "linux_pyinstaller"
 script_runner = "@shell"
 script = '''
     cd python
-    pyinstaller src/ffcraft_solver/__main__.py -i "src/ffcraft_solver/ressources/ffcraft_solver.ico" --add-data "src/ffcraft_solver/configs/:ffcraft_solver/configs" --add-data  "src/ffcraft_solver/ressources/:ffcraft_solver/ressources" --name ffcraft_solver_gui_linux  -y
+    pyinstaller src/xiv_csolver/__main__.py -i "src/xiv_csolver/ressources/xiv_csolver.ico" --add-data "src/xiv_csolver/configs/:xiv_csolver/configs" --add-data  "src/xiv_csolver/ressources/:xiv_csolver/ressources" --name xiv_csolver_gui_linux  -y
 '''
 
 [tasks.windows_pyinstaller]
 script_runner = "@shell"
 script = '''
-    cd python && pyinstaller src\ffcraft_solver\__main__.py  --add-data "src\ffcraft_solver\configs\;ffcraft_solver\configs" --add-data  "src\ffcraft_solver\ressources\;ffcraft_solver\ressources"  --name ffcraft_solver_gui_win -y
+    cd python 
+    pyinstaller src\xiv_csolver\__main__.py  -i "src/xiv_csolver/ressources/xiv_csolver.ico" --add-data "src\xiv_csolver\configs\;xiv_csolver\configs" --add-data  "src\xiv_csolver\ressources\;xiv_csolver\ressources"  --name xiv_csolver_gui_win -y
 '''
 
 [tasks.build]
@@ -100,6 +111,8 @@ args = ["develop", "--release"]
 command = "maturin"
 args = ["build", "--release"]
 
+[tasks.rebuild]
+dependencies = ["clean","build","maturin","pip"]
 
 [tasks.rust]
 dependencies = ["build","maturin"]

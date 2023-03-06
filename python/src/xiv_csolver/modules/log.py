@@ -3,12 +3,9 @@ import dearpygui.dearpygui as dpg
 
 
 class Loggers:
-    def __init__(self, log=None):
+    def __init__(self):
         timestamp = self.get_timestamp()
-        if not log:
-            self.log = f"{timestamp} Log initialised."
-        else:
-            self.log = log
+        self.log = f"{timestamp} Log initialised."
 
     def add_log(self, other: str) -> str:
         timestamp = self.get_timestamp()

@@ -1,4 +1,4 @@
-from ffcraft_solver.modules import log
+from xiv_csolver.modules import log
 
 loggers = log.Loggers
 
