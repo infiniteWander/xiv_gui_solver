@@ -454,3 +454,96 @@ lazy_static! {
     /// Initialize a static pseudo &Craft: ACTIONS
     pub static ref ACTIONS: ActionList = ActionList::default();
 }
+
+#[cfg(test)]
+mod test {
+    use crate::action::ACTIONS;
+    use pretty_assertions::assert_eq;
+    use strum::IntoEnumIterator;
+    #[test]
+    pub fn test_structs() {
+        let ac = crate::action::Action {
+            name: "Michel".to_string(),
+            dur: 0,
+            cp: 0,
+            progress: 0,
+            quality: 0,
+            buff: None,
+            short_name: "miguel".to_string(),
+        };
+        let ab = crate::action::ActionBuilder { action: ac };
+        let ba = crate::action::ActionBuilder::new(&"Basic Synthesis");
+        let _ = crate::action::ActionBuilder::new(&"Groundwork");
+        let cs = crate::action::ActionBuilder::new(&"Careful Synthesis");
+        ab.dur(10)
+            .cp(10)
+            .progress(10)
+            .quality(10)
+            .buff(None)
+            .build();
+        let act1 = ba.cp(10).dur(22).progress(33).quality(44).build();
+        let act2 = cs.cp(10).dur(22).progress(33).quality(44).build();
+        assert_eq!(act1, act2);
+        format!("{:?}", act1);
+        let _ = crate::action::ActionList::default();
+    }
+
+    #[test]
+    pub fn test_with_craft() {
+        let mut bbs = crate::specs::BuffState::default();
+        for buff in crate::specs::Buff::iter() {
+            bbs.apply(buff, 2);
+        }
+        let mut act1 = crate::action::ActionBuilder::new(&"Basic Synthesis")
+            .dur(22)
+            .cp(10)
+            .progress(100)
+            .quality(100)
+            .build();
+        let mut craft = crate::craft::Craft::default();
+        craft.buffs = bbs;
+
+        assert_eq!(act1.get_name(), "Basic Synthesis");
+        assert_eq!(act1.get_cp_cost(&craft), 10);
+        assert_eq!(act1.get_durability_cost(&craft), 11);
+        assert_eq!(act1.get_progress(&craft), 250);
+        assert_eq!(act1.get_quality(&craft), 300);
+        assert_eq!(act1.get_buff(), None);
+
+        assert!(act1.can_use(&craft));
+
+        assert_eq!(&ACTIONS.standard_touch.get_cp_cost(&craft), &18);
+        assert_eq!(&ACTIONS.advanced_touch.get_cp_cost(&craft), &18);
+        assert_eq!(&ACTIONS.masters_mend.get_durability_cost(&craft), &30);
+
+        assert_eq!(&ACTIONS.byregot_blessing.get_quality(&craft), &420);
+        assert_eq!(&ACTIONS.byregot_blessing.can_use(&craft), &true);
+        assert_eq!(&ACTIONS.muscle_memory.can_use(&craft), &true);
+        assert_eq!(&ACTIONS.trained_finesse.can_use(&craft), &false);
+        assert_eq!(&ACTIONS.reflect.can_use(&craft), &true);
+
+        act1.progress = 0;
+        act1.quality = 0;
+        assert_eq!(act1.get_durability_cost(&craft), 0);
+        act1.dur = 0;
+        act1.progress = 100;
+        act1.quality = 100;
+        assert_eq!(act1.get_durability_cost(&craft), 0);
+
+        act1.dur = 20;
+        craft.durability = 10;
+        craft.buffs = crate::specs::BuffState::default();
+        assert_eq!(act1.get_progress(&craft), 50);
+        assert_eq!(act1.get_quality(&craft), 50);
+
+        act1.dur = 2;
+        assert_eq!(act1.get_durability_cost(&craft), 5);
+
+        craft.cp = 0;
+        assert_eq!(&ACTIONS.reflect.can_use(&craft), &false);
+
+        craft.cp = 100;
+        craft.success = crate::specs::Success::Failure;
+        assert_eq!(&ACTIONS.reflect.can_use(&craft), &false);
+    }
+}
