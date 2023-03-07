@@ -16,7 +16,7 @@ pub fn next_action_picker_1<'a>(craft: &Craft<'a>) -> Vec<Option<&'a Action>> {
     let mut available_actions = Vec::<Option<&'a Action>>::new();
     let mut forbidden_actions = Vec::<Option<&'a Action>>::new();
 
-    // Optimize the first three steps for massive time save
+    // Optimize the first four steps for massive time save
     if craft.step_count == 0 {
         return action_vec![ACTIONS.muscle_memory];
     }
@@ -65,7 +65,7 @@ pub fn next_action_picker_1<'a>(craft: &Craft<'a>) -> Vec<Option<&'a Action>> {
     }
 
     // For long first run
-    if craft.step_count > 8 {
+    if craft.step_count > 8 && craft.buffs.waste_not == 0 {
         available_actions.append(&mut action_vec![ACTIONS.waste_not_ii, ACTIONS.waste_not])
     };
 
@@ -245,4 +245,255 @@ pub fn generate_routes_phase2<'a>(craft: Craft<'a>) -> Option<Vec<Craft<'a>>> {
     // Let's not forget the best result
     top_routes.push(top_route);
     Some(top_routes)
+}
+
+#[cfg(test)]
+mod test {
+    use crate::solver::{generate_routes_phase1, next_action_picker_1, ACTIONS};
+
+    #[test]
+    pub fn test_first_step() {
+        let mut craft = crate::craft::Craft::three_star();
+        // Try a failed craft
+        craft.success = crate::specs::Success::Failure;
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(vact, vec![None]);
+        craft.success = crate::specs::Success::Pending;
+
+        // Try the first 4 steps
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(vact, action_vec![ACTIONS.muscle_memory]);
+        craft.run_action(&ACTIONS.muscle_memory);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(vact, action_vec![ACTIONS.manipulation]);
+        craft.run_action(&ACTIONS.manipulation);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(vact, action_vec![ACTIONS.veneration]);
+        craft.run_action(&ACTIONS.veneration);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(vact, action_vec![ACTIONS.waste_not_ii, ACTIONS.groundwork]);
+        craft.run_action(&ACTIONS.waste_not_ii);
+
+        // Try the steps 5-8, deterministically
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(vact, action_vec![ACTIONS.groundwork]);
+        craft.run_action(&ACTIONS.careful_synthesis);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(
+            vact,
+            action_vec![
+                ACTIONS.groundwork,
+                ACTIONS.basic_synthesis,
+                ACTIONS.careful_synthesis,
+                ACTIONS.delicate_synthesis
+            ]
+        );
+        craft.run_action(&ACTIONS.careful_synthesis);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(
+            vact,
+            action_vec![
+                ACTIONS.groundwork,
+                ACTIONS.basic_synthesis,
+                ACTIONS.careful_synthesis,
+                ACTIONS.delicate_synthesis
+            ]
+        );
+        craft.run_action(&ACTIONS.careful_synthesis);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(
+            vact,
+            action_vec![
+                ACTIONS.groundwork,
+                ACTIONS.basic_synthesis,
+                ACTIONS.careful_synthesis,
+                ACTIONS.delicate_synthesis
+            ]
+        );
+        craft.run_action(&ACTIONS.careful_synthesis);
+
+        // Check odd parameters
+        craft.buffs.waste_not = 0;
+        craft.progression = 0;
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(
+            vact,
+            action_vec![
+                ACTIONS.basic_synthesis,
+                ACTIONS.careful_synthesis,
+                ACTIONS.prudent_synthesis,
+                ACTIONS.delicate_synthesis
+            ]
+        );
+        craft.run_action(&ACTIONS.delicate_synthesis);
+
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(
+            vact,
+            action_vec![
+                ACTIONS.basic_synthesis,
+                ACTIONS.careful_synthesis,
+                ACTIONS.prudent_synthesis,
+                ACTIONS.delicate_synthesis,
+                ACTIONS.waste_not_ii,
+                ACTIONS.waste_not
+            ]
+        );
+
+        craft.args.desperate = true;
+        let vact = next_action_picker_1(&craft);
+        assert_eq!(
+            vact,
+            action_vec![
+                ACTIONS.basic_synthesis,
+                ACTIONS.careful_synthesis,
+                ACTIONS.prudent_synthesis,
+                ACTIONS.delicate_synthesis,
+                ACTIONS.groundwork,
+                ACTIONS.masters_mend,
+                ACTIONS.waste_not_ii,
+                ACTIONS.waste_not
+            ]
+        );
+    }
+
+    #[test]
+    pub fn test_routes_p1() {
+        let craft = crate::craft::Craft::three_star();
+        let mut routes1 = generate_routes_phase1(craft);
+
+        for route in routes1.iter() {
+            println!("{:?}", route.actions);
+        }
+        // Literrally any change will break it
+        // An eq should be implmented to just check a vector of vector versus a route
+        assert_eq!(routes1.len(), 9);
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.waste_not_ii,
+                &ACTIONS.groundwork,
+                &ACTIONS.delicate_synthesis,
+                &ACTIONS.delicate_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.waste_not_ii,
+                &ACTIONS.groundwork,
+                &ACTIONS.delicate_synthesis,
+                &ACTIONS.basic_synthesis,
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.waste_not_ii,
+                &ACTIONS.groundwork,
+                &ACTIONS.careful_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.waste_not_ii,
+                &ACTIONS.groundwork,
+                &ACTIONS.basic_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.groundwork,
+                &ACTIONS.delicate_synthesis,
+                &ACTIONS.delicate_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.groundwork,
+                &ACTIONS.delicate_synthesis,
+                &ACTIONS.basic_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.groundwork,
+                &ACTIONS.prudent_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.groundwork,
+                &ACTIONS.careful_synthesis
+            ]
+        );
+
+        let route = routes1.pop().unwrap();
+        assert_eq!(
+            route.actions,
+            vec![
+                &ACTIONS.muscle_memory,
+                &ACTIONS.manipulation,
+                &ACTIONS.veneration,
+                &ACTIONS.groundwork,
+                &ACTIONS.basic_synthesis
+            ]
+        );
+
+        let route = routes1.pop();
+        match route {
+            None => (),
+            Some(..) => panic!(),
+        }
+    }
 }
