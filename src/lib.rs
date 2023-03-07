@@ -96,12 +96,9 @@
 
 #![warn(missing_docs)]
 
-use crate::io::SolverResult;
-use crate::{
-    craft::Craft,
-    io::Parameters,
-    specs::{Recipe, Stats},
-};
+use crate::craft::Craft;
+use crate::io::{Parameters, SolverResult};
+use crate::specs::{Recipe, Stats};
 use std::sync::{Arc, Mutex};
 use threadpool::ThreadPool;
 

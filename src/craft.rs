@@ -210,6 +210,33 @@ impl<'a> Craft<'a> {
             },
         )
     }
+
+    /// Create a "Three start" craft, testing only
+    pub fn three_star() -> Craft<'a> {
+        Self::new(
+            crate::specs::Recipe {
+                durability: 70,
+                progress: 3900,
+                quality: 10920,
+                progress_divider: 130,
+                quality_divider: 115,
+                progress_modifier: 80,
+                quality_modifier: 70,
+            },
+            crate::specs::Stats {
+                craftsmanship: 4041,
+                control: 3971,
+                max_cp: 595,
+            },
+            crate::io::Parameters {
+                threads: 8,
+                verbose: 2,
+                depth: 8,
+                desperate: false,
+                byregot_step: 10,
+            },
+        )
+    }
 }
 
 #[cfg(test)]
