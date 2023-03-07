@@ -235,7 +235,26 @@ fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-///
+/// A test result, useful for debugging, all values are set to zero as per the
+/// [`default`](crate::io::SolverResult::default)
+/// ```
+/// # use xiv_csolver_lib::io::SolverResult;
+/// SolverResult{
+///     steps: 0,
+///     progression: 0,
+///     quality: 0,
+///     durability: 0,
+///         total_progression: 0,
+///         total_quality: 0,
+///         total_durability: 0,
+///         actions: vec!["Act1".to_string(), "Act2".to_string()],
+///         step1_solutions: 0,
+///         step2_solutions: 0,
+///         found_100_percent: false,
+///         cp: 0,
+///         total_cp: 0,
+///     };
+/// ```
 #[cfg(not(feature = "no_python"))]
 #[pyfunction]
 pub fn test_result() -> SolverResult {
@@ -273,6 +292,7 @@ use crate::{solve_craft, Recipe, Stats};
 /// crafting_feeder = FeedingClass()
 /// rich.inspect(xiv_csolver_lib.solve_from_python(crafting_feeder))
 /// ```
+
 #[cfg(not(feature = "no_python"))]
 #[pyfunction]
 pub fn solve_from_python(py: Python<'_>, values: &PyAny) -> PyResult<Option<Vec<SolverResult>>> {

@@ -5,7 +5,7 @@ Originaly written by [RikaKagurasaka](https://github.com/RikaKagurasaka/xiv_craf
 it now is widely improved and provides python bindings for a GUI (or anything else really)
 
 
-![coverage/html/badges/flat.svg](coverage/html/badges/flat.svg)
+![coverage/html/badges/plastic.svg](coverage/html/badges/flat.svg)
 
 ### Basic RUST CLI Usage
 Everything is done through the regular cargo interface

@@ -145,9 +145,10 @@ impl Action {
     }
     /// Get the durability cost this action would have if used at this stage of the craft
     /// This method accounts for the effects of **master mend** and **waste not**.
-    pub fn get_durability_cost(&self, _craft: &Craft) -> u32 {
+    /// Note that not using i32 for durability from scratch is a desing choice
+    pub fn get_durability_cost(&self, _craft: &Craft) -> i32 {
         if self == &ACTIONS.masters_mend {
-            return 30;
+            return -30;
         }
         if self.dur == 0 || self.progress == 0 && self.quality == 0 {
             return 0;
@@ -159,7 +160,7 @@ impl Action {
         if dur < 5 {
             dur = 5;
         }
-        dur
+        dur as i32
     }
     /// Get the progress effect this action would have if used at this stage of the craft
     /// This method accounts for the effects of **groundwork** under 20 durability,
@@ -419,6 +420,7 @@ impl Default for ActionList {
                 .build(),
 
             masters_mend: ActionBuilder::new("Master's Mend").cp(88).build(),
+            //masters_mend: ActionBuilder::new("Master's Mend").dur(-30).cp(88).build(),
             waste_not: ActionBuilder::new("Waste Not")
                 .cp(56)
                 .buff(Some((Buff::WasteNot, 4)))
@@ -514,7 +516,7 @@ mod test {
 
         assert_eq!(&ACTIONS.standard_touch.get_cp_cost(&craft), &18);
         assert_eq!(&ACTIONS.advanced_touch.get_cp_cost(&craft), &18);
-        assert_eq!(&ACTIONS.masters_mend.get_durability_cost(&craft), &30);
+        assert_eq!(&ACTIONS.masters_mend.get_durability_cost(&craft), &-30);
 
         assert_eq!(&ACTIONS.byregot_blessing.get_quality(&craft), &420);
         assert_eq!(&ACTIONS.byregot_blessing.can_use(&craft), &true);
