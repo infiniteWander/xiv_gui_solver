@@ -3,7 +3,6 @@
 //! A craft represent the state of the recipe with a vector of actions applied to it.
 //! Applying actions to it will make the craft progress, while branching and trying other actions
 //! will be done by cloning
-//!
 
 use crate::action::Action;
 use crate::specs::{Buff, BuffState, Recipe, Stats, Success};
