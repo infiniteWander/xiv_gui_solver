@@ -19,7 +19,7 @@ toml = "0.5.9"
 clap = {version = "4.1.6", features = ["derive"]}
 threadpool = "1.8.1"
 # For python bindings TODO: make it optionnal
-pyo3 = { version = "0.18.0", features = ["extension-module"] }
+pyo3 = { version = "0.18.1", features= ["extension-module"]}
 
 # [target.'cfg(not(no_python))'.dependencies]
 # pyo3 = { version = "0.18.0", features = ["extension-module"] }
@@ -36,7 +36,8 @@ opt-level = 3
 lto = true
 
 [features]
-default = []
+extension-module = ["pyo3/extension-module"]
+default = ["extension-module"]
 verbose = []
 no_python = [] # Removes the python bindings
 fast = []      # Remove some under optimisations that try to find other routes
@@ -49,3 +50,4 @@ crate-type = ["cdylib","rlib"]
 [[bin]]
 name = "xiv_csolver_cli"
 path = "src/bin/xiv_csolver.rs"
+
