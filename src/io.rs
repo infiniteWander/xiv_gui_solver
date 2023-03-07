@@ -239,21 +239,21 @@ fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
 /// [`default`](crate::io::SolverResult::default)
 /// ```
 /// # use xiv_csolver_lib::io::SolverResult;
-/// SolverResult{
+/// SolverResult {
 ///     steps: 0,
 ///     progression: 0,
 ///     quality: 0,
 ///     durability: 0,
-///         total_progression: 0,
-///         total_quality: 0,
-///         total_durability: 0,
-///         actions: vec!["Act1".to_string(), "Act2".to_string()],
-///         step1_solutions: 0,
-///         step2_solutions: 0,
-///         found_100_percent: false,
-///         cp: 0,
-///         total_cp: 0,
-///     };
+///     total_progression: 0,
+///     total_quality: 0,
+///     total_durability: 0,
+///     actions: vec!["Act1".to_string(), "Act2".to_string()],
+///     step1_solutions: 0,
+///     step2_solutions: 0,
+///     found_100_percent: false,
+///     cp: 0,
+///     total_cp: 0,
+/// };
 /// ```
 #[cfg(not(feature = "no_python"))]
 #[pyfunction]

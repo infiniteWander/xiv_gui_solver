@@ -2,7 +2,6 @@
 //!
 //! All actions are defined as Action, containing all methods to actively use it in a craft
 //! while ActionBuilder is used only initally as a lazy_static setup
-//!
 
 use crate::craft::Craft;
 use crate::specs::{Buff, Success};
@@ -45,10 +44,10 @@ impl ActionBuilder {
     /// use xiv_csolver_lib::action::ActionBuilder;
     /// use xiv_csolver_lib::specs::Buff;
     /// ActionBuilder::new("Muscle Memory")
-    ///            .cp(6)
-    ///            .progress(300)
-    ///            .buff(Some((Buff::MuscleMemory, 5)))
-    ///            .build();
+    ///     .cp(6)
+    ///     .progress(300)
+    ///     .buff(Some((Buff::MuscleMemory, 5)))
+    ///     .build();
     /// ```
     pub fn new(name: &str) -> Self {
         let mut short_name = name.to_string();

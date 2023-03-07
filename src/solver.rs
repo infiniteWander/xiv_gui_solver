@@ -26,11 +26,11 @@ pub fn next_action_picker_1<'a>(craft: &Craft<'a>) -> Vec<Option<&'a Action>> {
 
     // Prune some actions if not requested by --long
     if craft.step_count == 2 {
-        return action_vec![/*ACTIONS.waste_not, ACTIONS.waste_not_ii, */ ACTIONS.veneration];
+        return action_vec![/* ACTIONS.waste_not, ACTIONS.waste_not_ii, */ ACTIONS.veneration];
     }
     if craft.step_count == 3 {
         available_actions.append(&mut action_vec![
-            ACTIONS.waste_not_ii /*,ACTIONS.waste_not*/
+            ACTIONS.waste_not_ii /* ,ACTIONS.waste_not */
         ])
     }
 
