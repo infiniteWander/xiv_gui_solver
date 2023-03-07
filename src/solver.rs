@@ -61,6 +61,7 @@ pub fn next_action_picker_1<'a>(craft: &Craft<'a>) -> Vec<Option<&'a Action>> {
     // ACTIONS.groundwork for the --pls
     if craft.args.desperate {
         available_actions.append(&mut action_vec![ACTIONS.groundwork]);
+        available_actions.append(&mut action_vec![ACTIONS.masters_mend]);
     }
 
     // For long first run
@@ -191,6 +192,9 @@ pub fn next_action_phase_2<'a>(craft: &Craft<'a>) -> Vec<Option<&'a Action>> {
             available_actions.push(&ACTIONS.byregot_blessing);
         }
     }
+    // if craft.durability + 30 < craft.recipe.durability as i32{
+    //     available_actions.push(&ACTIONS.masters_mend);
+    // }
     let mut final_actions: Vec<Option<&Action>> = Vec::new();
 
     for action in available_actions {

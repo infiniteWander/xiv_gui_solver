@@ -30,7 +30,7 @@
 //!
 //! It is really recommended to set up a venv to handle the python development
 //!
-//! All bindings and the explanation of how to use them can be found in the [`io`](crate::io) module.
+//! All bindings and the explanation of how to use them can be found in the [`io`](xiv_csolver_lib::io) module.
 //!
 //! ### Features
 //!

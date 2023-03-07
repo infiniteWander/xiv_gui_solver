@@ -215,10 +215,48 @@ impl<'a> Craft<'a> {
 
 #[cfg(test)]
 mod test {
-    // use pretty_assertions::assert_eq;
+    use pretty_assertions::assert_eq;
     // Struct Test
     #[test]
     pub fn struct_tests() {
-        let _craft = crate::craft::Craft::default();
+        let craft = crate::craft::Craft::default().clone();
+        assert_eq!(craft.get_base_progression(), 22);
+        assert_eq!(craft.get_base_quality(), 55);
+
+        format!("{}", craft);
+        format!("{:?}", craft);
+    }
+
+    #[test]
+    pub fn test_craft() {
+        let mut craft = crate::craft::Craft::default();
+        craft.cp = 1000;
+        format!("{:?}", craft);
+        let mut craft2 = craft.run_action(&crate::action::ACTIONS.veneration).clone();
+
+        craft.run_action(&crate::action::ACTIONS.masters_mend);
+        craft.run_action(&crate::action::ACTIONS.masters_mend);
+        craft.run_action(&crate::action::ACTIONS.manipulation);
+        craft.run_action(&crate::action::ACTIONS.basic_touch);
+        craft.run_action(&crate::action::ACTIONS.basic_synthesis);
+        assert_eq!(craft.durability, 190);
+        craft.run_action(&crate::action::ACTIONS.masters_mend);
+        assert_eq!(craft.durability, 200);
+        craft.run_action(&crate::action::ACTIONS.masters_mend);
+        for _ in 0..10 {
+            craft.run_action(&crate::action::ACTIONS.basic_touch);
+        }
+
+        for _ in 0..3 {
+            craft.run_action(&crate::action::ACTIONS.masters_mend);
+            craft.run_action(&crate::action::ACTIONS.groundwork);
+        }
+        assert_eq!(craft.success, crate::craft::Success::Success);
+
+        for _ in 0..20 {
+            craft2.run_action(&crate::action::ACTIONS.preparatory_touch);
+        }
+        assert_eq!(craft2.durability, 0);
+        assert_eq!(craft2.success, crate::craft::Success::Failure);
     }
 }
