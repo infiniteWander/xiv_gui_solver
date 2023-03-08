@@ -211,8 +211,8 @@ impl<'a> Craft<'a> {
         )
     }
 
-    /// Create a "Three start" craft, testing only
-    pub fn three_star() -> Craft<'a> {
+    /// Create a "Two start" craft, testing only
+    pub fn two_star() -> Craft<'a> {
         Self::new(
             crate::specs::Recipe {
                 durability: 70,
@@ -237,6 +237,33 @@ impl<'a> Craft<'a> {
             },
         )
     }
+
+    /// Create a "Zero star" craft for debbuging & testing
+    pub fn zero_star() -> Craft<'a> {
+        Self::new(
+            crate::specs::Recipe {
+                durability: 70,
+                progress: 4000,
+                quality: 10920,
+                progress_divider: 100,
+                quality_divider: 100,
+                progress_modifier: 100,
+                quality_modifier: 100,
+            },
+            crate::specs::Stats {
+                craftsmanship: 4000,
+                control: 4000,
+                max_cp: 600,
+            },
+            crate::io::Parameters {
+                threads: 8,
+                verbose: 2,
+                depth: 8,
+                desperate: false,
+                byregot_step: 10,
+            },
+        )
+    }
 }
 
 #[cfg(test)]
@@ -245,9 +272,9 @@ mod test {
     // Struct Test
     #[test]
     pub fn struct_tests() {
-        let craft = crate::craft::Craft::default().clone();
-        assert_eq!(craft.get_base_progression(), 22);
-        assert_eq!(craft.get_base_quality(), 55);
+        let craft = crate::craft::Craft::zero_star().clone();
+        assert_eq!(craft.get_base_progression(), 402);
+        assert_eq!(craft.get_base_quality(), 435);
 
         format!("{}", craft);
         format!("{:?}", craft);
