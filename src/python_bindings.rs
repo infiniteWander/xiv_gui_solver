@@ -12,7 +12,6 @@ use pyo3::prelude::*;
 
 /// A final stripped down version of a craft
 /// used for final print and talking with python
-/// TODO: Half of these parameter are unique and SHOULD NOT be replicated on every solution
 #[derive(Debug)]
 #[pyclass]
 pub struct SolverResult {
@@ -46,6 +45,21 @@ pub struct SolverResult {
     /// The list of actions, as a string
     #[pyo3(get)]
     pub actions: Vec<String>,
+    // /// The amount of solutions found during the first step of the solving (Used for debug) (Deprecated)
+    // #[pyo3(get)]
+    // pub step1_solutions: usize,
+    // /// The amount of solutions found at the end of the second step of solving (Used for debug) (Deprecated)
+    // #[pyo3(get)]
+    // pub step2_solutions: usize,
+    // #[pyo3(get)]
+    // /// Wether a 100% HQ solution was found (Deprecated)
+    // pub found_100_percent: bool,
+}
+
+/// Global info on the execution
+#[derive(Debug)]
+#[pyclass]
+pub struct Info {
     /// The amount of solutions found during the first step of the solving (Used for debug) (Deprecated)
     #[pyo3(get)]
     pub step1_solutions: usize,
@@ -57,6 +71,31 @@ pub struct SolverResult {
     pub found_100_percent: bool,
 }
 
+/// Solution information, contains information about the execution
+impl Info {
+    /// Make a new information struct
+    pub fn new(
+        step1_solutions: usize,
+        step2_solutions: usize,
+        found_100_percent: bool,
+        // params: &'Parameters
+    ) -> Self {
+        Self {
+            step1_solutions,
+            step2_solutions,
+            found_100_percent,
+        }
+    }
+
+    /// Default value of the info, only used for debug purposes
+    pub fn default() -> Self {
+        Self {
+            step1_solutions: 0,
+            step2_solutions: 0,
+            found_100_percent: false,
+        }
+    }
+}
 /// Pretty display for SolverResult
 impl Display for SolverResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
@@ -67,12 +106,7 @@ impl Display for SolverResult {
 impl SolverResult {
     /// Create a SolverResult from a solution
     /// Using this returns a solution, usable by Python
-    pub fn from_craft(
-        craft: &Craft,
-        step1_solutions: usize,
-        step2_solutions: usize,
-        found_100_percent: bool,
-    ) -> SolverResult {
+    pub fn from_craft(craft: &Craft) -> SolverResult {
         let mut actions = craft
             .actions
             .iter()
@@ -97,9 +131,6 @@ impl SolverResult {
             quality: craft.quality,
             durability: craft.durability,
             actions: actions,
-            step1_solutions,
-            step2_solutions,
-            found_100_percent,
             total_progression: craft.recipe.progress,
             total_quality: craft.recipe.quality,
             total_durability: craft.recipe.durability,
@@ -128,9 +159,6 @@ impl SolverResult {
             total_quality: 0,
             total_durability: 0,
             actions: vec!["Act1".to_string(), "Act2".to_string()],
-            step1_solutions: 0,
-            step2_solutions: 0,
-            found_100_percent: false,
             cp: 0,
             total_cp: 0,
         }
@@ -160,6 +188,8 @@ impl SolverResult {
 #[pymodule]
 fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(test_result, m)?)?;
+    m.add_function(wrap_pyfunction!(test_final_results, m)?)?;
+    m.add_function(wrap_pyfunction!(test_info, m)?)?;
     m.add_function(wrap_pyfunction!(solve_from_python, m)?)?;
     Ok(())
 }
@@ -177,9 +207,6 @@ fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     total_quality: 0,
 ///     total_durability: 0,
 ///     actions: vec!["Act1".to_string(), "Act2".to_string()],
-///     step1_solutions: 0,
-///     step2_solutions: 0,
-///     found_100_percent: false,
 ///     cp: 0,
 ///     total_cp: 0,
 /// };
@@ -188,6 +215,41 @@ fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
 #[pyfunction]
 pub fn test_result() -> SolverResult {
     SolverResult::default()
+}
+
+/// A test info, useful for debugging, all values are set to zero as per the
+/// [`default`](crate::io::Info::default)
+/// ```
+/// # use xiv_csolver_lib::python_bindings::Info;
+/// Info {
+///     step1_solutions: 0,
+///     step2_solutions: 0,
+///     found_100_percent: false,
+/// };
+/// ```
+#[cfg(not(feature = "no_python"))]
+#[pyfunction]
+pub fn test_info() -> Info {
+    Info::default()
+}
+
+/// A test result array, useful for debugging, all values are set to zero as per the
+/// [`default`](crate::io::Parameters::default)
+/// ```
+/// # use xiv_csolver_lib::python_bindings::{Info};
+/// # use xiv_csolver_lib::python_bindings::SolverResult;
+/// (
+///     vec![SolverResult::default(), SolverResult::default()],
+///     Info::default(),
+/// );
+/// ```
+#[cfg(not(feature = "no_python"))]
+#[pyfunction]
+pub fn test_final_results() -> (Vec<SolverResult>, Info) {
+    (
+        vec![SolverResult::default(), SolverResult::default()],
+        Info::default(),
+    )
 }
 
 /// Create a stat struct stats with the base values
@@ -224,7 +286,10 @@ use crate::{solve_craft, Recipe, Stats};
 
 #[cfg(not(feature = "no_python"))]
 #[pyfunction]
-pub fn solve_from_python(py: Python<'_>, values: &PyAny) -> PyResult<Option<Vec<SolverResult>>> {
+pub fn solve_from_python(
+    py: Python<'_>,
+    values: &PyAny,
+) -> PyResult<Option<(Vec<SolverResult>, Info)>> {
     // Create Recipe
     let recipe = Recipe {
         durability: values.getattr("durability")?.extract()?,
@@ -257,4 +322,16 @@ pub fn solve_from_python(py: Python<'_>, values: &PyAny) -> PyResult<Option<Vec<
         let res = solve_craft(recipe, stats, param);
         Ok(res)
     })
+}
+
+#[cfg(test)]
+mod test {
+    use crate::python_bindings::{test_final_results, test_info, test_result};
+
+    #[test]
+    pub fn test_function_call() {
+        test_final_results();
+        test_info();
+        test_result();
+    }
 }

@@ -2,9 +2,9 @@ import xiv_csolver_lib
 import rich
 
 rich.inspect(xiv_csolver_lib)
-rich.inspect(xiv_csolver_lib.test_result)
 rich.inspect(xiv_csolver_lib.test_result())
-rich.inspect(xiv_csolver_lib.test_result())
+rich.inspect(xiv_csolver_lib.test_info())
+rich.inspect(xiv_csolver_lib.test_final_results())
 
 
 class FeedMeDaddy:

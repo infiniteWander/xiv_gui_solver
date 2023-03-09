@@ -131,26 +131,26 @@ fn main() {
         Some(ref res) => {
             // Show best results
             if args.verbose > 0 {
-                println!("[Final] {} results were found:", res.len());
+                println!("[Final] {} results were found:", res.0.len());
                 #[cfg(feature = "verbose")]
                 if args.verbose > 1 {
                     xiv_csolver_lib::print_routes(&results);
                 }
             }
+            println!("\n > SOLUTION [Least steps] <");
+            xiv_csolver_lib::find_fast_route(&res)
+                .unwrap()
+                .pretty_print();
+            println!("\n > SOLUTION [Most durability] <");
+            xiv_csolver_lib::find_safe_route(&res)
+                .unwrap()
+                .pretty_print();
+            println!("\n > SOLUTION [Most quality] < ");
+            xiv_csolver_lib::find_quality_route(&res)
+                .unwrap()
+                .pretty_print();
         }
     }
-    println!("\n > SOLUTION [Least steps] <");
-    xiv_csolver_lib::find_fast_route(&results)
-        .unwrap()
-        .pretty_print();
-    println!("\n > SOLUTION [Most durability] <");
-    xiv_csolver_lib::find_safe_route(&results)
-        .unwrap()
-        .pretty_print();
-    println!("\n > SOLUTION [Most quality] < ");
-    xiv_csolver_lib::find_quality_route(&results)
-        .unwrap()
-        .pretty_print();
 
     // #[cfg(feature = "verbose")]
     // if params.verbose>2{

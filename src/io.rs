@@ -116,7 +116,8 @@ mod tests {
     #[test]
     pub fn test_debug() {
         let def = SolverResult::default();
-        assert_eq!(format!("{:?}", def),"SolverResult { steps: 0, quality: 0, progression: 0, durability: 0, cp: 0, total_cp: 0, total_progression: 0, total_quality: 0, total_durability: 0, actions: [\"Act1\", \"Act2\"], step1_solutions: 0, step2_solutions: 0, found_100_percent: false }");
+        assert_eq!(format!("{:?}", def),"SolverResult { steps: 0, quality: 0, progression: 0, durability: 0, cp: 0, total_cp: 0, total_progression: 0, total_quality: 0, total_durability: 0, actions: [\"Act1\", \"Act2\"] }");
+        //, step1_solutions: 0, step2_solutions: 0, found_100_percent: false }
     }
 
     #[test]
