@@ -148,7 +148,7 @@ pub fn solve_craft<'a>(
         }
     }
 
-    // Core algorithm, fill all found routes with the best route (doesn't branch, just replace)
+    // Core algorithm, fill all found routes with the best route
     let arc_phase2_routes = Arc::new(Mutex::new(Vec::<Craft>::new()));
 
     for route in phase1_routes {
@@ -369,5 +369,185 @@ pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResu
             }
         }
         None => None,
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    pub fn test_lib_find_route() {
+        // Supposed to find a route for the base craft
+        let mut craft = crate::craft::Craft::two_star();
+        let res = solve_craft(craft.recipe, craft.stats, craft.args);
+        assert!(res.unwrap().len() > 2000);
+
+        craft.recipe.progress = 0;
+        let res = solve_craft(craft.recipe, craft.stats, craft.args);
+        println!("{:?}", res);
+        assert!(res.is_none());
+
+        craft.recipe.progress = 100;
+        craft.stats.max_cp = 0;
+        craft.cp = 0;
+
+        let mut res = solve_craft(craft.recipe, craft.stats, craft.args).unwrap();
+        println!("{:?}", res);
+        assert_eq!(res.len(), 1);
+        assert_eq!(res.pop().unwrap().actions, vec!("basicSynth2"));
+    }
+
+    #[test]
+    pub fn test_lib_print_route() {
+        let craft = crate::craft::Craft::two_star();
+        print_routes(&solve_craft(craft.recipe, craft.stats, craft.args));
+        print_routes(&None);
+    }
+
+    #[test]
+    pub fn test_lib_best_solutions() {
+        let craft = crate::craft::Craft::two_star();
+        let res = solve_craft(craft.recipe, craft.stats, craft.args);
+
+        assert!(find_fast_route(&None).is_none());
+        assert!(find_quality_route(&None).is_none());
+        assert!(find_safe_route(&None).is_none());
+
+        assert!(find_fast_route(&Some(vec![])).is_none());
+        assert!(find_quality_route(&Some(vec![])).is_none());
+        assert!(find_safe_route(&&Some(vec![])).is_none());
+
+        let sol = find_fast_route(&res).unwrap();
+        assert_eq!(sol.steps, 17);
+        assert_eq!(sol.quality, 11129);
+        assert_eq!(sol.progression, 3750);
+        assert_eq!(sol.durability, 0);
+        assert_eq!(sol.cp, 7);
+        assert_eq!(sol.step1_solutions, 9);
+        assert_eq!(sol.step2_solutions, 21193);
+        assert_eq!(sol.found_100_percent, true);
+        assert_eq!(
+            sol.actions,
+            vec!(
+                "muscleMemory",
+                "manipulation",
+                "veneration",
+                "wasteNot2",
+                "groundwork",
+                "delicateSynthesis",
+                "delicateSynthesis",
+                "innovation",
+                "preparatoryTouch",
+                "preparatoryTouch",
+                "preparatoryTouch",
+                "preparatoryTouch",
+                "innovation",
+                "basicTouch",
+                "standardTouch",
+                "greatStrides",
+                "byregotsBlessing",
+                "basicSynth2"
+            )
+        );
+
+        let sol = find_quality_route(&res).unwrap();
+        assert_eq!(sol.steps, 23);
+        assert_eq!(sol.quality, 12032);
+        assert_eq!(sol.progression, 3675);
+        assert_eq!(sol.durability, -5);
+        assert_eq!(sol.cp, 3);
+        assert_eq!(sol.step1_solutions, 9);
+        assert_eq!(sol.step2_solutions, 21193);
+        assert_eq!(sol.found_100_percent, true);
+        assert_eq!(
+            sol.actions,
+            vec!(
+                "muscleMemory",
+                "manipulation",
+                "veneration",
+                "groundwork",
+                "prudentSynthesis",
+                "innovation",
+                "prudentTouch",
+                "basicTouch",
+                "standardTouch",
+                "advancedTouch",
+                "manipulation",
+                "innovation",
+                "prudentTouch",
+                "basicTouch",
+                "standardTouch",
+                "advancedTouch",
+                "innovation",
+                "basicTouch",
+                "standardTouch",
+                "advancedTouch",
+                "greatStrides",
+                "innovation",
+                "byregotsBlessing",
+                "basicSynth2"
+            )
+        );
+
+        let sol = find_safe_route(&res).unwrap();
+        assert_eq!(sol.steps, 22);
+        assert_eq!(sol.quality, 11161);
+        assert_eq!(sol.progression, 3675);
+        assert_eq!(sol.durability, 10);
+        assert_eq!(sol.cp, 4);
+        assert_eq!(sol.step1_solutions, 9);
+        assert_eq!(sol.step2_solutions, 21193);
+        assert_eq!(sol.found_100_percent, true);
+        assert_eq!(
+            sol.actions,
+            vec!(
+                "muscleMemory",
+                "manipulation",
+                "veneration",
+                "groundwork",
+                "carefulSynthesis",
+                "prudentTouch",
+                "innovation",
+                "prudentTouch",
+                "prudentTouch",
+                "prudentTouch",
+                "prudentTouch",
+                "manipulation",
+                "innovation",
+                "prudentTouch",
+                "basicTouch",
+                "standardTouch",
+                "advancedTouch",
+                "innovation",
+                "basicTouch",
+                "standardTouch",
+                "greatStrides",
+                "byregotsBlessing",
+                "basicSynth2"
+            )
+        );
+    }
+
+    #[test]
+    pub fn test_load_from_config() {
+        load_from_config("default_recipe", "craft.toml", "default_character");
+    }
+
+    #[should_panic]
+    #[test]
+    pub fn test_bad_config_filename() {
+        load_from_config("default_recipe", "nocrafto.toml", "default_character");
+    }
+
+    #[should_panic]
+    #[test]
+    pub fn test_bad_config_recipename() {
+        load_from_config("bad_recipe", "craft.toml", "default_character");
+    }
+    #[should_panic]
+    #[test]
+    pub fn test_bad_config_charname() {
+        load_from_config("default_recipe", "craft.toml", "bad_character");
     }
 }
