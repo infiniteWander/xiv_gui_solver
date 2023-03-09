@@ -98,7 +98,7 @@
 
 use crate::craft::Craft;
 use crate::io::Parameters;
-use crate::python_bindings::SolverResult;
+use crate::python_bindings::{Info, SolverResult};
 use crate::specs::{Recipe, Stats};
 use std::sync::{Arc, Mutex};
 use threadpool::ThreadPool;
@@ -115,7 +115,7 @@ pub fn solve_craft<'a>(
     recipe: Recipe,
     stats: Stats,
     params: Parameters,
-) -> Option<Vec<SolverResult>> {
+) -> Option<(Vec<SolverResult>, Info)> {
     // Load the craft with given arguments
     let craft = Craft::new(recipe, stats, params);
 
@@ -196,17 +196,17 @@ pub fn solve_craft<'a>(
     for route in phase2_routes.iter() {
         if route.quality >= route.recipe.quality {
             // valid_routes.push(route.clone());
-            valid_solutions.push(SolverResult::from_craft(route, nb_p1, nb_p2, true));
+            valid_solutions.push(SolverResult::from_craft(route)); //nb_p1, nb_p2, true
         }
     }
     // If no craft can make it to 100% HQ, fallback to base results
     if valid_solutions.len() == 0 {
         for route in phase2_routes.iter() {
-            valid_solutions.push(SolverResult::from_craft(route, nb_p1, nb_p2, false));
+            valid_solutions.push(SolverResult::from_craft(route));
         }
     }
 
-    Some(valid_solutions)
+    Some((valid_solutions, Info::new(nb_p1, nb_p2, true)))
 }
 
 /// Load the config from args and make a craft from it
@@ -323,9 +323,9 @@ pub fn load_from_config<'a>(
 }
 
 /// Print all routes in the vect, verbose
-pub fn print_routes<'a>(routes: &Option<Vec<SolverResult>>) {
+pub fn print_routes<'a>(routes: &Option<(Vec<SolverResult>, Info)>) {
     match routes {
-        Some(r) => {
+        Some((r, _)) => {
             println!("Showing {} routes", r.len());
             for c in r.iter() {
                 println!(
@@ -339,38 +339,28 @@ pub fn print_routes<'a>(routes: &Option<Vec<SolverResult>>) {
 }
 
 /// Find the route with the least amount of steps
-pub fn find_fast_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult> {
-    match routes {
-        Some(_routes) => {
-            if _routes.len() > 0 {
-                _routes.iter().min_by_key(|key| key.steps)
-            } else {
-                None
-            }
-        }
-        None => None,
+pub fn find_fast_route<'a>(routes: &'a (Vec<SolverResult>, Info)) -> Option<&'a SolverResult> {
+    let (_routes, _info) = routes;
+    if _routes.len() > 0 {
+        _routes.iter().min_by_key(|key| key.steps)
+    } else {
+        None
     }
 }
 
 /// Find the route with the maximum amount of quality
-pub fn find_quality_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult> {
-    match routes {
-        Some(_routes) => _routes.iter().max_by_key(|key| key.quality),
-        None => None,
-    }
+pub fn find_quality_route<'a>(routes: &'a (Vec<SolverResult>, Info)) -> Option<&'a SolverResult> {
+    let (_routes, _info) = routes;
+    _routes.iter().max_by_key(|key| key.quality)
 }
 
 /// Find the route with the maximum of durability left
-pub fn find_safe_route(routes: &Option<Vec<SolverResult>>) -> Option<&SolverResult> {
-    match routes {
-        Some(_routes) => {
-            if _routes.len() > 0 {
-                _routes.iter().max_by_key(|key| key.durability)
-            } else {
-                None
-            }
-        }
-        None => None,
+pub fn find_safe_route(routes: &(Vec<SolverResult>, Info)) -> Option<&SolverResult> {
+    let (_routes, _info) = routes;
+    if _routes.len() > 0 {
+        _routes.iter().max_by_key(|key| key.durability)
+    } else {
+        None
     }
 }
 
@@ -383,7 +373,7 @@ mod test {
         // Supposed to find a route for the base craft
         let mut craft = crate::craft::Craft::two_star();
         let res = solve_craft(craft.recipe, craft.stats, craft.args);
-        assert!(res.unwrap().len() > 2000);
+        assert!(res.unwrap().0.len() > 2000);
 
         craft.recipe.progress = 0;
         let res = solve_craft(craft.recipe, craft.stats, craft.args);
@@ -396,8 +386,8 @@ mod test {
 
         let mut res = solve_craft(craft.recipe, craft.stats, craft.args).unwrap();
         println!("{:?}", res);
-        assert_eq!(res.len(), 1);
-        assert_eq!(res.pop().unwrap().actions, vec!("basicSynth2"));
+        assert_eq!(res.0.len(), 1);
+        assert_eq!(res.0.pop().unwrap().actions, vec!("basicSynth2"));
     }
 
     #[test]
@@ -410,25 +400,24 @@ mod test {
     #[test]
     pub fn test_lib_best_solutions() {
         let craft = crate::craft::Craft::two_star();
-        let res = solve_craft(craft.recipe, craft.stats, craft.args);
+        let routes = solve_craft(craft.recipe, craft.stats, craft.args).unwrap();
+        // assert!(find_fast_route(&(None)).is_none());
+        // assert!(find_quality_route(&None).is_none());
+        // assert!(find_safe_route(&None).is_none());
 
-        assert!(find_fast_route(&None).is_none());
-        assert!(find_quality_route(&None).is_none());
-        assert!(find_safe_route(&None).is_none());
+        assert!(find_fast_route(&((vec![], Info::default()))).is_none());
+        assert!(find_quality_route(&((vec![], Info::default()))).is_none());
+        assert!(find_safe_route(&((vec![], Info::default()))).is_none());
 
-        assert!(find_fast_route(&Some(vec![])).is_none());
-        assert!(find_quality_route(&Some(vec![])).is_none());
-        assert!(find_safe_route(&&Some(vec![])).is_none());
-
-        let sol = find_fast_route(&res).unwrap();
+        let sol = find_fast_route(&routes).unwrap();
         assert_eq!(sol.steps, 17);
         assert_eq!(sol.quality, 11129);
         assert_eq!(sol.progression, 3750);
         assert_eq!(sol.durability, 0);
         assert_eq!(sol.cp, 7);
-        assert_eq!(sol.step1_solutions, 9);
-        assert_eq!(sol.step2_solutions, 21193);
-        assert_eq!(sol.found_100_percent, true);
+        assert_eq!(routes.1.step1_solutions, 9);
+        assert_eq!(routes.1.step2_solutions, 21193);
+        assert_eq!(routes.1.found_100_percent, true);
         assert_eq!(
             sol.actions,
             vec!(
@@ -453,15 +442,15 @@ mod test {
             )
         );
 
-        let sol = find_quality_route(&res).unwrap();
+        let sol = find_quality_route(&routes).unwrap();
         assert_eq!(sol.steps, 23);
         assert_eq!(sol.quality, 12032);
         assert_eq!(sol.progression, 3675);
         assert_eq!(sol.durability, -5);
         assert_eq!(sol.cp, 3);
-        assert_eq!(sol.step1_solutions, 9);
-        assert_eq!(sol.step2_solutions, 21193);
-        assert_eq!(sol.found_100_percent, true);
+        assert_eq!(routes.1.step1_solutions, 9);
+        assert_eq!(routes.1.step2_solutions, 21193);
+        assert_eq!(routes.1.found_100_percent, true);
         assert_eq!(
             sol.actions,
             vec!(
@@ -492,15 +481,15 @@ mod test {
             )
         );
 
-        let sol = find_safe_route(&res).unwrap();
+        let sol = find_safe_route(&routes).unwrap();
         assert_eq!(sol.steps, 22);
         assert_eq!(sol.quality, 11161);
         assert_eq!(sol.progression, 3675);
         assert_eq!(sol.durability, 10);
         assert_eq!(sol.cp, 4);
-        assert_eq!(sol.step1_solutions, 9);
-        assert_eq!(sol.step2_solutions, 21193);
-        assert_eq!(sol.found_100_percent, true);
+        assert_eq!(routes.1.step1_solutions, 9);
+        assert_eq!(routes.1.step2_solutions, 21193);
+        assert_eq!(routes.1.found_100_percent, true);
         assert_eq!(
             sol.actions,
             vec!(

@@ -116,6 +116,7 @@ class Solver:
         self.loggers = loggers
 
         self.solutions = []
+        self.info = None
         self.best_quality = None
         self.least_steps = None
         self.safe_50 = None
@@ -124,7 +125,7 @@ class Solver:
         self.compute_all()
 
     def solve(self) -> str:
-        self.solutions = xcs.solve_from_python(self)
+        self.solutions,self.info = xcs.solve_from_python(self)
         return self.solutions
 
     def compute_all(self) -> True:
