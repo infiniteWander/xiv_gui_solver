@@ -195,7 +195,7 @@ fn xiv_csolver_lib(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 /// A test result, useful for debugging, all values are set to zero as per the
-/// [`default`](crate::io::SolverResult::default)
+/// [`default`](crate::python_bindings::SolverResult::default())
 /// ```
 /// # use xiv_csolver_lib::python_bindings::SolverResult;
 /// SolverResult {
@@ -218,7 +218,7 @@ pub fn test_result() -> SolverResult {
 }
 
 /// A test info, useful for debugging, all values are set to zero as per the
-/// [`default`](crate::io::Info::default)
+/// [`default`](crate::python_bindings::Info::default())
 /// ```
 /// # use xiv_csolver_lib::python_bindings::Info;
 /// Info {
@@ -234,7 +234,7 @@ pub fn test_info() -> Info {
 }
 
 /// A test result array, useful for debugging, all values are set to zero as per the
-/// [`default`](crate::io::Parameters::default)
+/// [`default`](crate::python_bindings::Info::default())
 /// ```
 /// # use xiv_csolver_lib::python_bindings::{Info};
 /// # use xiv_csolver_lib::python_bindings::SolverResult;
