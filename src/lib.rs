@@ -97,7 +97,8 @@
 #![warn(missing_docs)]
 
 use crate::craft::Craft;
-use crate::io::{Parameters, SolverResult};
+use crate::io::Parameters;
+use crate::python_bindings::SolverResult;
 use crate::specs::{Recipe, Stats};
 use std::sync::{Arc, Mutex};
 use threadpool::ThreadPool;
@@ -105,6 +106,7 @@ use threadpool::ThreadPool;
 pub mod action;
 pub mod craft;
 pub mod io;
+pub mod python_bindings;
 mod solver;
 pub mod specs;
 
