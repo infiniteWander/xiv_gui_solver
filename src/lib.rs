@@ -193,10 +193,12 @@ pub fn solve_craft<'a>(
     // Prune the results for analysis
     // let mut valid_routes : Vec<Craft> = vec![];
     let mut valid_solutions: Vec<SolverResult> = vec![];
+    let mut success = false;
     for route in phase2_routes.iter() {
         if route.quality >= route.recipe.quality {
             // valid_routes.push(route.clone());
-            valid_solutions.push(SolverResult::from_craft(route)); //nb_p1, nb_p2, true
+            valid_solutions.push(SolverResult::from_craft(route));
+            success = true;
         }
     }
     // If no craft can make it to 100% HQ, fallback to base results
@@ -206,7 +208,7 @@ pub fn solve_craft<'a>(
         }
     }
 
-    Some((valid_solutions, Info::new(nb_p1, nb_p2, true)))
+    Some((valid_solutions, Info::new(nb_p1, nb_p2, succes)))
 }
 
 /// Load the config from args and make a craft from it
