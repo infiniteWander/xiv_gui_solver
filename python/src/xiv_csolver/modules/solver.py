@@ -50,7 +50,7 @@ Remaining CP: {self.remaining_cp}"""
             saved_lines.append(line)
 
         for line in saved_lines:
-            justified_text += line + '\n'
+            justified_text += line + '\r\n'
 
         return justified_text[:-1]
 
@@ -82,11 +82,11 @@ Remaining CP: {self.remaining_cp}"""
         for line in saved_lines:
             count += 1
             if count < 16:
-                self.macro1 += line + '\n'
+                self.macro1 += line + '\r\n'
             elif 15 < count < 31:
-                self.macro2 += line + '\n'
+                self.macro2 += line + '\r\n'
             elif 30 < count < 46:
-                self.macro3 += line + '\n'
+                self.macro3 += line + '\r\n'
 
         self.macro1 = self.macro1[:-1]
         self.macro2 = self.macro2[:-1]
@@ -155,7 +155,7 @@ class Solver:
                 break
 
         if not done:
-            self.loggers.add_log('Could not find a rotation for a 50% Safe Margin.\n'
+            self.loggers.add_log('Could not find a rotation for a 50% Safe Margin.\r\n'
                                  '    Defaulting to Best Quality.')
             self.safe_50 = self.best_quality
 

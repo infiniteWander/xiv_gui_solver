@@ -48,7 +48,7 @@ def translate_list(actions: list, lang: str):
                 output.append(dictionary[action])
             except KeyError:
                 output.append(supported_languages["en"][action])
-                loggers.log('Translation not found. Defaulting to English.\n'
+                loggers.log('Translation not found. Defaulting to English.\r\n'
                             '    Macros will probably be broken because of this.')
 
     else:

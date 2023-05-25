@@ -33,18 +33,18 @@ class Printer:
         }
 
     def save_users(self, user_name: str = None, user_stats: list = None) -> dict:
-        output = self.help_text_dict['users'] + '\n\n'
+        output = self.help_text_dict['users'] + '\r\n\r\n'
 
         if user_name.title() == '':
             for user, stats in self.full_config.get_users_dict().items():
                 if user != '   ':
-                    output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\n'
+                    output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\r\n'
 
         else:
             self.full_config.get_users_dict()[user_name] = user_stats
             for user, stats in self.full_config.get_users_dict().items():
                 if user != '   ':
-                    output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\n'
+                    output += f'{user}: [{stats[0]}, {stats[1]}, {stats[2]}]\r\n'
 
         self.print_users(output)
         return self.full_config.get_users_dict()
@@ -55,18 +55,18 @@ class Printer:
         return True
 
     def save_recipe(self, recipe_name: str = None, recipe_basic_stats: list = None, recipe_advanced_stats: list = None) -> dict:
-        output = self.help_text_dict['recipe'] + '\n\n'
+        output = self.help_text_dict['recipe'] + '\r\n\r\n'
 
         if recipe_name.title() == '':
             for recipe, stats in self.full_config.get_recipes_dict().items():
                 if recipe != '   ':
-                    output += f'{recipe}: [{stats[0]}, {stats[1]}, {stats[2]}, {stats[3]}, {stats[4]}, {stats[5]}, {stats[6]}]\n'
+                    output += f'{recipe}: [{stats[0]}, {stats[1]}, {stats[2]}, {stats[3]}, {stats[4]}, {stats[5]}, {stats[6]}]\r\n'
 
         else:
             self.full_config.get_recipes_dict()[recipe_name] = recipe_basic_stats[:-1] + recipe_advanced_stats
             for recipe, stats in self.full_config.get_recipes_dict().items():
                 if recipe != '   ':
-                    output += f'{recipe}: [{stats[0]}, {stats[1]}, {stats[2]}, {stats[3]}, {stats[4]}, {stats[5]}, {stats[6]}]\n'
+                    output += f'{recipe}: [{stats[0]}, {stats[1]}, {stats[2]}, {stats[3]}, {stats[4]}, {stats[5]}, {stats[6]}]\r\n'
 
         self.print_recipe(output)
         return self.full_config.get_recipes_dict()
