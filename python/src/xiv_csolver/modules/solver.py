@@ -67,8 +67,9 @@ Remaining CP: {self.remaining_cp}"""
 
         if self.steps != 15 and self.steps != 29 and self.steps != 44:
             saved_lines.append('/echo Craft complete ! <se.3>')
-        else:
-            self.loggers.log(f'No completion message in macro because rotation is exactly {self.steps} steps.')
+        # else:
+            # TODO: Add a callback to the parent object for logging
+            # self.loggers.add_log(f'No completion message in macro because rotation is exactly {self.steps} steps.')
 
         if self.steps > 15:
             saved_lines.insert(14, '/echo Macro 1 complete <se.2>')
@@ -170,5 +171,3 @@ class Solver:
         self.least_steps = Result(output, 'Least steps')
 
         return self.least_steps
-
-
