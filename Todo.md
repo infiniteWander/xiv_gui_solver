@@ -16,7 +16,15 @@
 ### Features
  🟩 (GUI) Refactor code
  🟩 (GUI) Restore GUI state
-
+ 🟩 (GUI) Bugfix the gui and clean it up
+ 🟩 (LIB) Restructure code, cleanup the mess
+ 🟩 (LIB) Have an autoretry
+ 🟩 (LIB) Have the autoretry be smart and/or threaded with interrupts
+ 🟩 (LIB) Cleanup the Toml to have one unique Food/Receipe/Craftsman with the gui
+ 🟩 (LIB) Be more aggressive with the mem optimisations
+ 🟩 (LIB) Have a thread interrupt mode for fast mode
+ 🟩 (LIB) Cleanup features (verbose doesn't really make sense) 
+ 
 # Roadmap
 ## v1.0.0
 
