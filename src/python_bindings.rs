@@ -130,7 +130,7 @@ impl SolverResult {
             progression: craft.progression,
             quality: craft.quality,
             durability: craft.durability,
-            actions: actions,
+            actions,
             total_progression: craft.recipe.progress,
             total_quality: craft.recipe.quality,
             total_durability: craft.recipe.durability,

@@ -4,5 +4,9 @@
 # If this seems super convoluted, and you'd rather it was just the three in-game values, know that me too.
 # Unfortunately that is how the craft system works in FFXIV.
 
-Grade 7 Tincture of Strength: [5060, 12628, 70, 130, 115, 80, 70]
-Grade 5 Strength Alkahest: [1300, 6200, 40, 123, 107, 100, 100]
+Lvl88: [1650, 7000, 40, 128, 112, 100, 100]
+Patch6.3_precrafts: [3696, 8200, 35, 130, 115, 80, 70]
+Patch6.3_gear: [5060, 12628, 70, 130, 115, 80, 70]
+Patch6.3_gatherer: [5720, 12900, 70, 130, 115, 80, 70]
+Patch6.4_precrafts: [4488, 9090, 35, 130, 115, 80, 70]
+Patch6.4_gear: [6600, 14040, 70, 130, 115, 80, 70]

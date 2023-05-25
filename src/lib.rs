@@ -168,9 +168,25 @@ pub fn solve_craft<'a>(
     let phase2_routes = arc_phase2_routes.lock().unwrap();
     let nb_p2 = phase2_routes.len();
 
-    // Drop on empty results
+    // Drop on empty results. // TODO: Retry automatically with better parameters
     if phase2_routes.len() == 0 {
-        return None;
+        // No solutions were found
+        if params.desperate {
+            // But everything was tested
+            return Some((Vec::<SolverResult>::new(), Info::new(0, 0, false)));
+        } else {
+            // And not everything was tested
+            return solve_craft(
+                recipe,
+                stats,
+                Parameters {
+                    depth: 11,
+                    byregot_step: 6,
+                    desperate: true,
+                    ..params
+                },
+            );
+        }
     }
 
     // Print the results if verbose
@@ -378,7 +394,7 @@ mod test {
         craft.recipe.progress = 0;
         let res = solve_craft(craft.recipe, craft.stats, craft.args);
         println!("{:?}", res);
-        assert!(res.is_none());
+        assert!(res.unwrap().0.len() == 0);
 
         craft.recipe.progress = 100;
         craft.stats.max_cp = 0;
